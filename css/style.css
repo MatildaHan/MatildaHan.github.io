@@ -10,7 +10,7 @@ body {
     background-color: #ecebe9;
 
     /* 添加背景图 */
-    background-image: url("images/bg.png");
+    background-image: url("../images/bg.png");
     background-size: cover;          /* 图片铺满整个屏幕 */
     background-position: center;     /* 图片居中 */
     background-repeat: no-repeat;    /* 不重复 */
@@ -28,7 +28,7 @@ body {
 
 /* ========== 头部 ========== */
 .header {
-    height: 120px;
+    height: 60px;
     display: flex;
     align-items: baseline;
     gap: 12px;
