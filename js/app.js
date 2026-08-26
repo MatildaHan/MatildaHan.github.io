@@ -14,6 +14,9 @@ var listView = document.getElementById('listView');
 var detailView = document.getElementById('detailView');
 var detailContainer = document.getElementById('detailContainer');
 
+// 获取 body 元素用于切换类
+var bodyEl = document.body;
+
 async function applySettings() {
     var settings = await DataLoader.loadSettings();
     var body = document.body;
@@ -56,21 +59,21 @@ function renderContent(key, page) {
             });
             break;
 
-case 'shinian':
-    pageList.forEach(function(item, idx) {
-        // 正文内容截取前两行（按换行符分割）
-        var contentLines = item.summary ? item.summary.split('\n') : [];
-        var displayContent = contentLines.slice(0, 2).join(' ');
-        if (contentLines.length > 2) {
-            displayContent += '...';
-        }
-        html += '<div class="poem-item" onclick="openDetail(\'' + key + '\', \'' + item.id + '\')">' +
-            '<div class="poem-title">' + escapeHtml(item.title) + '</div>' +
-            '<div class="poem-desc line-clamp-2">' + escapeHtml(displayContent) + '</div>' +
-            '</div>';
-        if (idx !== pageList.length - 1) html += '<div class="item-divider"></div>';
-    });
-    break;
+        case 'shinian':
+            pageList.forEach(function(item, idx) {
+                // 正文内容截取前两行（按换行符分割）
+                var contentLines = item.summary ? item.summary.split('\n') : [];
+                var displayContent = contentLines.slice(0, 2).join(' ');
+                if (contentLines.length > 2) {
+                    displayContent += '...';
+                }
+                html += '<div class="poem-item" onclick="openDetail(\'' + key + '\', \'' + item.id + '\')">' +
+                    '<div class="poem-title">' + escapeHtml(item.title) + '</div>' +
+                    '<div class="poem-desc line-clamp-2">' + escapeHtml(displayContent) + '</div>' +
+                    '</div>';
+                if (idx !== pageList.length - 1) html += '<div class="item-divider"></div>';
+            });
+            break;
 
         case 'xueye':
             pageList.forEach(function(group, idx) {
@@ -133,6 +136,10 @@ function escapeHtml(text) {
     return div.innerHTML;
 }
 
+// ============================================================
+// 详情页打开/关闭（添加 body 类控制菜单隐藏）
+// ============================================================
+
 window.openDetail = async function(key, id) {
     var detail = null;
     var title = '';
@@ -154,6 +161,8 @@ window.openDetail = async function(key, id) {
 
     listView.classList.add('hidden');
     detailView.classList.add('active');
+    // 添加 body 类，用于隐藏左侧菜单
+    bodyEl.classList.add('detail-open');
 
     var keyTitle = DataLoader.getKeyTitle(key);
 
@@ -183,10 +192,17 @@ window.openDetail = async function(key, id) {
 window.closeDetail = function() {
     listView.classList.remove('hidden');
     detailView.classList.remove('active');
+    // 移除 body 类，恢复左侧菜单
+    bodyEl.classList.remove('detail-open');
+
     menuItems.forEach(function(el) { el.classList.remove('active'); });
     document.querySelector('.menu-item[data-key="' + currentKey + '"]').classList.add('active');
     renderContent(currentKey, currentPage);
 };
+
+// ============================================================
+// 加载与初始化
+// ============================================================
 
 async function loadAndRender(key, page) {
     if (!page) page = 1;
@@ -199,6 +215,7 @@ menuItems.forEach(function(item) {
     item.addEventListener('click', function() {
         if (detailView.classList.contains('active')) {
             detailView.classList.remove('active');
+            bodyEl.classList.remove('detail-open');
             listView.classList.remove('hidden');
         }
         menuItems.forEach(function(el) { el.classList.remove('active'); });
