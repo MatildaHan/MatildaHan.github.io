@@ -117,20 +117,53 @@
                     </div>
                 </div>
 
-                <!-- ==================== 分类管理 ==================== -->
-                <div class="tab-panel" id="panel-category">
-                    <div class="panel-header">
-                        <h2>🏷️ 分类管理</h2>
-                        <button onclick="addCategory()" class="btn btn-primary">+ 新增分类</button>
-                    </div>
-                    <p class="panel-desc">管理所有分类，分类会在各栏目的下拉框中显示</p>
-                    <div class="table-wrap">
-                        <table class="data-table fixed-table">
-                            <thead><tr><th style="width:80px;">ID</th><th style="width:300px;">分类名称</th><th style="width:120px;">使用次数</th><th style="width:120px;">操作</th></tr></thead>
-                            <tbody id="tbody-category"></tbody>
-                        </table>
-                    </div>
-                </div>
+              <!-- ==================== 分类管理 ==================== -->
+<div class="tab-panel" id="panel-category">
+    <h2>🏷️ 分类管理</h2>
+    <p class="panel-desc">各栏目独立管理自己的分类</p>
+    
+    <!-- 行吟册分类 -->
+    <div style="margin-bottom:30px;">
+        <div class="panel-header">
+            <h3 style="font-size:16px;">📝 行吟册·絮 分类</h3>
+            <button onclick="addCategory('xingyin')" class="btn btn-primary btn-sm">+ 新增分类</button>
+        </div>
+        <div class="table-wrap">
+            <table class="data-table fixed-table">
+                <thead><tr><th style="width:60px;">#</th><th style="width:200px;">分类名称</th><th style="width:80px;">使用次数</th><th style="width:120px;">操作</th></tr></thead>
+                <tbody id="tbody-category-xingyin"></tbody>
+            </table>
+        </div>
+    </div>
+    
+    <!-- 十年灯分类 -->
+    <div style="margin-bottom:30px;">
+        <div class="panel-header">
+            <h3 style="font-size:16px;">📄 十年灯·文 分类</h3>
+            <button onclick="addCategory('shinian')" class="btn btn-primary btn-sm">+ 新增分类</button>
+        </div>
+        <div class="table-wrap">
+            <table class="data-table fixed-table">
+                <thead><tr><th style="width:60px;">#</th><th style="width:200px;">分类名称</th><th style="width:80px;">使用次数</th><th style="width:120px;">操作</th></tr></thead>
+                <tbody id="tbody-category-shinian"></tbody>
+            </table>
+        </div>
+    </div>
+    
+    <!-- 雪夜舟分类 -->
+    <div style="margin-bottom:30px;">
+        <div class="panel-header">
+            <h3 style="font-size:16px;">🖼️ 雪夜舟·图 分类</h3>
+            <button onclick="addCategory('xueye')" class="btn btn-primary btn-sm">+ 新增分类</button>
+        </div>
+        <div class="table-wrap">
+            <table class="data-table fixed-table">
+                <thead><tr><th style="width:60px;">#</th><th style="width:200px;">分类名称</th><th style="width:80px;">使用次数</th><th style="width:120px;">操作</th></tr></thead>
+                <tbody id="tbody-category-xueye"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
 
                 <!-- ==================== 主题设置 ==================== -->
                 <div class="tab-panel" id="panel-settings">
