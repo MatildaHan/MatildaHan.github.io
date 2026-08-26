@@ -53,8 +53,8 @@ function renderContent(key, page) {
             for (var i = 0; i < pageList.length; i++) {
                 var item = pageList[i];
                 html += '<div class="item-module" onclick="openDetail(\'' + key + '\', \'' + item.id + '\')">' +
-                    '<div class="text-content">' + escapeHtml(item.text) + '</div>' +
-                    '<div class="date-text">' + item.date + '</div>' +
+                    '<span class="text-content">' + escapeHtml(item.text) + '</span>' +
+                    '<span class="date-text">' + item.date + '</span>' +
                     '</div>';
                 if (i !== pageList.length - 1) html += '<div class="item-divider"></div>';
             }
@@ -74,12 +74,12 @@ function renderContent(key, page) {
                     displayContent += '...';
                 }
                 html += '<div class="poem-item" onclick="openDetail(\'' + key + '\', \'' + item.id + '\')">' +
-                    '<div style="display:flex;justify-content:space-between;align-items:center;width:100%;">' +
-                    '<div style="display:flex;align-items:center;gap:6px;overflow:hidden;flex:1;">' +
-                    (item.top ? '<span style="color:#e74c3c;font-size:18px;flex-shrink:0;">📌</span>' : '') +
+                    '<div class="poem-header">' +
+                    '<div class="poem-header-left">' +
+                    (item.top ? '<span class="poem-top-badge">📌</span>' : '') +
                     '<span class="poem-title">' + escapeHtml(item.title) + '</span>' +
                     '</div>' +
-                    '<span class="date-text" style="font-size:13px;color:#8c7c68;flex-shrink:0;margin-left:12px;">' + item.date + '</span>' +
+                    '<span class="date-text">' + item.date + '</span>' +
                     '</div>' +
                     (displayContent ? '<div class="poem-desc">' + escapeHtml(displayContent) + '</div>' : '') +
                     '</div>';
@@ -87,20 +87,20 @@ function renderContent(key, page) {
             }
             break;
 
-        // ========== 雪夜舟·图（图片左，日期右） ==========
+        // ========== 雪夜舟·图 ==========
         case 'xueye':
             for (var k = 0; k < pageList.length; k++) {
                 var group = pageList[k];
                 var firstImage = group.images && group.images.length > 0 ? group.images[0] : '';
                 html += '<div class="image-item-module" onclick="openDetail(\'' + key + '\', \'' + group.id + '\')">' +
                     '<img src="' + firstImage + '" class="image-thumb" onerror="this.style.display=\'none\'">' +
-                    '<span class="image-date" style="margin-left:auto;">' + group.date + '</span>' +
+                    '<span class="image-date">' + group.date + '</span>' +
                     '</div>';
                 if (k !== pageList.length - 1) html += '<div class="item-divider"></div>';
             }
             break;
 
-        // ========== 各西东·语（内容左，日期右） ==========
+        // ========== 各西东·语 ==========
         case 'gexidong':
             for (var l = 0; l < pageList.length; l++) {
                 var item = pageList[l];
