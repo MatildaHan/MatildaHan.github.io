@@ -1,5 +1,5 @@
 /**
- * admin.js - 南山集后台管理（含置顶功能 + 列表开关）
+ * admin.js - 南山集后台管理（含置顶功能 + 列表开关 + 换行修复）
  */
 
 // ============================================================
@@ -700,7 +700,6 @@ function showModal(category, id, isNew) {
                 '<div class="form-group"><label>正文内容</label><textarea id="formContent" rows="8" placeholder="文章正文内容...">' + escapeHtml(contentVal) + '</textarea></div>' +
                 '<div class="form-group"><label>分类</label><select id="formCategory" data-target="shinian">' + categoryOptions + '</select></div>' +
                 '<div class="form-group"><label>日期</label><input type="date" id="formDate" value="' + dateVal + '"></div>';
-            // 注意：已移除置顶复选框
             setTimeout(function() {
                 var sel = document.getElementById('formCategory');
                 if (sel) sel.value = catVal;
@@ -812,8 +811,13 @@ async function saveModal() {
     var formData = collectFormData(category);
     if (!formData) return;
 
-    // 修复：十年灯·文 正文换行处理
+    // ===== 修复：十年灯·文 正文换行处理 =====
     if (category === 'shinian' && formData.content) {
+        formData.content = formData.content.replace(/\n/g, ' ').replace(/\r/g, ' ');
+    }
+
+    // ===== 修复：各西东·语 内容换行处理 =====
+    if (category === 'gexidong' && formData.content) {
         formData.content = formData.content.replace(/\n/g, ' ').replace(/\r/g, ' ');
     }
 
@@ -845,7 +849,7 @@ async function saveModal() {
     var newText = formatter(items);
     var success = await saveDataFile(category, newText);
 
-    // 保存文章详情（正文完整内容，保留换行）
+    // 保存文章详情（十年灯·文）
     if (category === 'shinian' && formData.content) {
         var articleId = isNew ? formData.id : id;
         var articleContent = '---\ndate: ' + formData.date + '\ntitle: ' + formData.title + '\n---\n\n' + formData.content;
@@ -1314,5 +1318,5 @@ if (savedToken) {
 
 initData();
 
-console.log('南山集后台管理已启动（含置顶功能 + 列表开关）');
+console.log('南山集后台管理已启动（含置顶功能 + 列表开关 + 换行修复）');
 console.log('请确保已配置 GitHub Token');
