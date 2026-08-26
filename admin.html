@@ -21,10 +21,10 @@
             <aside class="admin-sidebar">
                 <nav class="admin-nav">
                     <a href="#" class="nav-item active" data-tab="dashboard">概览</a>
-                    <a href="#" class="nav-item" data-tab="xingyin">行吟册絮</a>
-                    <a href="#" class="nav-item" data-tab="shinian">十年灯文</a>
-                    <a href="#" class="nav-item" data-tab="xueye">雪夜舟图</a>
-                    <a href="#" class="nav-item" data-tab="gexidong">各西东语</a>
+                    <a href="#" class="nav-item" data-tab="xingyin">行吟册·絮</a>
+                    <a href="#" class="nav-item" data-tab="shinian">十年灯·文</a>
+                    <a href="#" class="nav-item" data-tab="xueye">雪夜舟·图</a>
+                    <a href="#" class="nav-item" data-tab="gexidong">各西东·语</a>
                     <a href="#" class="nav-item" data-tab="shanye">山野渔夫</a>
                     <a href="#" class="nav-item" data-tab="category">分类管理</a>
                     <a href="#" class="nav-item" data-tab="settings">主题设置</a>
@@ -36,20 +36,20 @@
                 <div class="tab-panel active" id="panel-dashboard">
                     <h2>内容概览</h2>
                     <div class="stats-grid">
-                        <div class="stat-card"><span class="stat-number" id="statXingyin">0</span><span class="stat-label">行吟册絮</span></div>
-                        <div class="stat-card"><span class="stat-number" id="statShinian">0</span><span class="stat-label">十年灯文</span></div>
-                        <div class="stat-card"><span class="stat-number" id="statXueye">0</span><span class="stat-label">雪夜舟图</span></div>
-                        <div class="stat-card"><span class="stat-number" id="statGexidong">0</span><span class="stat-label">各西东语</span></div>
+                        <div class="stat-card"><span class="stat-number" id="statXingyin">0</span><span class="stat-label">行吟册·絮</span></div>
+                        <div class="stat-card"><span class="stat-number" id="statShinian">0</span><span class="stat-label">十年灯·文</span></div>
+                        <div class="stat-card"><span class="stat-number" id="statXueye">0</span><span class="stat-label">雪夜舟·图</span></div>
+                        <div class="stat-card"><span class="stat-number" id="statGexidong">0</span><span class="stat-label">各西东·语</span></div>
                     </div>
                     <div style="margin-top:20px;padding:16px;background:#f5f0eb;border-radius:8px;border-left:4px solid #6b5b47;">
                         <strong>提示：</strong> 编辑后点击 "部署"，等待 1-3 分钟，前台自动更新。
                     </div>
                 </div>
 
-                <!-- 行吟册絮 -->
+                <!-- 行吟册·絮 -->
                 <div class="tab-panel" id="panel-xingyin">
                     <div class="panel-header">
-                        <h2>行吟册絮</h2>
+                        <h2>行吟册·絮</h2>
                         <button onclick="addItem('xingyin')" class="btn btn-primary">+ 新增</button>
                     </div>
                     <p class="panel-desc">短句 + 日期 + 分类（最多50字）</p>
@@ -61,13 +61,13 @@
                     </div>
                 </div>
 
-                <!-- 十年灯文 -->
+                <!-- 十年灯·文 -->
                 <div class="tab-panel" id="panel-shinian">
                     <div class="panel-header">
-                        <h2>十年灯文</h2>
+                        <h2>十年灯·文</h2>
                         <button onclick="addItem('shinian')" class="btn btn-primary">+ 新增</button>
                     </div>
-                    <p class="panel-desc">标题 + 正文内容 + 分类 + 日期（正文在首页展示时自动截断为两行）</p>
+                    <p class="panel-desc">标题 + 正文内容 + 分类 + 日期</p>
                     <div class="table-wrap">
                         <table class="data-table fixed-table">
                             <thead><tr><th style="width:80px;">ID</th><th style="width:200px;">标题</th><th style="width:120px;">分类</th><th style="width:120px;">日期</th><th style="width:140px;">操作</th></tr></thead>
@@ -76,10 +76,10 @@
                     </div>
                 </div>
 
-                <!-- 雪夜舟图 -->
+                <!-- 雪夜舟·图 -->
                 <div class="tab-panel" id="panel-xueye">
                     <div class="panel-header">
-                        <h2>雪夜舟图</h2>
+                        <h2>雪夜舟·图</h2>
                         <button onclick="addItem('xueye')" class="btn btn-primary">+ 新增</button>
                     </div>
                     <p class="panel-desc">日期 + 分类 + 图片URL列表</p>
@@ -91,10 +91,10 @@
                     </div>
                 </div>
 
-                <!-- 各西东语 -->
+                <!-- 各西东·语 -->
                 <div class="tab-panel" id="panel-gexidong">
                     <div class="panel-header">
-                        <h2>各西东语</h2>
+                        <h2>各西东·语</h2>
                         <button onclick="addItem('gexidong')" class="btn btn-primary">+ 新增</button>
                     </div>
                     <p class="panel-desc">留言内容 + 日期</p>
@@ -123,7 +123,7 @@
 
                     <div style="margin-bottom:30px;">
                         <div class="panel-header">
-                            <h3 style="font-size:16px;">行吟册絮 分类</h3>
+                            <h3 style="font-size:16px;">行吟册·絮 分类</h3>
                             <button onclick="addCategory('xingyin')" class="btn btn-primary btn-sm">+ 新增</button>
                         </div>
                         <div class="table-wrap">
@@ -136,7 +136,7 @@
 
                     <div style="margin-bottom:30px;">
                         <div class="panel-header">
-                            <h3 style="font-size:16px;">十年灯文 分类</h3>
+                            <h3 style="font-size:16px;">十年灯·文 分类</h3>
                             <button onclick="addCategory('shinian')" class="btn btn-primary btn-sm">+ 新增</button>
                         </div>
                         <div class="table-wrap">
@@ -149,7 +149,7 @@
 
                     <div style="margin-bottom:30px;">
                         <div class="panel-header">
-                            <h3 style="font-size:16px;">雪夜舟图 分类</h3>
+                            <h3 style="font-size:16px;">雪夜舟·图 分类</h3>
                             <button onclick="addCategory('xueye')" class="btn btn-primary btn-sm">+ 新增</button>
                         </div>
                         <div class="table-wrap">
