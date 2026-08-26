@@ -25,7 +25,7 @@ body {
     background-attachment: fixed;
 }
 
-/* ===== 版心 1000px ===== */
+/* ===== 版心 ===== */
 .wrapper {
     max-width: 1000px;
     margin: 0 auto;
@@ -174,7 +174,9 @@ body.detail-open .content-wrap {
     padding-left: 4px;
 }
 
-/* -------- 行吟册·絮 -------- */
+/* ============================================================
+   行吟册·絮
+   ============================================================ */
 .item-module {
     display: flex;
     justify-content: space-between;
@@ -192,13 +194,14 @@ body.detail-open .content-wrap {
 }
 
 .text-content {
-    font-size: 20px;
+    font-size: 18px;
     font-weight: bold;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
     flex: 1;
     min-width: 0;
+    color: #6b5b47;
 }
 
 .date-text {
@@ -207,7 +210,9 @@ body.detail-open .content-wrap {
     flex-shrink: 0;
 }
 
-/* -------- 十年灯·文 -------- */
+/* ============================================================
+   十年灯·文
+   ============================================================ */
 .poem-item {
     display: flex;
     flex-direction: column;
@@ -223,12 +228,34 @@ body.detail-open .content-wrap {
     background-color: rgba(184, 168, 148, 0.1);
 }
 
+.poem-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.poem-header-left {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    overflow: hidden;
+    flex: 1;
+}
+
+.poem-top-badge {
+    color: #e74c3c;
+    font-size: 18px;
+    flex-shrink: 0;
+}
+
 .poem-title {
     font-size: 20px;
     font-weight: bold;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    color: #6b5b47;
 }
 
 .poem-desc {
@@ -237,9 +264,12 @@ body.detail-open .content-wrap {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    margin-top: 2px;
 }
 
-/* -------- 雪夜舟·图（图片左 + 日期右） -------- */
+/* ============================================================
+   雪夜舟·图
+   ============================================================ */
 .image-item-module {
     display: flex;
     align-items: center;
@@ -255,7 +285,7 @@ body.detail-open .content-wrap {
     background-color: rgba(184, 168, 148, 0.1);
 }
 
-.image-item-module .image-thumb {
+.image-thumb {
     width: 80px;
     height: 80px;
     object-fit: cover;
@@ -264,14 +294,16 @@ body.detail-open .content-wrap {
     background: #ddd;
 }
 
-.image-item-module .image-date {
+.image-date {
     font-size: 14px;
     color: #8c7c68;
     margin-left: auto;
     flex-shrink: 0;
 }
 
-/* -------- 各西东·语（内容左 + 日期右） -------- */
+/* ============================================================
+   各西东·语
+   ============================================================ */
 .msg-item-module {
     display: flex;
     justify-content: space-between;
@@ -305,12 +337,15 @@ body.detail-open .content-wrap {
     margin-left: 12px;
 }
 
-/* -------- 山野渔夫 -------- */
+/* ============================================================
+   山野渔夫
+   ============================================================ */
 .intro-item {
     font-size: 14px;
     line-height: 1.8;
     overflow: hidden;
     padding: 4px 0;
+    color: #6b5b47;
 }
 
 /* ============================================================
@@ -723,7 +758,7 @@ body.detail-open .content-wrap {
         white-space: normal;
     }
 
-    .image-item-module .image-thumb {
+    .image-thumb {
         width: 60px;
         height: 60px;
     }
@@ -843,17 +878,17 @@ body.detail-open .content-wrap {
         padding-bottom: 2px;
     }
 
-    .image-item-module .image-thumb {
+    .image-thumb {
         width: 50px;
         height: 50px;
     }
 
-    .image-item-module .image-date {
+    .image-date {
         font-size: 13px;
     }
 
     .poem-title {
-        font-size: 14px;
+        font-size: 16px;
     }
 
     .poem-desc {
