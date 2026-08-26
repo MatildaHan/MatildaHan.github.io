@@ -41,75 +41,85 @@ var DataLoader = {
     // ========== 行吟册·絮 ==========
     // 格式: id | 内容 | 分类 | 日期
     parseXingyin: function(lines) {
-        return lines.map(function(line) {
-            var parts = line.split('|').map(function(s) {
+        var result = [];
+        for (var i = 0; i < lines.length; i++) {
+            var parts = lines[i].split('|').map(function(s) {
                 return s.trim();
             });
-            return {
+            result.push({
                 id: parts[0] || 'xy-' + Date.now(),
                 text: parts[1] || '无内容',
                 category: parts[2] || '默认',
                 date: parts[3] || '未知日期'
-            };
-        });
+            });
+        }
+        return result;
     },
 
     // ========== 十年灯·文 ==========
     // 格式: id | 标题 | 正文内容 | 分类 | 日期 | top
     parseShinian: function(lines) {
-        return lines.map(function(line) {
-            var parts = line.split('|').map(function(s) {
+        var result = [];
+        for (var i = 0; i < lines.length; i++) {
+            var parts = lines[i].split('|').map(function(s) {
                 return s.trim();
             });
-            return {
+            result.push({
                 id: parts[0] || 'sn-' + Date.now(),
                 title: parts[1] || '无标题',
                 content: parts[2] || '',
                 category: parts[3] || '',
                 date: parts[4] || '未知日期',
                 top: parts[5] === 'true' || false
-            };
-        });
+            });
+        }
+        return result;
     },
 
     // ========== 雪夜舟·图 ==========
     // 格式: id | 日期 | 分类 | 图片URL1,图片URL2,...
     parseXueye: function(lines) {
-        return lines.map(function(line) {
-            var parts = line.split('|').map(function(s) {
+        var result = [];
+        for (var i = 0; i < lines.length; i++) {
+            var parts = lines[i].split('|').map(function(s) {
                 return s.trim();
             });
-            return {
+            result.push({
                 id: parts[0] || 'xy-' + Date.now(),
                 date: parts[1] || '未知日期',
                 category: parts[2] || '',
                 images: parts[3] ? parts[3].split(',').map(function(s) {
                     return s.trim();
                 }) : []
-            };
-        });
+            });
+        }
+        return result;
     },
 
     // ========== 各西东·语 ==========
     // 格式: id | 留言内容 | 日期
     parseGexidong: function(lines) {
-        return lines.map(function(line) {
-            var parts = line.split('|').map(function(s) {
+        var result = [];
+        for (var i = 0; i < lines.length; i++) {
+            var parts = lines[i].split('|').map(function(s) {
                 return s.trim();
             });
-            return {
+            result.push({
                 id: parts[0] || 'gx-' + Date.now(),
                 content: parts[1] || '无留言',
                 date: parts[2] || '未知日期'
-            };
-        });
+            });
+        }
+        return result;
     },
 
     // ========== 山野渔夫 ==========
     parseShanye: function(lines) {
-        return lines.map(function(line) {
-            return { bio: line.trim() };
-        });
+        var result = [];
+        for (var i = 0; i < lines.length; i++) {
+            result.push({ bio: lines[i].trim() });
+        }
+        return result;
     },
 
     // ========== 加载文章详情 ==========
@@ -137,10 +147,13 @@ var DataLoader = {
 
         for (var i = 0; i < lines.length; i++) {
             var line = lines[i];
-            if (line.trim() === '---') {
+            var trimmed = line.trim();
+            
+            if (trimmed === '---') {
                 isReadingFrontmatter = !isReadingFrontmatter;
                 continue;
             }
+            
             if (isReadingFrontmatter) {
                 var dateMatch = line.match(/date:\s*(.+)/);
                 if (dateMatch) date = dateMatch[1].trim();
@@ -148,7 +161,7 @@ var DataLoader = {
                 if (titleMatch) title = titleMatch[1].trim();
                 continue;
             }
-            var trimmed = line.trim();
+            
             if (trimmed === '') {
                 if (currentParagraph.length > 0) {
                     paragraphs.push(currentParagraph.join(' '));
@@ -158,12 +171,15 @@ var DataLoader = {
                 currentParagraph.push(trimmed);
             }
         }
+        
         if (currentParagraph.length > 0) {
             paragraphs.push(currentParagraph.join(' '));
         }
+        
         if (paragraphs.length === 0) {
             paragraphs = [text.replace(/---/g, '').trim() || '暂无内容'];
         }
+        
         return { date: date, title: title, paragraphs: paragraphs };
     },
 
