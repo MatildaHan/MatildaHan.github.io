@@ -48,7 +48,6 @@ function renderContent(key, page) {
     var html = '';
 
     switch (key) {
-        // ========== 行吟册·絮 ==========
         case 'xingyin':
             for (var i = 0; i < pageList.length; i++) {
                 var item = pageList[i];
@@ -60,7 +59,6 @@ function renderContent(key, page) {
             }
             break;
 
-        // ========== 十年灯·文（置顶 + 显示日期） ==========
         case 'shinian':
             // 置顶排序
             var sortedList = pageList.slice().sort(function(a, b) {
@@ -88,7 +86,6 @@ function renderContent(key, page) {
             }
             break;
 
-        // ========== 雪夜舟·图（图片80×80 + 日期） ==========
         case 'xueye':
             for (var k = 0; k < pageList.length; k++) {
                 var group = pageList[k];
@@ -101,7 +98,6 @@ function renderContent(key, page) {
             }
             break;
 
-        // ========== 各西东·语 ==========
         case 'gexidong':
             for (var l = 0; l < pageList.length; l++) {
                 var item = pageList[l];
@@ -116,7 +112,6 @@ function renderContent(key, page) {
             }
             break;
 
-        // ========== 山野渔夫 ==========
         case 'shanye':
             for (var m = 0; m < pageList.length; m++) {
                 var item = pageList[m];
@@ -167,13 +162,13 @@ window.openDetail = async function(key, id) {
         // 加载文章详情
         detail = await DataLoader.loadArticleById(id);
         if (!detail) {
-            alert('文章内容未找到，ID: ' + id);
-            // 从列表中获取标题
+            // 从列表中获取数据
             var found = currentData.find(function(d) { return d.id === id; });
             if (found) {
                 title = found.title || '文章';
                 detail = { title: title, date: found.date || '未知日期', paragraphs: ['文章正文暂无内容'] };
             } else {
+                alert('文章内容未找到，ID: ' + id);
                 return;
             }
         } else {
@@ -183,11 +178,18 @@ window.openDetail = async function(key, id) {
         var item = currentData.find(function(d) { return d.id === id; });
         if (!item) { alert('内容未找到'); return; }
         title = item.text || item.title || item.content || item.bio || '详情';
-        detail = { title: title, date: item.date || '未知日期', paragraphs: [title] };
+        detail = { title: title, date: item.date || '未知日期', paragraphs: [] };
+        
         if (key === 'xueye' && item.images) {
-            detail.paragraphs = item.images.map(function(img) {
-                return '<img src="' + img + '" class="detail-image" onerror="this.style.display=\'none\'">';
-            });
+            for (var imgIdx = 0; imgIdx < item.images.length; imgIdx++) {
+                detail.paragraphs.push('<img src="' + item.images[imgIdx] + '" class="detail-image" onerror="this.style.display=\'none\'">');
+            }
+        } else if (key === 'xingyin') {
+            detail.paragraphs = [item.text || '暂无内容'];
+        } else if (key === 'gexidong') {
+            detail.paragraphs = [item.content || '暂无内容'];
+        } else if (key === 'shanye') {
+            detail.paragraphs = [item.bio || '暂无内容'];
         }
     }
 
@@ -203,8 +205,8 @@ window.openDetail = async function(key, id) {
         '<div class="detail-body">';
 
     if (detail.paragraphs) {
-        for (var i = 0; i < detail.paragraphs.length; i++) {
-            var p = detail.paragraphs[i];
+        for (var pIdx = 0; pIdx < detail.paragraphs.length; pIdx++) {
+            var p = detail.paragraphs[pIdx];
             if (typeof p === 'string' && p.indexOf('<img') !== -1) {
                 html += p;
             } else {
@@ -215,7 +217,7 @@ window.openDetail = async function(key, id) {
 
     html += '</div>';
 
-    // 评论区域
+    // ===== 评论区域 =====
     html += '<div class="comments-section">' +
         '<h3 class="comments-title">💬 评论</h3>' +
         '<div id="commentsList"></div>' +
@@ -236,17 +238,26 @@ window.openDetail = async function(key, id) {
 
     detailContainer.innerHTML = html;
 
-    // 加载评论
+    // 保存当前页面信息
     window.currentCommentPage = { id: pageId, title: title };
-    if (typeof getComments === 'function') {
-        try {
+
+    // 加载评论
+    try {
+        if (typeof getComments === 'function') {
             var comments = await getComments(pageId);
             if (typeof renderComments === 'function') {
                 renderComments(comments, 'commentsList');
+            } else {
+                console.warn('renderComments 函数未定义');
+                document.getElementById('commentsList').innerHTML = '<div class="comments-empty">评论功能暂不可用</div>';
             }
-        } catch (e) {
-            console.log('评论加载失败:', e);
+        } else {
+            console.warn('getComments 函数未定义');
+            document.getElementById('commentsList').innerHTML = '<div class="comments-empty">评论功能暂不可用</div>';
         }
+    } catch (e) {
+        console.error('评论加载失败:', e);
+        document.getElementById('commentsList').innerHTML = '<div class="comments-empty">评论加载失败</div>';
     }
 
     menuItems.forEach(function(el) { el.classList.remove('active'); });
