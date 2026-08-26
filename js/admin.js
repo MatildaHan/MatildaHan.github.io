@@ -1,10 +1,7 @@
 /**
- * admin.js - 南山集后台管理（已修复中文乱码）
+ * admin.js - 南山集后台管理（自动创建数据 + 修复编码）
  */
 
-// ============================================================
-// 1. 配置 - 请修改为你的 GitHub 信息
-// ============================================================
 var GITHUB_CONFIG = {
     owner: 'MatildaHan',
     repo: 'MatildaHan.github.io',
@@ -12,9 +9,6 @@ var GITHUB_CONFIG = {
     token: ''
 };
 
-// ============================================================
-// 2. 数据文件映射
-// ============================================================
 var DATA_FILES = {
     xingyin: 'data/xingyin.md',
     shinian: 'data/shinian.md',
@@ -27,15 +21,10 @@ var DATA_FILES = {
 var currentEdit = { category: null, id: null, isNew: false };
 var githubToken = '';
 
-// ============================================================
-// 3. GitHub API 操作
-// ============================================================
-
 function getToken() {
     if (githubToken) return githubToken;
     var saved = localStorage.getItem('github_token');
     if (saved) { githubToken = saved; return githubToken; }
-    
     var token = prompt(
         '请输入 GitHub Personal Access Token：\n\n' +
         '获取方式：\n' +
@@ -53,22 +42,20 @@ function getToken() {
 async function readGitHubFile(path) {
     var token = getToken();
     if (!token) throw new Error('需要 GitHub Token');
-    
     var url = 'https://api.github.com/repos/' + GITHUB_CONFIG.owner + '/' + GITHUB_CONFIG.repo + '/contents/' + path;
     var response = await fetch(url, {
         headers: { 'Authorization': 'token ' + token, 'Accept': 'application/vnd.github.v3+json' }
     });
-    
     if (response.status === 404) return null;
     if (!response.ok) throw new Error('读取失败: ' + response.status);
-    
     var data = await response.json();
-    // 修复读取时的解码
-    var content = atob(data.content);
-    // 确保 UTF-8 解码正确
-    try {
-        content = decodeURIComponent(escape(content));
-    } catch (e) {}
+    var binaryString = atob(data.content);
+    var bytes = new Uint8Array(binaryString.length);
+    for (var i = 0; i < binaryString.length; i++) {
+        bytes[i] = binaryString.charCodeAt(i);
+    }
+    var decoder = new TextDecoder('utf-8');
+    var content = decoder.decode(bytes);
     return { content: content, sha: data.sha };
 }
 
@@ -76,15 +63,11 @@ async function writeGitHubFile(path, content, message) {
     if (!message) message = '更新内容';
     var token = getToken();
     if (!token) throw new Error('需要 GitHub Token');
-    
     var sha = '';
     try {
         var existing = await readGitHubFile(path);
         if (existing) sha = existing.sha;
     } catch (e) {}
-    
-    // ===== 修复编码问题 =====
-    // 使用 TextEncoder 正确处理 UTF-8
     var encoder = new TextEncoder();
     var data = encoder.encode(content);
     var binaryString = '';
@@ -92,8 +75,6 @@ async function writeGitHubFile(path, content, message) {
         binaryString += String.fromCharCode(data[i]);
     }
     var base64Content = btoa(binaryString);
-    // ===== 修复结束 =====
-    
     var url = 'https://api.github.com/repos/' + GITHUB_CONFIG.owner + '/' + GITHUB_CONFIG.repo + '/contents/' + path;
     var response = await fetch(url, {
         method: 'PUT',
@@ -109,7 +90,6 @@ async function writeGitHubFile(path, content, message) {
             branch: GITHUB_CONFIG.branch
         })
     });
-    
     if (!response.ok) {
         var error = await response.json();
         throw new Error(error.message || '写入失败');
@@ -129,10 +109,6 @@ function updateConnectionStatus(connected) {
         }
     }
 }
-
-// ============================================================
-// 4. 数据加载与保存
-// ============================================================
 
 async function loadDataFile(category) {
     var path = DATA_FILES[category];
@@ -156,10 +132,6 @@ async function saveDataFile(category, content) {
         return false;
     }
 }
-
-// ============================================================
-// 5. 数据解析
-// ============================================================
 
 function parseXingyin(text) {
     if (!text) return [];
@@ -213,30 +185,22 @@ function parseShanye(text) {
     return text ? text.trim() : '';
 }
 
-// ============================================================
-// 6. 渲染表格
-// ============================================================
-
 async function renderTable(category) {
     var text = await loadDataFile(category);
     var items = [];
     var renderFn = null;
-    
     switch(category) {
         case 'xingyin': items = parseXingyin(text); renderFn = renderXingyinRow; break;
         case 'shinian': items = parseShinian(text); renderFn = renderShinianRow; break;
         case 'xueye': items = parseXueye(text); renderFn = renderXueyeRow; break;
         case 'gexidong': items = parseGexidong(text); renderFn = renderGexidongRow; break;
     }
-    
     var tbody = document.getElementById('tbody-' + category);
     if (!tbody) return;
-    
     if (items.length === 0) {
         tbody.innerHTML = '<tr class="empty-row"><td colspan="5">暂无内容，点击 "新增" 添加</td></tr>';
         return;
     }
-    
     tbody.innerHTML = items.map(function(item) { return renderFn(item); }).join('');
     updateStats(category, items.length);
 }
@@ -269,10 +233,6 @@ function escapeHtml(text) {
     return div.innerHTML;
 }
 
-// ============================================================
-// 7. 统计
-// ============================================================
-
 function updateStats(category, count) {
     var map = { xingyin: 'statXingyin', shinian: 'statShinian', xueye: 'statXueye', gexidong: 'statGexidong' };
     var el = document.getElementById(map[category]);
@@ -295,10 +255,6 @@ async function updateAllStats() {
     }
 }
 
-// ============================================================
-// 8. 增删改
-// ============================================================
-
 function addItem(category) {
     currentEdit = { category: category, id: null, isNew: true };
     showModal(category, null, true);
@@ -311,42 +267,31 @@ function editItem(category, id) {
 
 async function deleteItem(category, id) {
     if (!confirm('确定删除吗？')) return;
-    
     var text = await loadDataFile(category);
     var items = [];
     var formatter = null;
-    
     switch(category) {
         case 'xingyin': items = parseXingyin(text); formatter = formatXingyin; break;
         case 'shinian': items = parseShinian(text); formatter = formatShinian; break;
         case 'xueye': items = parseXueye(text); formatter = formatXueye; break;
         case 'gexidong': items = parseGexidong(text); formatter = formatGexidong; break;
     }
-    
     items = items.filter(function(item) { return item.id !== id; });
     var newText = formatter(items);
     await saveDataFile(category, newText);
-    
     renderTable(category);
     updateAllStats();
     showToast('删除成功', 'success');
 }
 
-// ============================================================
-// 9. 弹窗
-// ============================================================
-
 function showModal(category, id, isNew) {
     var modal = document.getElementById('editModal');
     var title = document.getElementById('modalTitle');
     var body = document.getElementById('modalBody');
-    
     var names = { xingyin: '行吟册·絮', shinian: '十年灯·文', xueye: '雪夜舟·图', gexidong: '各西东·语' };
     title.textContent = isNew ? '新增 ' + names[category] : '编辑 ' + names[category];
-    
     var html = '';
     var today = new Date().toISOString().slice(0,10);
-    
     switch(category) {
         case 'xingyin':
             html = '<div class="form-group"><label>短句内容</label><textarea id="formText" rows="3"></textarea></div><div class="form-group"><label>分类</label><input type="text" id="formCategory" value="默认"></div><div class="form-group"><label>日期</label><input type="date" id="formDate" value="' + today + '"></div>';
@@ -361,7 +306,6 @@ function showModal(category, id, isNew) {
             html = '<div class="form-group"><label>留言内容</label><textarea id="formContent" rows="4"></textarea></div><div class="form-group"><label>日期</label><input type="date" id="formDate" value="' + today + '"></div>';
             break;
     }
-    
     body.innerHTML = html;
     modal.classList.add('active');
 }
@@ -374,21 +318,17 @@ async function saveModal() {
     var category = currentEdit.category;
     var id = currentEdit.id;
     var isNew = currentEdit.isNew;
-    
     var text = await loadDataFile(category);
     var items = [];
     var formatter = null;
-    
     switch(category) {
         case 'xingyin': items = parseXingyin(text); formatter = formatXingyin; break;
         case 'shinian': items = parseShinian(text); formatter = formatShinian; break;
         case 'xueye': items = parseXueye(text); formatter = formatXueye; break;
         case 'gexidong': items = parseGexidong(text); formatter = formatGexidong; break;
     }
-    
     var formData = collectFormData(category);
     if (!formData) return;
-    
     if (isNew) {
         var prefix = { xingyin: 'xy', shinian: 'sn', xueye: 'xy', gexidong: 'gx' }[category];
         formData.id = prefix + '-' + Date.now();
@@ -400,10 +340,8 @@ async function saveModal() {
         }
         if (index !== -1) { formData.id = id; items[index] = formData; }
     }
-    
     var newText = formatter(items);
     var success = await saveDataFile(category, newText);
-    
     if (success) {
         closeModal();
         renderTable(category);
@@ -424,10 +362,6 @@ function collectFormData(category) {
     }
 }
 
-// ============================================================
-// 10. 山野渔夫
-// ============================================================
-
 async function loadShanye() {
     var text = await loadDataFile('shanye');
     document.getElementById('shanyeContent').value = parseShanye(text);
@@ -438,10 +372,6 @@ async function saveShanye() {
     await saveDataFile('shanye', content);
     showToast('简介保存成功！', 'success');
 }
-
-// ============================================================
-// 11. 主题设置
-// ============================================================
 
 async function loadSettings() {
     var text = await loadDataFile('settings');
@@ -475,17 +405,12 @@ function previewSettings() {
     var primaryColor = document.getElementById('settingPrimaryColor').value;
     var titleColor = document.getElementById('settingTitleColor').value;
     var subtitle = document.getElementById('settingSubtitle').value;
-    
     var modal = document.getElementById('editModal');
     document.getElementById('modalTitle').textContent = '👁️ 主题预览';
     document.getElementById('modalBody').innerHTML = '<div style="padding:20px;background:' + bgColor + ';border-radius:8px;' + (bgImage ? 'background-image:url(' + bgImage + ');background-size:cover;' : '') + '"><div style="background:rgba(255,255,255,0.85);padding:40px;border-radius:8px;"><h1 style="color:' + titleColor + ';font-size:28px;font-weight:bold;">南山集</h1><p style="color:' + primaryColor + ';font-size:16px;">' + subtitle + '</p><hr style="border-color:' + primaryColor + ';margin:16px 0;"><p style="color:' + primaryColor + ';font-size:14px;">预览效果</p><div style="display:flex;gap:12px;margin-top:16px;"><span style="background:' + primaryColor + ';color:#fff;padding:4px 16px;border-radius:4px;">按钮</span><span style="border:1px solid ' + primaryColor + ';color:' + primaryColor + ';padding:4px 16px;border-radius:4px;">边框</span></div></div></div>';
     modal.classList.add('active');
     document.querySelector('.modal-footer .btn-primary').onclick = closeModal;
 }
-
-// ============================================================
-// 12. 同步与部署
-// ============================================================
 
 async function syncAll() {
     showToast('正在同步数据...', 'info');
@@ -507,14 +432,12 @@ async function deploySite() {
     try {
         var token = getToken();
         if (!token) return;
-        
         var url = 'https://api.github.com/repos/' + GITHUB_CONFIG.owner + '/' + GITHUB_CONFIG.repo + '/git/refs/heads/' + GITHUB_CONFIG.branch;
         var response = await fetch(url, {
             headers: { 'Authorization': 'token ' + token }
         });
         var data = await response.json();
         var latestSha = data.object.sha;
-        
         var commitUrl = 'https://api.github.com/repos/' + GITHUB_CONFIG.owner + '/' + GITHUB_CONFIG.repo + '/git/commits';
         await fetch(commitUrl, {
             method: 'POST',
@@ -528,37 +451,26 @@ async function deploySite() {
                 parents: [latestSha]
             })
         });
-        
         showToast('🚀 部署已触发，等待 1-3 分钟...', 'success');
     } catch (e) {
         showToast('✅ 数据已保存，GitHub Pages 将自动部署', 'success');
     }
 }
 
-// ============================================================
-// 13. Toast
-// ============================================================
-
 function showToast(message, type) {
     if (!type) type = 'info';
     var existing = document.querySelector('.toast');
     if (existing) existing.remove();
-    
     var toast = document.createElement('div');
     toast.className = 'toast ' + type;
     toast.textContent = message;
     document.body.appendChild(toast);
-    
     setTimeout(function() { toast.classList.add('show'); }, 10);
     setTimeout(function() {
         toast.classList.remove('show');
         setTimeout(function() { toast.remove(); }, 300);
     }, 4000);
 }
-
-// ============================================================
-// 14. 导航切换
-// ============================================================
 
 var navItems = document.querySelectorAll('.nav-item');
 for (var i = 0; i < navItems.length; i++) {
@@ -569,7 +481,6 @@ for (var i = 0; i < navItems.length; i++) {
             items[j].classList.remove('active');
         }
         this.classList.add('active');
-        
         var tab = this.dataset.tab;
         var panels = document.querySelectorAll('.tab-panel');
         for (var k = 0; k < panels.length; k++) {
@@ -587,7 +498,7 @@ for (var i = 0; i < navItems.length; i++) {
 }
 
 // ============================================================
-// 15. 自动创建默认数据
+// 自动创建默认数据
 // ============================================================
 
 var DEFAULT_DATA = {
@@ -610,7 +521,6 @@ var DEFAULT_ARTICLE = '---\ndate: ' + new Date().toISOString().slice(0,10) + '\n
 async function initData() {
     var categories = ['xingyin', 'shinian', 'xueye', 'gexidong', 'shanye', 'settings'];
     var hasData = false;
-    
     for (var i = 0; i < categories.length; i++) {
         var cat = categories[i];
         var text = await loadDataFile(cat);
@@ -619,10 +529,8 @@ async function initData() {
             break;
         }
     }
-    
     if (!hasData) {
         showToast('首次运行，正在创建默认数据...', 'info');
-        
         for (var j = 0; j < categories.length; j++) {
             var key = categories[j];
             var content = DEFAULT_DATA[key] || '';
@@ -630,16 +538,13 @@ async function initData() {
                 await saveDataFile(key, content);
             }
         }
-        
         try {
             await writeGitHubFile('articles/sn-001.md', DEFAULT_ARTICLE, '创建默认文章');
         } catch (e) {
             console.log('文章创建失败:', e);
         }
-        
         showToast('✅ 默认数据创建完成！', 'success');
     }
-    
     await updateAllStats();
     await renderTable('xingyin');
     await renderTable('shinian');
@@ -648,10 +553,6 @@ async function initData() {
     await loadShanye();
     await loadSettings();
 }
-
-// ============================================================
-// 16. 启动
-// ============================================================
 
 var savedToken = localStorage.getItem('github_token');
 if (savedToken) {
