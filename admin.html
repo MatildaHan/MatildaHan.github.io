@@ -26,6 +26,7 @@
                     <a href="#" class="nav-item" data-tab="xueye">雪夜舟·图</a>
                     <a href="#" class="nav-item" data-tab="gexidong">各西东·语</a>
                     <a href="#" class="nav-item" data-tab="shanye">山野渔夫</a>
+                    <a href="#" class="nav-item" data-tab="comments">评论审核</a>
                     <a href="#" class="nav-item" data-tab="category">分类管理</a>
                     <a href="#" class="nav-item" data-tab="settings">主题设置</a>
                 </nav>
@@ -113,6 +114,30 @@
                     <div class="editor-area">
                         <textarea id="shanyeContent" rows="6" placeholder="输入个人简介..."></textarea>
                         <button onclick="saveShanye()" class="btn btn-primary">保存简介</button>
+                    </div>
+                </div>
+
+                <!-- ===== 评论审核面板 ===== -->
+                <div class="tab-panel" id="panel-comments">
+                    <div class="panel-header">
+                        <h2>💬 评论审核</h2>
+                        <button onclick="refreshComments()" class="btn btn-primary">🔄 刷新</button>
+                    </div>
+                    <p class="panel-desc">审核用户提交的评论，通过后将在前台显示</p>
+                    <div class="table-wrap">
+                        <table class="data-table fixed-table">
+                            <thead>
+                                <tr>
+                                    <th style="width:60px;">#</th>
+                                    <th style="width:150px;">页面</th>
+                                    <th style="width:120px;">评论者</th>
+                                    <th style="width:250px;">内容</th>
+                                    <th style="width:120px;">提交时间</th>
+                                    <th style="width:180px;">操作</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbody-comments"></tbody>
+                        </table>
                     </div>
                 </div>
 
