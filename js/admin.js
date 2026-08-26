@@ -1,5 +1,5 @@
 /**
- * admin.js - 南山集后台管理（含置顶功能）
+ * admin.js - 南山集后台管理（含置顶功能 + 换行修复）
  */
 
 // ============================================================
@@ -343,7 +343,6 @@ function formatXingyin(items) {
     }).join('\n');
 }
 
-// 十年灯·文：支持置顶
 function parseShinian(text) {
     if (!text) return [];
     return text.split('\n').filter(function(line) {
@@ -575,7 +574,7 @@ async function deleteItem(category, id) {
 }
 
 // ============================================================
-// 9. 弹窗
+// 9. 弹窗 + 保存（修复换行问题）
 // ============================================================
 
 function showModal(category, id, isNew) {
@@ -765,6 +764,12 @@ async function saveModal() {
     var formData = collectFormData(category);
     if (!formData) return;
 
+    // ===== 修复：十年灯·文 正文换行处理 =====
+    // 将换行符替换为空格，确保数据文件中的每条数据只有一行
+    if (category === 'shinian' && formData.content) {
+        formData.content = formData.content.replace(/\n/g, ' ').replace(/\r/g, ' ');
+    }
+
     if (category === 'xingyin' && formData.text) {
         formData.text = formData.text.replace(/\n/g, ' ').trim();
         if (formData.text.length > 50) {
@@ -793,6 +798,7 @@ async function saveModal() {
     var newText = formatter(items);
     var success = await saveDataFile(category, newText);
 
+    // ===== 保存文章详情（正文完整内容，保留换行） =====
     if (category === 'shinian' && formData.content) {
         var articleId = isNew ? formData.id : id;
         var articleContent = '---\ndate: ' + formData.date + '\ntitle: ' + formData.title + '\n---\n\n' + formData.content;
@@ -1262,5 +1268,5 @@ if (savedToken) {
 
 initData();
 
-console.log('南山集后台管理已启动（含置顶功能）');
+console.log('南山集后台管理已启动（含置顶功能 + 换行修复）');
 console.log('请确保已配置 GitHub Token');
