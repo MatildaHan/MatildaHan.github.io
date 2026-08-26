@@ -48,6 +48,7 @@ function renderContent(key, page) {
     var html = '';
 
     switch (key) {
+        // ========== 行吟册·絮 ==========
         case 'xingyin':
             for (var i = 0; i < pageList.length; i++) {
                 var item = pageList[i];
@@ -59,8 +60,8 @@ function renderContent(key, page) {
             }
             break;
 
+        // ========== 十年灯·文 ==========
         case 'shinian':
-            // 置顶排序
             var sortedList = pageList.slice().sort(function(a, b) {
                 if (a.top && !b.top) return -1;
                 if (!a.top && b.top) return 1;
@@ -86,32 +87,32 @@ function renderContent(key, page) {
             }
             break;
 
+        // ========== 雪夜舟·图（图片左，日期右） ==========
         case 'xueye':
             for (var k = 0; k < pageList.length; k++) {
                 var group = pageList[k];
                 var firstImage = group.images && group.images.length > 0 ? group.images[0] : '';
                 html += '<div class="image-item-module" onclick="openDetail(\'' + key + '\', \'' + group.id + '\')">' +
                     '<img src="' + firstImage + '" class="image-thumb" onerror="this.style.display=\'none\'">' +
-                    '<span class="image-date">' + group.date + '</span>' +
+                    '<span class="image-date" style="margin-left:auto;">' + group.date + '</span>' +
                     '</div>';
                 if (k !== pageList.length - 1) html += '<div class="item-divider"></div>';
             }
             break;
 
+        // ========== 各西东·语（内容左，日期右） ==========
         case 'gexidong':
             for (var l = 0; l < pageList.length; l++) {
                 var item = pageList[l];
-                html += '<div class="msg-item" onclick="openDetail(\'' + key + '\', \'' + item.id + '\')">' +
-                    '<div class="msg-head">' +
-                    '<div class="avatar" style="background:#c4b8a8;"></div>' +
-                    '<div class="nickname">访客</div>' +
-                    '</div>' +
-                    '<div class="msg-content line-clamp-2">' + escapeHtml(item.content) + '</div>' +
+                html += '<div class="msg-item-module" onclick="openDetail(\'' + key + '\', \'' + item.id + '\')">' +
+                    '<span class="msg-content-text">' + escapeHtml(item.content) + '</span>' +
+                    '<span class="msg-date">' + item.date + '</span>' +
                     '</div>';
                 if (l !== pageList.length - 1) html += '<div class="item-divider"></div>';
             }
             break;
 
+        // ========== 山野渔夫 ==========
         case 'shanye':
             for (var m = 0; m < pageList.length; m++) {
                 var item = pageList[m];
@@ -159,10 +160,8 @@ window.openDetail = async function(key, id) {
     var pageId = key + '-' + id;
 
     if (key === 'shinian') {
-        // 加载文章详情
         detail = await DataLoader.loadArticleById(id);
         if (!detail) {
-            // 从列表中获取数据
             var found = currentData.find(function(d) { return d.id === id; });
             if (found) {
                 title = found.title || '文章';
@@ -217,7 +216,7 @@ window.openDetail = async function(key, id) {
 
     html += '</div>';
 
-    // ===== 评论区域 =====
+    // 评论区域
     html += '<div class="comments-section">' +
         '<h3 class="comments-title">💬 评论</h3>' +
         '<div id="commentsList"></div>' +
@@ -238,7 +237,6 @@ window.openDetail = async function(key, id) {
 
     detailContainer.innerHTML = html;
 
-    // 保存当前页面信息
     window.currentCommentPage = { id: pageId, title: title };
 
     // 加载评论
@@ -248,11 +246,9 @@ window.openDetail = async function(key, id) {
             if (typeof renderComments === 'function') {
                 renderComments(comments, 'commentsList');
             } else {
-                console.warn('renderComments 函数未定义');
                 document.getElementById('commentsList').innerHTML = '<div class="comments-empty">评论功能暂不可用</div>';
             }
         } else {
-            console.warn('getComments 函数未定义');
             document.getElementById('commentsList').innerHTML = '<div class="comments-empty">评论功能暂不可用</div>';
         }
     } catch (e) {
