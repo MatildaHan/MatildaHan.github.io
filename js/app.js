@@ -48,44 +48,57 @@ function renderContent(key, page) {
     var html = '';
 
     switch (key) {
+        // ========== 行吟册·絮 ==========
         case 'xingyin':
             pageList.forEach(function(item, idx) {
                 html += '<div class="item-module" onclick="openDetail(\'' + key + '\', \'' + item.id + '\')">' +
-                    '<div class="text-content">' + escapeHtml(item.text) + '</div>' +
-                    '<div class="date-text">' + item.date + '</div>' +
+                    '<div class="text-content" style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + escapeHtml(item.text) + '</div>' +
+                    '<div class="date-text" style="flex-shrink:0;">' + item.date + '</div>' +
                     '</div>';
                 if (idx !== pageList.length - 1) html += '<div class="item-divider"></div>';
             });
             break;
 
+        // ========== 十年灯·文（置顶 + 显示日期） ==========
         case 'shinian':
-            pageList.forEach(function(item, idx) {
-                var contentLines = item.summary ? item.summary.split('\n') : [];
-                var displayContent = contentLines.slice(0, 2).join(' ');
-                if (contentLines.length > 2) {
+            // 置顶文章排在前面
+            var sortedList = pageList.slice().sort(function(a, b) {
+                if (a.top && !b.top) return -1;
+                if (!a.top && b.top) return 1;
+                return 0;
+            });
+            sortedList.forEach(function(item, idx) {
+                var displayContent = item.content ? item.content.slice(0, 60) : '';
+                if (item.content && item.content.length > 60) {
                     displayContent += '...';
                 }
-                html += '<div class="poem-item" onclick="openDetail(\'' + key + '\', \'' + item.id + '\')">' +
-                    '<div class="poem-title">' + escapeHtml(item.title) + '</div>' +
-                    '<div class="poem-desc line-clamp-2">' + escapeHtml(displayContent) + '</div>' +
+                html += '<div class="poem-item" onclick="openDetail(\'' + key + '\', \'' + item.id + '\')" style="padding:6px 0;">' +
+                    '<div style="display:flex;justify-content:space-between;align-items:center;width:100%;">' +
+                    '<div style="display:flex;align-items:center;gap:6px;overflow:hidden;flex:1;">' +
+                    (item.top ? '<span style="color:#e74c3c;font-size:14px;flex-shrink:0;">📌</span>' : '') +
+                    '<span style="font-size:16px;font-weight:bold;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + escapeHtml(item.title) + '</span>' +
+                    '</div>' +
+                    '<span style="font-size:13px;color:#8c7c68;flex-shrink:0;margin-left:12px;">' + (item.date || '') + '</span>' +
+                    '</div>' +
+                    (displayContent ? '<div style="font-size:14px;color:#6b5b47;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:2px;">' + escapeHtml(displayContent) + '</div>' : '') +
+                    '</div>';
+                if (idx !== sortedList.length - 1) html += '<div class="item-divider"></div>';
+            });
+            break;
+
+        // ========== 雪夜舟·图（图片80×80 + 日期） ==========
+        case 'xueye':
+            pageList.forEach(function(group, idx) {
+                var firstImage = group.images && group.images.length > 0 ? group.images[0] : '';
+                html += '<div class="image-item-module" onclick="openDetail(\'' + key + '\', \'' + group.id + '\')" style="display:flex;align-items:center;gap:16px;padding:6px 0;cursor:pointer;transition:background 0.2s;">' +
+                    '<img src="' + firstImage + '" alt="" style="width:80px;height:80px;object-fit:cover;border-radius:4px;flex-shrink:0;background:#ddd;" onerror="this.style.display=\'none\'">' +
+                    '<span style="font-size:14px;color:#8c7c68;">' + (group.date || '') + '</span>' +
                     '</div>';
                 if (idx !== pageList.length - 1) html += '<div class="item-divider"></div>';
             });
             break;
 
-        case 'xueye':
-            pageList.forEach(function(group, idx) {
-                html += '<div class="date-image-group">' +
-                    '<div class="image-date">' + group.date + '</div>' +
-                    '<div class="image-wrap">';
-                group.images.forEach(function(src) {
-                    html += '<img class="image-item" src="' + src + '" alt="" onclick="openDetail(\'' + key + '\', \'' + group.id + '\')" onerror="this.style.background=\'#d4cfc8\'">';
-                });
-                html += '</div></div>';
-                if (idx !== pageList.length - 1) html += '<div class="item-divider"></div>';
-            });
-            break;
-
+        // ========== 各西东·语 ==========
         case 'gexidong':
             pageList.forEach(function(item, idx) {
                 html += '<div class="msg-item" onclick="openDetail(\'' + key + '\', \'' + item.id + '\')">' +
@@ -99,6 +112,7 @@ function renderContent(key, page) {
             });
             break;
 
+        // ========== 山野渔夫 ==========
         case 'shanye':
             pageList.forEach(function(item, idx) {
                 html += '<div class="intro-item">' + escapeHtml(item.bio) + '</div>';
@@ -135,7 +149,7 @@ function escapeHtml(text) {
 }
 
 // ============================================================
-// 详情页打开/关闭 + 评论加载
+// 详情页
 // ============================================================
 
 window.openDetail = async function(key, id) {
@@ -150,7 +164,7 @@ window.openDetail = async function(key, id) {
     } else {
         var item = currentData.find(function(d) { return d.id === id; });
         if (!item) { alert('内容未找到'); return; }
-        title = item.text || item.content || item.bio || '详情';
+        title = item.text || item.title || item.content || item.bio || '详情';
         detail = { title: title, date: item.date || '未知日期', paragraphs: [title] };
         if (key === 'xueye' && item.images) {
             detail.paragraphs = item.images.map(function(img) {
@@ -182,7 +196,7 @@ window.openDetail = async function(key, id) {
 
     html += '</div>';
 
-    // ===== 评论区域 =====
+    // 评论区域
     html += '<div class="comments-section">' +
         '<h3 class="comments-title">💬 评论</h3>' +
         '<div id="commentsList"></div>' +
@@ -205,8 +219,12 @@ window.openDetail = async function(key, id) {
 
     // 加载评论
     window.currentCommentPage = { id: pageId, title: title };
-    var comments = await getComments(pageId);
-    renderComments(comments, 'commentsList');
+    if (typeof getComments === 'function') {
+        var comments = await getComments(pageId);
+        if (typeof renderComments === 'function') {
+            renderComments(comments, 'commentsList');
+        }
+    }
 
     menuItems.forEach(function(el) { el.classList.remove('active'); });
     document.querySelector('.menu-item[data-key="' + key + '"]').classList.add('active');
@@ -236,13 +254,21 @@ window.submitUserComment = async function() {
         return;
     }
 
-    var success = await submitComment(pageInfo.id, pageInfo.title, content, author);
-    if (success) {
-        document.getElementById('commentContent').value = '';
-        document.getElementById('commentAuthor').value = '';
-        document.getElementById('commentCharCount').textContent = '0';
-        var comments = await getComments(pageInfo.id);
-        renderComments(comments, 'commentsList');
+    if (typeof submitComment === 'function') {
+        var success = await submitComment(pageInfo.id, pageInfo.title, content, author);
+        if (success) {
+            document.getElementById('commentContent').value = '';
+            document.getElementById('commentAuthor').value = '';
+            document.getElementById('commentCharCount').textContent = '0';
+            if (typeof getComments === 'function') {
+                var comments = await getComments(pageInfo.id);
+                if (typeof renderComments === 'function') {
+                    renderComments(comments, 'commentsList');
+                }
+            }
+        }
+    } else {
+        alert('评论功能未加载，请刷新页面重试');
     }
 };
 
