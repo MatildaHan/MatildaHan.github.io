@@ -6,8 +6,8 @@
 // 1. 配置 - ⚠️ 请修改为你的 GitHub 信息
 // ============================================================
 const GITHUB_CONFIG = {
-    owner: '你的GitHub用户名',
-    repo: '你的仓库名',
+    owner: 'MatildaHan',
+    repo: 'MatildaHan.github.io',
     branch: 'main',
     token: ''
 };
