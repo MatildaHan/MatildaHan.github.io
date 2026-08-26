@@ -10,6 +10,7 @@ body {
     color: #6b5b47;
     min-height: 100vh;
     padding: 60px 20px;
+    background-image: url("../images/bg.png");
     background-color: #ecebe9;
     background-size: cover;
     background-position: center;
