@@ -1,10 +1,6 @@
 /**
- * admin.js - 南山集后台管理（修复版）
- * 修复：
- * 1. 短句限制1行/50字
- * 2. 分类管理（增/删/改/筛选）
- * 3. 编辑弹窗回填数据
- * 4. 固定列宽
+ * admin.js - 南山集后台管理（完整修复版）
+ * 修复：短句限制1行/50字、分类管理、编辑回填、固定列宽
  */
 
 // ============================================================
@@ -38,7 +34,10 @@ var categoryList = [];
 function getToken() {
     if (githubToken) return githubToken;
     var saved = localStorage.getItem('github_token');
-    if (saved) { githubToken = saved; return githubToken; }
+    if (saved) {
+        githubToken = saved;
+        return githubToken;
+    }
     var token = prompt(
         '请输入 GitHub Personal Access Token：\n\n' +
         '获取方式：\n' +
@@ -58,7 +57,10 @@ async function readGitHubFile(path) {
     if (!token) throw new Error('需要 GitHub Token');
     var url = 'https://api.github.com/repos/' + GITHUB_CONFIG.owner + '/' + GITHUB_CONFIG.repo + '/contents/' + path;
     var response = await fetch(url, {
-        headers: { 'Authorization': 'token ' + token, 'Accept': 'application/vnd.github.v3+json' }
+        headers: {
+            'Authorization': 'token ' + token,
+            'Accept': 'application/vnd.github.v3+json'
+        }
     });
     if (response.status === 404) return null;
     if (!response.ok) throw new Error('读取失败: ' + response.status);
@@ -158,7 +160,9 @@ async function saveDataFile(category, content) {
 async function loadCategories() {
     var text = await loadDataFile('categories');
     if (text) {
-        categoryList = text.split('\n').filter(function(line) { return line.trim(); });
+        categoryList = text.split('\n').filter(function(line) {
+            return line.trim();
+        });
     } else {
         categoryList = ['默认', '人生感悟', '生活', '文学'];
     }
@@ -192,9 +196,9 @@ function getCategoryUsageCount(name) {
     var count = 0;
     var categories = ['xingyin', 'shinian', 'xueye'];
     for (var c = 0; c < categories.length; c++) {
-        var text = document.getElementById('tbody-' + categories[c]);
-        if (text) {
-            var rows = text.querySelectorAll('tr');
+        var tbody = document.getElementById('tbody-' + categories[c]);
+        if (tbody) {
+            var rows = tbody.querySelectorAll('tr');
             for (var r = 0; r < rows.length; r++) {
                 var cells = rows[r].querySelectorAll('td');
                 if (cells.length > 2 && cells[2].textContent === name) {
@@ -230,7 +234,6 @@ function editCategory(index) {
             categoryList[index] = trimmed;
             saveCategories();
             renderCategoryTable();
-            // 更新所有使用了该分类的数据
             updateCategoryInData(oldName, trimmed);
             showToast('分类修改成功', 'success');
         } else {
@@ -242,15 +245,11 @@ function editCategory(index) {
 function deleteCategory(index) {
     var name = categoryList[index];
     var count = getCategoryUsageCount(name);
+    var msg = '确定删除分类 "' + name + '" 吗？';
     if (count > 0) {
-        if (!confirm('分类 "' + name + '" 正在被 ' + count + ' 条内容使用，删除后这些内容将变为"未分类"。确定删除吗？')) {
-            return;
-        }
-    } else {
-        if (!confirm('确定删除分类 "' + name + '" 吗？')) {
-            return;
-        }
+        msg = '分类 "' + name + '" 正在被 ' + count + ' 条内容使用，删除后这些内容将变为"未分类"。确定删除吗？';
     }
+    if (!confirm(msg)) return;
     categoryList.splice(index, 1);
     saveCategories();
     renderCategoryTable();
@@ -265,7 +264,9 @@ async function updateCategoryInData(oldName, newName) {
             var lines = text.split('\n');
             var updated = false;
             for (var i = 0; i < lines.length; i++) {
-                var parts = lines[i].split('|').map(function(s) { return s.trim(); });
+                var parts = lines[i].split('|').map(function(s) {
+                    return s.trim();
+                });
                 if (parts.length >= 3 && parts[2] === oldName) {
                     parts[2] = newName;
                     lines[i] = parts.join(' | ');
@@ -277,7 +278,6 @@ async function updateCategoryInData(oldName, newName) {
             }
         }
     }
-    // 重新渲染所有表格
     renderTable('xingyin');
     renderTable('shinian');
     renderTable('xueye');
@@ -297,50 +297,96 @@ function getCategoryOptions() {
 
 function parseXingyin(text) {
     if (!text) return [];
-    return text.split('\n').filter(function(line) { return line.trim(); }).map(function(line) {
-        var parts = line.split('|').map(function(s) { return s.trim(); });
-        return { id: parts[0] || 'xy-' + Date.now(), text: parts[1] || '', category: parts[2] || '默认', date: parts[3] || '' };
+    return text.split('\n').filter(function(line) {
+        return line.trim();
+    }).map(function(line) {
+        var parts = line.split('|').map(function(s) {
+            return s.trim();
+        });
+        return {
+            id: parts[0] || 'xy-' + Date.now(),
+            text: parts[1] || '',
+            category: parts[2] || '默认',
+            date: parts[3] || ''
+        };
     });
 }
 
 function formatXingyin(items) {
-    return items.map(function(item) { return item.id + ' | ' + item.text + ' | ' + item.category + ' | ' + item.date; }).join('\n');
+    return items.map(function(item) {
+        return item.id + ' | ' + item.text + ' | ' + item.category + ' | ' + item.date;
+    }).join('\n');
 }
 
 function parseShinian(text) {
     if (!text) return [];
-    return text.split('\n').filter(function(line) { return line.trim(); }).map(function(line) {
-        var parts = line.split('|').map(function(s) { return s.trim(); });
-        return { id: parts[0] || 'sn-' + Date.now(), title: parts[1] || '', summary: parts[2] || '', category: parts[3] || '', date: parts[4] || '' };
+    return text.split('\n').filter(function(line) {
+        return line.trim();
+    }).map(function(line) {
+        var parts = line.split('|').map(function(s) {
+            return s.trim();
+        });
+        return {
+            id: parts[0] || 'sn-' + Date.now(),
+            title: parts[1] || '',
+            summary: parts[2] || '',
+            category: parts[3] || '',
+            date: parts[4] || ''
+        };
     });
 }
 
 function formatShinian(items) {
-    return items.map(function(item) { return item.id + ' | ' + item.title + ' | ' + item.summary + ' | ' + item.category + ' | ' + item.date; }).join('\n');
+    return items.map(function(item) {
+        return item.id + ' | ' + item.title + ' | ' + item.summary + ' | ' + item.category + ' | ' + item.date;
+    }).join('\n');
 }
 
 function parseXueye(text) {
     if (!text) return [];
-    return text.split('\n').filter(function(line) { return line.trim(); }).map(function(line) {
-        var parts = line.split('|').map(function(s) { return s.trim(); });
-        return { id: parts[0] || 'xy-' + Date.now(), date: parts[1] || '', category: parts[2] || '', images: parts[3] ? parts[3].split(',').map(function(s) { return s.trim(); }) : [] };
+    return text.split('\n').filter(function(line) {
+        return line.trim();
+    }).map(function(line) {
+        var parts = line.split('|').map(function(s) {
+            return s.trim();
+        });
+        return {
+            id: parts[0] || 'xy-' + Date.now(),
+            date: parts[1] || '',
+            category: parts[2] || '',
+            images: parts[3] ? parts[3].split(',').map(function(s) {
+                return s.trim();
+            }) : []
+        };
     });
 }
 
 function formatXueye(items) {
-    return items.map(function(item) { return item.id + ' | ' + item.date + ' | ' + item.category + ' | ' + item.images.join(','); }).join('\n');
+    return items.map(function(item) {
+        return item.id + ' | ' + item.date + ' | ' + item.category + ' | ' + item.images.join(',');
+    }).join('\n');
 }
 
 function parseGexidong(text) {
     if (!text) return [];
-    return text.split('\n').filter(function(line) { return line.trim(); }).map(function(line) {
-        var parts = line.split('|').map(function(s) { return s.trim(); });
-        return { id: parts[0] || 'gx-' + Date.now(), content: parts[1] || '', date: parts[2] || '' };
+    return text.split('\n').filter(function(line) {
+        return line.trim();
+    }).map(function(line) {
+        var parts = line.split('|').map(function(s) {
+            return s.trim();
+        });
+        return {
+            id: parts[0] || 'gx-' + Date.now(),
+            content: parts[1] || '',
+            date: parts[2] || ''
+        };
     });
 }
 
 function formatGexidong(items) {
-    return items.map(function(item) { return item.id + ' | ' + item.content + ' | ' + item.date; }).join('\n');
+    return items.map(function(item) {
+        return item.id + ' | ' + item.content + ' | ' + item.date;
+    }).join('\n');
 }
 
 function parseShanye(text) {
@@ -348,18 +394,30 @@ function parseShanye(text) {
 }
 
 // ============================================================
-// 6. 渲染表格（修复：固定列宽 + 分类筛选预留）
+// 6. 渲染表格
 // ============================================================
 
 async function renderTable(category) {
     var text = await loadDataFile(category);
     var items = [];
     var renderFn = null;
-    switch(category) {
-        case 'xingyin': items = parseXingyin(text); renderFn = renderXingyinRow; break;
-        case 'shinian': items = parseShinian(text); renderFn = renderShinianRow; break;
-        case 'xueye': items = parseXueye(text); renderFn = renderXueyeRow; break;
-        case 'gexidong': items = parseGexidong(text); renderFn = renderGexidongRow; break;
+    switch (category) {
+        case 'xingyin':
+            items = parseXingyin(text);
+            renderFn = renderXingyinRow;
+            break;
+        case 'shinian':
+            items = parseShinian(text);
+            renderFn = renderShinianRow;
+            break;
+        case 'xueye':
+            items = parseXueye(text);
+            renderFn = renderXueyeRow;
+            break;
+        case 'gexidong':
+            items = parseGexidong(text);
+            renderFn = renderGexidongRow;
+            break;
     }
     var tbody = document.getElementById('tbody-' + category);
     if (!tbody) return;
@@ -367,7 +425,11 @@ async function renderTable(category) {
         tbody.innerHTML = '<tr class="empty-row"><td colspan="10">暂无内容，点击 "新增" 添加</td></tr>';
         return;
     }
-    tbody.innerHTML = items.map(function(item) { return renderFn(item); }).join('');
+    var html = '';
+    for (var i = 0; i < items.length; i++) {
+        html += renderFn(items[i]);
+    }
+    tbody.innerHTML = html;
     updateStats(category, items.length);
 }
 
@@ -376,7 +438,7 @@ function renderXingyinRow(item) {
 }
 
 function renderShinianRow(item) {
-    var summary = item.summary.length > 30 ? item.summary.slice(0,30)+'...' : item.summary;
+    var summary = item.summary.length > 30 ? item.summary.slice(0, 30) + '...' : item.summary;
     return '<tr><td>' + item.id + '</td><td title="' + escapeHtml(item.title) + '">' + escapeHtml(item.title) + '</td><td title="' + escapeHtml(item.summary) + '">' + escapeHtml(summary) + '</td><td>' + escapeHtml(item.category) + '</td><td>' + item.date + '</td><td><button onclick="editItem(\'shinian\',\'' + item.id + '\')" class="btn btn-primary btn-sm">✏️</button><button onclick="deleteItem(\'shinian\',\'' + item.id + '\')" class="btn btn-danger btn-sm">🗑️</button></td></tr>';
 }
 
@@ -389,7 +451,7 @@ function renderXueyeRow(item) {
 }
 
 function renderGexidongRow(item) {
-    var content = item.content.length > 40 ? item.content.slice(0,40)+'...' : item.content;
+    var content = item.content.length > 40 ? item.content.slice(0, 40) + '...' : item.content;
     return '<tr><td>' + item.id + '</td><td title="' + escapeHtml(item.content) + '">' + escapeHtml(content) + '</td><td>' + item.date + '</td><td><button onclick="editItem(\'gexidong\',\'' + item.id + '\')" class="btn btn-primary btn-sm">✏️</button><button onclick="deleteItem(\'gexidong\',\'' + item.id + '\')" class="btn btn-danger btn-sm">🗑️</button></td></tr>';
 }
 
@@ -404,7 +466,12 @@ function escapeHtml(text) {
 // ============================================================
 
 function updateStats(category, count) {
-    var map = { xingyin: 'statXingyin', shinian: 'statShinian', xueye: 'statXueye', gexidong: 'statGexidong' };
+    var map = {
+        xingyin: 'statXingyin',
+        shinian: 'statShinian',
+        xueye: 'statXueye',
+        gexidong: 'statGexidong'
+    };
     var el = document.getElementById(map[category]);
     if (el) el.textContent = count;
 }
@@ -415,18 +482,26 @@ async function updateAllStats() {
         var cat = categories[i];
         var text = await loadDataFile(cat);
         var items = [];
-        switch(cat) {
-            case 'xingyin': items = parseXingyin(text); break;
-            case 'shinian': items = parseShinian(text); break;
-            case 'xueye': items = parseXueye(text); break;
-            case 'gexidong': items = parseGexidong(text); break;
+        switch (cat) {
+            case 'xingyin':
+                items = parseXingyin(text);
+                break;
+            case 'shinian':
+                items = parseShinian(text);
+                break;
+            case 'xueye':
+                items = parseXueye(text);
+                break;
+            case 'gexidong':
+                items = parseGexidong(text);
+                break;
         }
         updateStats(cat, items.length);
     }
 }
 
 // ============================================================
-// 8. 增删改（修复：编辑弹窗回填数据）
+// 8. 增删改
 // ============================================================
 
 function addItem(category) {
@@ -444,13 +519,27 @@ async function deleteItem(category, id) {
     var text = await loadDataFile(category);
     var items = [];
     var formatter = null;
-    switch(category) {
-        case 'xingyin': items = parseXingyin(text); formatter = formatXingyin; break;
-        case 'shinian': items = parseShinian(text); formatter = formatShinian; break;
-        case 'xueye': items = parseXueye(text); formatter = formatXueye; break;
-        case 'gexidong': items = parseGexidong(text); formatter = formatGexidong; break;
+    switch (category) {
+        case 'xingyin':
+            items = parseXingyin(text);
+            formatter = formatXingyin;
+            break;
+        case 'shinian':
+            items = parseShinian(text);
+            formatter = formatShinian;
+            break;
+        case 'xueye':
+            items = parseXueye(text);
+            formatter = formatXueye;
+            break;
+        case 'gexidong':
+            items = parseGexidong(text);
+            formatter = formatGexidong;
+            break;
     }
-    items = items.filter(function(item) { return item.id !== id; });
+    items = items.filter(function(item) {
+        return item.id !== id;
+    });
     var newText = formatter(items);
     await saveDataFile(category, newText);
     renderTable(category);
@@ -459,22 +548,26 @@ async function deleteItem(category, id) {
 }
 
 // ============================================================
-// 9. 弹窗（修复：回填数据 + 短句限制1行50字）
+// 9. 弹窗
 // ============================================================
 
 function showModal(category, id, isNew) {
     var modal = document.getElementById('editModal');
     var title = document.getElementById('modalTitle');
     var body = document.getElementById('modalBody');
-    var names = { xingyin: '行吟册·絮', shinian: '十年灯·文', xueye: '雪夜舟·图', gexidong: '各西东·语' };
+    var names = {
+        xingyin: '行吟册·絮',
+        shinian: '十年灯·文',
+        xueye: '雪夜舟·图',
+        gexidong: '各西东·语'
+    };
     title.textContent = isNew ? '新增 ' + names[category] : '编辑 ' + names[category];
-    
-    // 如果是编辑，加载已有数据
+
     var existingData = null;
     if (!isNew) {
-        var text = document.getElementById('tbody-' + category);
-        if (text) {
-            var rows = text.querySelectorAll('tr');
+        var tbody = document.getElementById('tbody-' + category);
+        if (tbody) {
+            var rows = tbody.querySelectorAll('tr');
             for (var r = 0; r < rows.length; r++) {
                 var cells = rows[r].querySelectorAll('td');
                 if (cells.length > 0 && cells[0].textContent === id) {
@@ -492,27 +585,26 @@ function showModal(category, id, isNew) {
     var today = new Date().toISOString().slice(0, 10);
     var categoryOptions = getCategoryOptions();
 
-    switch(category) {
+    switch (category) {
         case 'xingyin':
             var textVal = existingData ? existingData[1] || '' : '';
             var catVal = existingData ? existingData[2] || '默认' : '默认';
             var dateVal = existingData ? existingData[3] || today : today;
-            html = 
+            html =
                 '<div class="form-group">' +
-                    '<label>短句内容（最多50字，不能换行）</label>' +
-                    '<input type="text" id="formText" maxlength="50" value="' + escapeHtml(textVal) + '" placeholder="请输入短句..." oninput="updateCharCount()">' +
-                    '<div class="char-count"><span id="charCount">' + textVal.length + '</span>/50</div>' +
+                '<label>短句内容（最多50字，不能换行）</label>' +
+                '<input type="text" id="formText" maxlength="50" value="' + escapeHtml(textVal) + '" placeholder="请输入短句..." oninput="updateCharCount()">' +
+                '<div class="char-count"><span id="charCount">' + textVal.length + '</span>/50</div>' +
                 '</div>' +
                 '<div class="form-group">' +
-                    '<label>分类</label>' +
-                    '<select id="formCategory">' + categoryOptions + '</select>' +
+                '<label>分类</label>' +
+                '<select id="formCategory">' + categoryOptions + '</select>' +
                 '</div>' +
                 '<div class="form-group">' +
-                    '<label>日期</label>' +
-                    '<input type="date" id="formDate" value="' + dateVal + '">' +
+                '<label>日期</label>' +
+                '<input type="date" id="formDate" value="' + dateVal + '">' +
                 '</div>' +
                 '<div class="hint">💡 短句不能换行，最多50个字符</div>';
-            // 设置选中的分类
             setTimeout(function() {
                 var sel = document.getElementById('formCategory');
                 if (sel) sel.value = catVal;
@@ -524,19 +616,18 @@ function showModal(category, id, isNew) {
             var summaryVal = existingData ? existingData[2] || '' : '';
             var catVal = existingData ? existingData[3] || '' : '';
             var dateVal = existingData ? existingData[4] || today : today;
-            // 尝试加载正文内容
             var contentVal = '';
             if (!isNew && id) {
-                // 从 articles 加载
                 (async function() {
                     try {
-                        var article = await DataLoader.loadArticleById(id);
-                        if (article) contentVal = article.paragraphs.join('\n\n');
-                        document.getElementById('formContent').value = contentVal;
-                    } catch(e) {}
+                        var article = await loadArticleContent(id);
+                        if (article) {
+                            document.getElementById('formContent').value = article;
+                        }
+                    } catch (e) {}
                 })();
             }
-            html = 
+            html =
                 '<div class="form-group"><label>标题</label><input type="text" id="formTitle" value="' + escapeHtml(titleVal) + '"></div>' +
                 '<div class="form-group"><label>摘要（列表显示）</label><textarea id="formSummary" rows="2">' + escapeHtml(summaryVal) + '</textarea></div>' +
                 '<div class="form-group"><label>分类</label><select id="formCategory">' + categoryOptions + '</select></div>' +
@@ -552,7 +643,7 @@ function showModal(category, id, isNew) {
             var dateVal = existingData ? existingData[1] || today : today;
             var catVal = existingData ? existingData[2] || '' : '';
             var imagesVal = existingData && existingData.length > 3 ? existingData[3] || '' : '';
-            html = 
+            html =
                 '<div class="form-group"><label>日期</label><input type="date" id="formDate" value="' + dateVal + '"></div>' +
                 '<div class="form-group"><label>分类</label><select id="formCategory">' + categoryOptions + '</select></div>' +
                 '<div class="form-group"><label>图片 URL（逗号分隔）</label><textarea id="formImages" rows="3">' + escapeHtml(imagesVal) + '</textarea></div>';
@@ -565,7 +656,7 @@ function showModal(category, id, isNew) {
         case 'gexidong':
             var contentVal = existingData ? existingData[1] || '' : '';
             var dateVal = existingData ? existingData[2] || today : today;
-            html = 
+            html =
                 '<div class="form-group"><label>留言内容</label><textarea id="formContent" rows="4">' + escapeHtml(contentVal) + '</textarea></div>' +
                 '<div class="form-group"><label>日期</label><input type="date" id="formDate" value="' + dateVal + '"></div>';
             break;
@@ -575,14 +666,49 @@ function showModal(category, id, isNew) {
     modal.classList.add('active');
 }
 
-// 字符计数
+async function loadArticleContent(id) {
+    try {
+        var result = await readGitHubFile('articles/' + id + '.md');
+        if (result) {
+            var content = result.content;
+            var lines = content.split('\n');
+            var start = false;
+            var paragraphs = [];
+            for (var i = 0; i < lines.length; i++) {
+                var line = lines[i];
+                if (line.trim() === '---') {
+                    if (!start) {
+                        start = true;
+                        continue;
+                    } else {
+                        start = false;
+                        continue;
+                    }
+                }
+                if (!start && line.trim() && !line.match(/^date:/) && !line.match(/^title:/)) {
+                    paragraphs.push(line.trim());
+                }
+            }
+            return paragraphs.join('\n\n');
+        }
+        return '';
+    } catch (e) {
+        return '';
+    }
+}
+
 function updateCharCount() {
     var el = document.getElementById('formText');
     var countEl = document.getElementById('charCount');
     if (el && countEl) {
         var len = el.value.length;
         countEl.textContent = len;
-        countEl.parentElement.className = 'char-count' + (len > 45 ? ' warning' : '');
+        var parent = countEl.parentElement;
+        if (len > 45) {
+            parent.className = 'char-count warning';
+        } else {
+            parent.className = 'char-count';
+        }
     }
 }
 
@@ -597,16 +723,27 @@ async function saveModal() {
     var text = await loadDataFile(category);
     var items = [];
     var formatter = null;
-    switch(category) {
-        case 'xingyin': items = parseXingyin(text); formatter = formatXingyin; break;
-        case 'shinian': items = parseShinian(text); formatter = formatShinian; break;
-        case 'xueye': items = parseXueye(text); formatter = formatXueye; break;
-        case 'gexidong': items = parseGexidong(text); formatter = formatGexidong; break;
+    switch (category) {
+        case 'xingyin':
+            items = parseXingyin(text);
+            formatter = formatXingyin;
+            break;
+        case 'shinian':
+            items = parseShinian(text);
+            formatter = formatShinian;
+            break;
+        case 'xueye':
+            items = parseXueye(text);
+            formatter = formatXueye;
+            break;
+        case 'gexidong':
+            items = parseGexidong(text);
+            formatter = formatGexidong;
+            break;
     }
     var formData = collectFormData(category);
     if (!formData) return;
-    
-    // 短句检查：去除换行符
+
     if (category === 'xingyin' && formData.text) {
         formData.text = formData.text.replace(/\n/g, ' ').trim();
         if (formData.text.length > 50) {
@@ -614,7 +751,7 @@ async function saveModal() {
             return;
         }
     }
-    
+
     if (isNew) {
         var prefix = { xingyin: 'xy', shinian: 'sn', xueye: 'xy', gexidong: 'gx' }[category];
         formData.id = prefix + '-' + Date.now();
@@ -622,22 +759,27 @@ async function saveModal() {
     } else {
         var index = -1;
         for (var i = 0; i < items.length; i++) {
-            if (items[i].id === id) { index = i; break; }
+            if (items[i].id === id) {
+                index = i;
+                break;
+            }
         }
-        if (index !== -1) { formData.id = id; items[index] = formData; }
+        if (index !== -1) {
+            formData.id = id;
+            items[index] = formData;
+        }
     }
     var newText = formatter(items);
     var success = await saveDataFile(category, newText);
-    
-    // 如果是文章，保存正文到 articles
+
     if (category === 'shinian' && formData.content) {
         var articleId = isNew ? formData.id : id;
         var articleContent = '---\ndate: ' + formData.date + '\ntitle: ' + formData.title + '\n---\n\n' + formData.content;
         try {
             await writeGitHubFile('articles/' + articleId + '.md', articleContent, '保存文章: ' + formData.title);
-        } catch(e) {}
+        } catch (e) {}
     }
-    
+
     if (success) {
         closeModal();
         renderTable(category);
@@ -648,14 +790,46 @@ async function saveModal() {
 }
 
 function collectFormData(category) {
-    var getVal = function(id) { var el = document.getElementById(id); return el ? el.value : ''; };
-    var getSel = function(id) { var el = document.getElementById(id); return el ? el.value : ''; };
-    switch(category) {
-        case 'xingyin': return { text: getVal('formText'), category: getSel('formCategory') || '默认', date: getVal('formDate') };
-        case 'shinian': return { title: getVal('formTitle'), summary: getVal('formSummary'), content: getVal('formContent'), category: getSel('formCategory') || '', date: getVal('formDate') };
-        case 'xueye': return { date: getVal('formDate'), category: getSel('formCategory') || '', images: getVal('formImages').split(',').map(function(s) { return s.trim(); }).filter(function(s) { return s; }) };
-        case 'gexidong': return { content: getVal('formContent'), date: getVal('formDate') };
-        default: return null;
+    var getVal = function(id) {
+        var el = document.getElementById(id);
+        return el ? el.value : '';
+    };
+    var getSel = function(id) {
+        var el = document.getElementById(id);
+        return el ? el.value : '';
+    };
+    switch (category) {
+        case 'xingyin':
+            return {
+                text: getVal('formText'),
+                category: getSel('formCategory') || '默认',
+                date: getVal('formDate')
+            };
+        case 'shinian':
+            return {
+                title: getVal('formTitle'),
+                summary: getVal('formSummary'),
+                content: getVal('formContent'),
+                category: getSel('formCategory') || '',
+                date: getVal('formDate')
+            };
+        case 'xueye':
+            return {
+                date: getVal('formDate'),
+                category: getSel('formCategory') || '',
+                images: getVal('formImages').split(',').map(function(s) {
+                    return s.trim();
+                }).filter(function(s) {
+                    return s;
+                })
+            };
+        case 'gexidong':
+            return {
+                content: getVal('formContent'),
+                date: getVal('formDate')
+            };
+        default:
+            return null;
     }
 }
 
@@ -745,7 +919,9 @@ async function deploySite() {
         if (!token) return;
         var url = 'https://api.github.com/repos/' + GITHUB_CONFIG.owner + '/' + GITHUB_CONFIG.repo + '/git/refs/heads/' + GITHUB_CONFIG.branch;
         var response = await fetch(url, {
-            headers: { 'Authorization': 'token ' + token }
+            headers: {
+                'Authorization': 'token ' + token
+            }
         });
         var data = await response.json();
         var latestSha = data.object.sha;
@@ -780,10 +956,14 @@ function showToast(message, type) {
     toast.className = 'toast ' + type;
     toast.textContent = message;
     document.body.appendChild(toast);
-    setTimeout(function() { toast.classList.add('show'); }, 10);
+    setTimeout(function() {
+        toast.classList.add('show');
+    }, 10);
     setTimeout(function() {
         toast.classList.remove('show');
-        setTimeout(function() { toast.remove(); }, 300);
+        setTimeout(function() {
+            toast.remove();
+        }, 300);
     }, 4000);
 }
 
@@ -808,11 +988,18 @@ for (var i = 0; i < navItems.length; i++) {
         var panel = document.getElementById('panel-' + tab);
         if (panel) {
             panel.classList.add('active');
-            if (['xingyin', 'shinian', 'xueye', 'gexidong'].indexOf(tab) !== -1) renderTable(tab);
-            else if (tab === 'shanye') loadShanye();
-            else if (tab === 'settings') loadSettings();
-            else if (tab === 'category') { loadCategories(); renderCategoryTable(); }
-            else if (tab === 'dashboard') updateAllStats();
+            if (['xingyin', 'shinian', 'xueye', 'gexidong'].indexOf(tab) !== -1) {
+                renderTable(tab);
+            } else if (tab === 'shanye') {
+                loadShanye();
+            } else if (tab === 'settings') {
+                loadSettings();
+            } else if (tab === 'category') {
+                loadCategories();
+                renderCategoryTable();
+            } else if (tab === 'dashboard') {
+                updateAllStats();
+            }
         }
     });
 }
@@ -822,10 +1009,10 @@ for (var i = 0; i < navItems.length; i++) {
 // ============================================================
 
 var DEFAULT_DATA = {
-    'xingyin': 'xy-001 | 欢迎使用南山集 | 默认 | ' + new Date().toISOString().slice(0,10) + '\nxy-002 | 在这里管理你的短句 | 默认 | ' + new Date().toISOString().slice(0,10),
-    'shinian': 'sn-001 | 第一篇文章 | 这是文章的摘要，显示在列表页。 | 默认 | ' + new Date().toISOString().slice(0,10),
-    'xueye': 'xy-001 | ' + new Date().toISOString().slice(0,10) + ' | 默认 | https://picsum.photos/150/150?1,https://picsum.photos/150/150?2',
-    'gexidong': 'gx-001 | 欢迎留言，记录你的想法。 | ' + new Date().toISOString().slice(0,10),
+    'xingyin': 'xy-001 | 欢迎使用南山集 | 默认 | ' + new Date().toISOString().slice(0, 10) + '\nxy-002 | 在这里管理你的短句 | 默认 | ' + new Date().toISOString().slice(0, 10),
+    'shinian': 'sn-001 | 第一篇文章 | 这是文章的摘要，显示在列表页。 | 默认 | ' + new Date().toISOString().slice(0, 10),
+    'xueye': 'xy-001 | ' + new Date().toISOString().slice(0, 10) + ' | 默认 | https://picsum.photos/150/150?1,https://picsum.photos/150/150?2',
+    'gexidong': 'gx-001 | 欢迎留言，记录你的想法。 | ' + new Date().toISOString().slice(0, 10),
     'shanye': '山野居者，渔樵度日。在这里编辑你的个人简介。',
     'settings': JSON.stringify({
         bgImage: '',
@@ -837,7 +1024,7 @@ var DEFAULT_DATA = {
     'categories': '默认\n人生感悟\n生活\n文学'
 };
 
-var DEFAULT_ARTICLE = '---\ndate: ' + new Date().toISOString().slice(0,10) + '\ntitle: 第一篇文章\n---\n\n这是文章正文内容，你可以在这里写任何内容。\n\n多段内容可以用空行分隔。';
+var DEFAULT_ARTICLE = '---\ndate: ' + new Date().toISOString().slice(0, 10) + '\ntitle: 第一篇文章\n---\n\n这是文章正文内容，你可以在这里写任何内容。\n\n多段内容可以用空行分隔。';
 
 async function initData() {
     var categories = ['xingyin', 'shinian', 'xueye', 'gexidong', 'shanye', 'settings', 'categories'];
@@ -891,6 +1078,6 @@ if (savedToken) {
 
 initData();
 
-console.log('📝 南山集后台管理已启动（修复版）');
+console.log('📝 南山集后台管理已启动（完整修复版）');
 console.log('⚠️ 请确保已配置 GitHub Token');
 console.log('📖 获取 Token: GitHub Settings → Developer settings → Personal access tokens');
