@@ -1,5 +1,5 @@
 /**
- * admin.js - 南山集后台管理（含评论审核）
+ * admin.js - 南山集后台管理（含置顶功能）
  */
 
 // ============================================================
@@ -343,6 +343,7 @@ function formatXingyin(items) {
     }).join('\n');
 }
 
+// 十年灯·文：支持置顶
 function parseShinian(text) {
     if (!text) return [];
     return text.split('\n').filter(function(line) {
@@ -354,15 +355,17 @@ function parseShinian(text) {
         return {
             id: parts[0] || 'sn-' + Date.now(),
             title: parts[1] || '',
-            category: parts[2] || '',
-            date: parts[3] || ''
+            content: parts[2] || '',
+            category: parts[3] || '',
+            date: parts[4] || '',
+            top: parts[5] === 'true' || false
         };
     });
 }
 
 function formatShinian(items) {
     return items.map(function(item) {
-        return item.id + ' | ' + item.title + ' | ' + item.category + ' | ' + item.date;
+        return item.id + ' | ' + item.title + ' | ' + item.content + ' | ' + item.category + ' | ' + item.date + ' | ' + (item.top ? 'true' : 'false');
     }).join('\n');
 }
 
@@ -462,7 +465,8 @@ function renderXingyinRow(item) {
 }
 
 function renderShinianRow(item) {
-    return '<tr><td>' + item.id + '</td><td title="' + escapeHtml(item.title) + '">' + escapeHtml(item.title) + '</td><td>' + escapeHtml(item.category) + '</td><td>' + item.date + '</td><td><button onclick="editItem(\'shinian\',\'' + item.id + '\')" class="btn btn-primary btn-sm">编辑</button><button onclick="deleteItem(\'shinian\',\'' + item.id + '\')" class="btn btn-danger btn-sm">删除</button></td></tr>';
+    var topLabel = item.top ? '📌 ' : '';
+    return '<tr><td>' + item.id + '</td><td title="' + escapeHtml(item.title) + '">' + topLabel + escapeHtml(item.title) + '</td><td>' + escapeHtml(item.category) + '</td><td>' + item.date + '</td><td><button onclick="editItem(\'shinian\',\'' + item.id + '\')" class="btn btn-primary btn-sm">编辑</button><button onclick="deleteItem(\'shinian\',\'' + item.id + '\')" class="btn btn-danger btn-sm">删除</button></td></tr>';
 }
 
 function renderXueyeRow(item) {
@@ -636,25 +640,20 @@ function showModal(category, id, isNew) {
 
         case 'shinian':
             var titleVal = existingData ? existingData[1] || '' : '';
-            var catVal = existingData ? existingData[2] || '' : '';
-            var dateVal = existingData ? existingData[3] || today : today;
-            var contentVal = '';
-            if (!isNew && id) {
-                (async function() {
-                    try {
-                        var article = await loadArticleContent(id);
-                        if (article) {
-                            document.getElementById('formContent').value = article;
-                        }
-                    } catch (e) {}
-                })();
-            }
+            var contentVal = existingData ? existingData[2] || '' : '';
+            var catVal = existingData ? existingData[3] || '' : '';
+            var dateVal = existingData ? existingData[4] || today : today;
+            var topVal = existingData ? existingData[5] === 'true' : false;
             html =
                 '<div class="form-group"><label>标题</label><input type="text" id="formTitle" value="' + escapeHtml(titleVal) + '"></div>' +
-                '<div class="form-group"><label>分类</label><select id="formCategory" data-target="shinian">' + categoryOptions + '</select></div>' +
                 '<div class="form-group"><label>正文内容</label><textarea id="formContent" rows="8" placeholder="文章正文内容...">' + escapeHtml(contentVal) + '</textarea></div>' +
+                '<div class="form-group"><label>分类</label><select id="formCategory" data-target="shinian">' + categoryOptions + '</select></div>' +
                 '<div class="form-group"><label>日期</label><input type="date" id="formDate" value="' + dateVal + '"></div>' +
-                '<div class="hint">正文内容在网站首页展示时自动截断为两行</div>';
+                '<div class="form-group" style="display:flex;align-items:center;gap:12px;padding-top:8px;">' +
+                '<label style="margin:0;font-weight:600;">置顶</label>' +
+                '<input type="checkbox" id="formTop" ' + (topVal ? 'checked' : '') + '>' +
+                '<span style="font-size:12px;color:#888;">开启后文章在首页置顶显示</span>' +
+                '</div>';
             setTimeout(function() {
                 var sel = document.getElementById('formCategory');
                 if (sel) sel.value = catVal;
@@ -832,7 +831,8 @@ function collectFormData(category) {
                 title: getVal('formTitle'),
                 content: getVal('formContent'),
                 category: getSel('formCategory') || '',
-                date: getVal('formDate')
+                date: getVal('formDate'),
+                top: document.getElementById('formTop') ? document.getElementById('formTop').checked : false
             };
         case 'xueye':
             return {
@@ -1185,7 +1185,7 @@ function refreshComments() {
 
 var DEFAULT_DATA = {
     'xingyin': 'xy-001 | 欢迎使用南山集 | 默认 | ' + new Date().toISOString().slice(0, 10) + '\nxy-002 | 在这里管理你的短句 | 默认 | ' + new Date().toISOString().slice(0, 10),
-    'shinian': 'sn-001 | 第一篇文章 | 默认 | ' + new Date().toISOString().slice(0, 10),
+    'shinian': 'sn-001 | 第一篇文章 | 这是文章正文内容，显示在首页作为摘要。 | 默认 | ' + new Date().toISOString().slice(0, 10) + ' | false',
     'xueye': 'xy-001 | ' + new Date().toISOString().slice(0, 10) + ' | 默认 | https://picsum.photos/150/150?1,https://picsum.photos/150/150?2',
     'gexidong': 'gx-001 | 欢迎留言，记录你的想法。 | ' + new Date().toISOString().slice(0, 10),
     'shanye': '山野居者，渔樵度日。在这里编辑你的个人简介。',
@@ -1262,5 +1262,5 @@ if (savedToken) {
 
 initData();
 
-console.log('南山集后台管理已启动（含评论审核）');
+console.log('南山集后台管理已启动（含置顶功能）');
 console.log('请确保已配置 GitHub Token');
