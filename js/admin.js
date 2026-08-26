@@ -1,6 +1,6 @@
 /**
- * admin.js - 南山集后台管理（完整修复版）
- * 修复：短句限制1行/50字、分类管理、编辑回填、固定列宽
+ * admin.js - 南山集后台管理（分类独立版）
+ * 行吟册、十年灯、雪夜舟 各自独立分类
  */
 
 // ============================================================
@@ -20,15 +20,25 @@ var DATA_FILES = {
     gexidong: 'data/gexidong.md',
     shanye: 'data/shanye.md',
     settings: 'data/settings.json',
-    categories: 'data/categories.md'
+    categories_xingyin: 'data/categories_xingyin.md',
+    categories_shinian: 'data/categories_shinian.md',
+    categories_xueye: 'data/categories_xueye.md'
 };
 
 var currentEdit = { category: null, id: null, isNew: false };
 var githubToken = '';
-var categoryList = [];
 
 // ============================================================
-// 2. GitHub API 操作
+// 2. 分类数据存储
+// ============================================================
+var categoryData = {
+    xingyin: [],
+    shinian: [],
+    xueye: []
+};
+
+// ============================================================
+// 3. GitHub API 操作
 // ============================================================
 
 function getToken() {
@@ -127,7 +137,7 @@ function updateConnectionStatus(connected) {
 }
 
 // ============================================================
-// 3. 数据加载与保存
+// 4. 数据加载与保存
 // ============================================================
 
 async function loadDataFile(category) {
@@ -154,70 +164,79 @@ async function saveDataFile(category, content) {
 }
 
 // ============================================================
-// 4. 分类管理
+// 5. 分类管理（独立）
 // ============================================================
 
-async function loadCategories() {
-    var text = await loadDataFile('categories');
+async function loadCategories(target) {
+    var fileKey = 'categories_' + target;
+    var text = await loadDataFile(fileKey);
     if (text) {
-        categoryList = text.split('\n').filter(function(line) {
+        categoryData[target] = text.split('\n').filter(function(line) {
             return line.trim();
         });
     } else {
-        categoryList = ['默认', '人生感悟', '生活', '文学'];
+        // 默认分类
+        var defaults = {
+            xingyin: ['默认', '人生感悟', '生活'],
+            shinian: ['默认', '文学', '随笔', '诗词'],
+            xueye: ['默认', '风景', '人物', '纪实']
+        };
+        categoryData[target] = defaults[target] || ['默认'];
     }
-    return categoryList;
+    return categoryData[target];
 }
 
-async function saveCategories() {
-    var content = categoryList.join('\n');
-    await saveDataFile('categories', content);
+async function saveCategories(target) {
+    var fileKey = 'categories_' + target;
+    var content = categoryData[target].join('\n');
+    await saveDataFile(fileKey, content);
 }
 
-function renderCategoryTable() {
-    var tbody = document.getElementById('tbody-category');
+function renderCategoryTable(target) {
+    var tbody = document.getElementById('tbody-category-' + target);
     if (!tbody) return;
-    if (categoryList.length === 0) {
+    var list = categoryData[target] || [];
+    if (list.length === 0) {
         tbody.innerHTML = '<tr class="empty-row"><td colspan="4">暂无分类，点击 "新增分类" 添加</td></tr>';
         return;
     }
     var html = '';
-    for (var i = 0; i < categoryList.length; i++) {
-        var name = categoryList[i];
-        var count = getCategoryUsageCount(name);
+    for (var i = 0; i < list.length; i++) {
+        var name = list[i];
+        var count = getCategoryUsageCount(target, name);
         html += '<tr><td>' + (i + 1) + '</td><td>' + escapeHtml(name) + '</td><td>' + count + '</td><td>' +
-            '<button onclick="editCategory(' + i + ')" class="btn btn-primary btn-sm">✏️</button>' +
-            '<button onclick="deleteCategory(' + i + ')" class="btn btn-danger btn-sm">🗑️</button></td></tr>';
+            '<button onclick="editCategory(\'' + target + '\',' + i + ')" class="btn btn-primary btn-sm">✏️</button>' +
+            '<button onclick="deleteCategory(\'' + target + '\',' + i + ')" class="btn btn-danger btn-sm">🗑️</button></td></tr>';
     }
     tbody.innerHTML = html;
 }
 
-function getCategoryUsageCount(name) {
+function getCategoryUsageCount(target, name) {
     var count = 0;
-    var categories = ['xingyin', 'shinian', 'xueye'];
-    for (var c = 0; c < categories.length; c++) {
-        var tbody = document.getElementById('tbody-' + categories[c]);
-        if (tbody) {
-            var rows = tbody.querySelectorAll('tr');
-            for (var r = 0; r < rows.length; r++) {
-                var cells = rows[r].querySelectorAll('td');
-                if (cells.length > 2 && cells[2].textContent === name) {
-                    count++;
-                }
+    var tbody = document.getElementById('tbody-' + target);
+    if (tbody) {
+        var rows = tbody.querySelectorAll('tr');
+        for (var r = 0; r < rows.length; r++) {
+            var cells = rows[r].querySelectorAll('td');
+            // 不同栏目分类所在列不同
+            var colIndex = (target === 'xingyin') ? 2 : (target === 'shinian' ? 3 : 2);
+            if (cells.length > colIndex && cells[colIndex].textContent === name) {
+                count++;
             }
         }
     }
     return count;
 }
 
-function addCategory() {
+function addCategory(target) {
     var name = prompt('请输入新分类名称：');
     if (name && name.trim()) {
         var trimmed = name.trim();
-        if (categoryList.indexOf(trimmed) === -1) {
-            categoryList.push(trimmed);
-            saveCategories();
-            renderCategoryTable();
+        if (categoryData[target].indexOf(trimmed) === -1) {
+            categoryData[target].push(trimmed);
+            saveCategories(target);
+            renderCategoryTable(target);
+            updateCategorySelect(target);
             showToast('分类添加成功', 'success');
         } else {
             showToast('分类已存在', 'error');
@@ -225,16 +244,17 @@ function addCategory() {
     }
 }
 
-function editCategory(index) {
-    var oldName = categoryList[index];
+function editCategory(target, index) {
+    var oldName = categoryData[target][index];
     var newName = prompt('修改分类名称：', oldName);
     if (newName && newName.trim() && newName.trim() !== oldName) {
         var trimmed = newName.trim();
-        if (categoryList.indexOf(trimmed) === -1) {
-            categoryList[index] = trimmed;
-            saveCategories();
-            renderCategoryTable();
-            updateCategoryInData(oldName, trimmed);
+        if (categoryData[target].indexOf(trimmed) === -1) {
+            categoryData[target][index] = trimmed;
+            saveCategories(target);
+            renderCategoryTable(target);
+            updateCategoryInData(target, oldName, trimmed);
+            updateCategorySelect(target);
             showToast('分类修改成功', 'success');
         } else {
             showToast('分类已存在', 'error');
@@ -242,57 +262,68 @@ function editCategory(index) {
     }
 }
 
-function deleteCategory(index) {
-    var name = categoryList[index];
-    var count = getCategoryUsageCount(name);
+function deleteCategory(target, index) {
+    var name = categoryData[target][index];
+    var count = getCategoryUsageCount(target, name);
     var msg = '确定删除分类 "' + name + '" 吗？';
     if (count > 0) {
         msg = '分类 "' + name + '" 正在被 ' + count + ' 条内容使用，删除后这些内容将变为"未分类"。确定删除吗？';
     }
     if (!confirm(msg)) return;
-    categoryList.splice(index, 1);
-    saveCategories();
-    renderCategoryTable();
+    categoryData[target].splice(index, 1);
+    saveCategories(target);
+    renderCategoryTable(target);
+    updateCategorySelect(target);
     showToast('分类删除成功', 'success');
 }
 
-async function updateCategoryInData(oldName, newName) {
-    var categories = ['xingyin', 'shinian', 'xueye'];
-    for (var c = 0; c < categories.length; c++) {
-        var text = await loadDataFile(categories[c]);
-        if (text) {
-            var lines = text.split('\n');
-            var updated = false;
-            for (var i = 0; i < lines.length; i++) {
-                var parts = lines[i].split('|').map(function(s) {
-                    return s.trim();
-                });
-                if (parts.length >= 3 && parts[2] === oldName) {
-                    parts[2] = newName;
-                    lines[i] = parts.join(' | ');
-                    updated = true;
-                }
-            }
-            if (updated) {
-                await saveDataFile(categories[c], lines.join('\n'));
+async function updateCategoryInData(target, oldName, newName) {
+    var text = await loadDataFile(target);
+    if (text) {
+        var lines = text.split('\n');
+        var updated = false;
+        for (var i = 0; i < lines.length; i++) {
+            var parts = lines[i].split('|').map(function(s) {
+                return s.trim();
+            });
+            var colIndex = (target === 'xingyin') ? 2 : (target === 'shinian' ? 3 : 2);
+            if (parts.length > colIndex && parts[colIndex] === oldName) {
+                parts[colIndex] = newName;
+                lines[i] = parts.join(' | ');
+                updated = true;
             }
         }
+        if (updated) {
+            await saveDataFile(target, lines.join('\n'));
+        }
     }
-    renderTable('xingyin');
-    renderTable('shinian');
-    renderTable('xueye');
+    renderTable(target);
 }
 
-function getCategoryOptions() {
+function updateCategorySelect(target) {
+    var selects = document.querySelectorAll('select[data-target="' + target + '"]');
+    var options = '<option value="">无分类</option>';
+    for (var i = 0; i < categoryData[target].length; i++) {
+        options += '<option value="' + escapeHtml(categoryData[target][i]) + '">' + escapeHtml(categoryData[target][i]) + '</option>';
+    }
+    for (var s = 0; s < selects.length; s++) {
+        var currentVal = selects[s].value;
+        selects[s].innerHTML = options;
+        selects[s].value = currentVal;
+    }
+}
+
+function getCategoryOptions(target) {
     var html = '<option value="">无分类</option>';
-    for (var i = 0; i < categoryList.length; i++) {
-        html += '<option value="' + escapeHtml(categoryList[i]) + '">' + escapeHtml(categoryList[i]) + '</option>';
+    var list = categoryData[target] || [];
+    for (var i = 0; i < list.length; i++) {
+        html += '<option value="' + escapeHtml(list[i]) + '">' + escapeHtml(list[i]) + '</option>';
     }
     return html;
 }
 
 // ============================================================
-// 5. 数据解析
+// 6. 数据解析
 // ============================================================
 
 function parseXingyin(text) {
@@ -394,7 +425,7 @@ function parseShanye(text) {
 }
 
 // ============================================================
-// 6. 渲染表格
+// 7. 渲染表格
 // ============================================================
 
 async function renderTable(category) {
@@ -462,7 +493,7 @@ function escapeHtml(text) {
 }
 
 // ============================================================
-// 7. 统计
+// 8. 统计
 // ============================================================
 
 function updateStats(category, count) {
@@ -501,7 +532,7 @@ async function updateAllStats() {
 }
 
 // ============================================================
-// 8. 增删改
+// 9. 增删改
 // ============================================================
 
 function addItem(category) {
@@ -548,7 +579,7 @@ async function deleteItem(category, id) {
 }
 
 // ============================================================
-// 9. 弹窗
+// 10. 弹窗
 // ============================================================
 
 function showModal(category, id, isNew) {
@@ -583,7 +614,7 @@ function showModal(category, id, isNew) {
 
     var html = '';
     var today = new Date().toISOString().slice(0, 10);
-    var categoryOptions = getCategoryOptions();
+    var categoryOptions = getCategoryOptions(category);
 
     switch (category) {
         case 'xingyin':
@@ -598,7 +629,7 @@ function showModal(category, id, isNew) {
                 '</div>' +
                 '<div class="form-group">' +
                 '<label>分类</label>' +
-                '<select id="formCategory">' + categoryOptions + '</select>' +
+                '<select id="formCategory" data-target="xingyin">' + categoryOptions + '</select>' +
                 '</div>' +
                 '<div class="form-group">' +
                 '<label>日期</label>' +
@@ -630,7 +661,7 @@ function showModal(category, id, isNew) {
             html =
                 '<div class="form-group"><label>标题</label><input type="text" id="formTitle" value="' + escapeHtml(titleVal) + '"></div>' +
                 '<div class="form-group"><label>摘要（列表显示）</label><textarea id="formSummary" rows="2">' + escapeHtml(summaryVal) + '</textarea></div>' +
-                '<div class="form-group"><label>分类</label><select id="formCategory">' + categoryOptions + '</select></div>' +
+                '<div class="form-group"><label>分类</label><select id="formCategory" data-target="shinian">' + categoryOptions + '</select></div>' +
                 '<div class="form-group"><label>正文（详情页）</label><textarea id="formContent" rows="6" placeholder="文章正文内容...">' + escapeHtml(contentVal) + '</textarea></div>' +
                 '<div class="form-group"><label>日期</label><input type="date" id="formDate" value="' + dateVal + '"></div>';
             setTimeout(function() {
@@ -645,7 +676,7 @@ function showModal(category, id, isNew) {
             var imagesVal = existingData && existingData.length > 3 ? existingData[3] || '' : '';
             html =
                 '<div class="form-group"><label>日期</label><input type="date" id="formDate" value="' + dateVal + '"></div>' +
-                '<div class="form-group"><label>分类</label><select id="formCategory">' + categoryOptions + '</select></div>' +
+                '<div class="form-group"><label>分类</label><select id="formCategory" data-target="xueye">' + categoryOptions + '</select></div>' +
                 '<div class="form-group"><label>图片 URL（逗号分隔）</label><textarea id="formImages" rows="3">' + escapeHtml(imagesVal) + '</textarea></div>';
             setTimeout(function() {
                 var sel = document.getElementById('formCategory');
@@ -834,7 +865,7 @@ function collectFormData(category) {
 }
 
 // ============================================================
-// 10. 山野渔夫
+// 11. 山野渔夫
 // ============================================================
 
 async function loadShanye() {
@@ -849,7 +880,7 @@ async function saveShanye() {
 }
 
 // ============================================================
-// 11. 主题设置
+// 12. 主题设置
 // ============================================================
 
 async function loadSettings() {
@@ -892,13 +923,15 @@ function previewSettings() {
 }
 
 // ============================================================
-// 12. 同步与部署
+// 13. 同步与部署
 // ============================================================
 
 async function syncAll() {
     showToast('正在同步数据...', 'info');
     try {
-        await loadCategories();
+        await loadCategories('xingyin');
+        await loadCategories('shinian');
+        await loadCategories('xueye');
         await updateAllStats();
         await renderTable('xingyin');
         await renderTable('shinian');
@@ -906,7 +939,12 @@ async function syncAll() {
         await renderTable('gexidong');
         await loadShanye();
         await loadSettings();
-        renderCategoryTable();
+        renderCategoryTable('xingyin');
+        renderCategoryTable('shinian');
+        renderCategoryTable('xueye');
+        updateCategorySelect('xingyin');
+        updateCategorySelect('shinian');
+        updateCategorySelect('xueye');
         showToast('同步完成！', 'success');
     } catch (e) {
         showToast('同步失败: ' + e.message, 'error');
@@ -945,7 +983,7 @@ async function deploySite() {
 }
 
 // ============================================================
-// 13. Toast
+// 14. Toast
 // ============================================================
 
 function showToast(message, type) {
@@ -968,7 +1006,7 @@ function showToast(message, type) {
 }
 
 // ============================================================
-// 14. 导航切换
+// 15. 导航切换
 // ============================================================
 
 var navItems = document.querySelectorAll('.nav-item');
@@ -995,8 +1033,13 @@ for (var i = 0; i < navItems.length; i++) {
             } else if (tab === 'settings') {
                 loadSettings();
             } else if (tab === 'category') {
-                loadCategories();
-                renderCategoryTable();
+                // 加载所有分类
+                loadCategories('xingyin');
+                loadCategories('shinian');
+                loadCategories('xueye');
+                renderCategoryTable('xingyin');
+                renderCategoryTable('shinian');
+                renderCategoryTable('xueye');
             } else if (tab === 'dashboard') {
                 updateAllStats();
             }
@@ -1005,7 +1048,7 @@ for (var i = 0; i < navItems.length; i++) {
 }
 
 // ============================================================
-// 15. 自动创建默认数据
+// 16. 自动创建默认数据
 // ============================================================
 
 var DEFAULT_DATA = {
@@ -1021,17 +1064,19 @@ var DEFAULT_DATA = {
         titleColor: '#333333',
         subtitle: '春山如黛草如烟'
     }, null, 2),
-    'categories': '默认\n人生感悟\n生活\n文学'
+    'categories_xingyin': '默认\n人生感悟\n生活',
+    'categories_shinian': '默认\n文学\n随笔\n诗词',
+    'categories_xueye': '默认\n风景\n人物\n纪实'
 };
 
 var DEFAULT_ARTICLE = '---\ndate: ' + new Date().toISOString().slice(0, 10) + '\ntitle: 第一篇文章\n---\n\n这是文章正文内容，你可以在这里写任何内容。\n\n多段内容可以用空行分隔。';
 
 async function initData() {
-    var categories = ['xingyin', 'shinian', 'xueye', 'gexidong', 'shanye', 'settings', 'categories'];
+    var files = ['xingyin', 'shinian', 'xueye', 'gexidong', 'shanye', 'settings', 'categories_xingyin', 'categories_shinian', 'categories_xueye'];
     var hasData = false;
-    for (var i = 0; i < categories.length; i++) {
-        var cat = categories[i];
-        var text = await loadDataFile(cat);
+    for (var i = 0; i < files.length; i++) {
+        var file = files[i];
+        var text = await loadDataFile(file);
         if (text && text.trim()) {
             hasData = true;
             break;
@@ -1039,8 +1084,8 @@ async function initData() {
     }
     if (!hasData) {
         showToast('首次运行，正在创建默认数据...', 'info');
-        for (var j = 0; j < categories.length; j++) {
-            var key = categories[j];
+        for (var j = 0; j < files.length; j++) {
+            var key = files[j];
             var content = DEFAULT_DATA[key] || '';
             if (content) {
                 await saveDataFile(key, content);
@@ -1049,11 +1094,14 @@ async function initData() {
         try {
             await writeGitHubFile('articles/sn-001.md', DEFAULT_ARTICLE, '创建默认文章');
         } catch (e) {}
-        await loadCategories();
         showToast('✅ 默认数据创建完成！', 'success');
-    } else {
-        await loadCategories();
     }
+    
+    // 加载所有分类
+    await loadCategories('xingyin');
+    await loadCategories('shinian');
+    await loadCategories('xueye');
+    
     await updateAllStats();
     await renderTable('xingyin');
     await renderTable('shinian');
@@ -1061,11 +1109,16 @@ async function initData() {
     await renderTable('gexidong');
     await loadShanye();
     await loadSettings();
-    renderCategoryTable();
+    renderCategoryTable('xingyin');
+    renderCategoryTable('shinian');
+    renderCategoryTable('xueye');
+    updateCategorySelect('xingyin');
+    updateCategorySelect('shinian');
+    updateCategorySelect('xueye');
 }
 
 // ============================================================
-// 16. 启动
+// 17. 启动
 // ============================================================
 
 var savedToken = localStorage.getItem('github_token');
@@ -1078,6 +1131,7 @@ if (savedToken) {
 
 initData();
 
-console.log('📝 南山集后台管理已启动（完整修复版）');
+console.log('📝 南山集后台管理已启动（分类独立版）');
+console.log('📂 行吟册、十年灯、雪夜舟 各自独立分类');
 console.log('⚠️ 请确保已配置 GitHub Token');
 console.log('📖 获取 Token: GitHub Settings → Developer settings → Personal access tokens');
