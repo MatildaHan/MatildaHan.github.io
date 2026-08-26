@@ -5,7 +5,6 @@
     box-sizing: border-box;
 }
 
-/* ========== 基础 ========== */
 html,
 body {
     width: 100%;
@@ -17,7 +16,6 @@ body {
     color: #6b5b47;
     min-height: 100vh;
     padding-top: 50px;
-    /* 顶部距离 50px */
     padding-bottom: 60px;
     padding-left: 20px;
     padding-right: 20px;
@@ -27,18 +25,12 @@ body {
     background-attachment: fixed;
 }
 
-/* ============================================================
-   版心：最大宽度 1000px，居中，绝对防止溢出
-   ============================================================ */
+/* ===== 版心 ===== */
 .wrapper {
     max-width: 1000px;
-    /* 版心 1000px */
     margin: 0 auto;
-    /* 居中 */
     padding: 0;
-    /* 不额外增加内边距 */
     overflow: hidden;
-    /* 防止内部元素溢出 */
     width: 100%;
 }
 
@@ -77,23 +69,17 @@ body {
     flex-shrink: 0;
 }
 
-/* ============================================================
-   布局：左侧 200px，右侧 800px（总计 1000px）
-   绝对防止溢出
-   ============================================================ */
+/* ===== 布局 ===== */
 .container {
     display: grid;
     grid-template-columns: 200px 800px;
-    /* 固定列宽 */
     gap: 0;
-    /* 无间距，保证精确 1000px */
     width: 100%;
     max-width: 1000px;
     overflow: hidden;
-    /* 防止溢出 */
 }
 
-/* ========== 左侧菜单（200px） ========== */
+/* ========== 左侧菜单 ========== */
 .sidebar-menu {
     width: 200px;
     max-width: 200px;
@@ -107,6 +93,7 @@ body {
     word-break: break-word;
     padding-right: 20px;
     flex-shrink: 0;
+    transition: display 0.2s;
 }
 
 .menu-item {
@@ -140,13 +127,12 @@ body {
     color: #6b5b47;
 }
 
-/* ========== 右侧内容（800px） ========== */
+/* ========== 右侧内容 ========== */
 .content-wrap {
     width: 800px;
     max-width: 800px;
     min-width: 0;
     overflow: hidden;
-    /* 绝对防止溢出 */
     flex-shrink: 0;
 }
 
@@ -164,7 +150,6 @@ body {
     margin: 12px 0;
 }
 
-/* ========== 文本截断 ========== */
 .line-clamp-2 {
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -182,9 +167,7 @@ body {
     padding-left: 4px;
 }
 
-/* ============================================================
-   行吟册·絮
-   ============================================================ */
+/* -------- 行吟册·絮 -------- */
 .item-module {
     display: flex;
     justify-content: space-between;
@@ -217,9 +200,7 @@ body {
     flex-shrink: 0;
 }
 
-/* ============================================================
-   十年灯·文
-   ============================================================ */
+/* -------- 十年灯·文 -------- */
 .poem-item {
     display: flex;
     flex-direction: column;
@@ -249,9 +230,7 @@ body {
     overflow: hidden;
 }
 
-/* ============================================================
-   雪夜舟·图
-   ============================================================ */
+/* -------- 雪夜舟·图 -------- */
 .date-image-group {
     display: flex;
     flex-direction: column;
@@ -268,11 +247,9 @@ body {
 .image-wrap {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    /* 4 列，每列约 200px */
     gap: 16px;
     width: 100%;
     overflow: hidden;
-    /* 防止溢出 */
 }
 
 .image-item {
@@ -290,9 +267,7 @@ body {
     transform: scale(1.02);
 }
 
-/* ============================================================
-   各西东·语
-   ============================================================ */
+/* -------- 各西东·语 -------- */
 .msg-item {
     display: flex;
     flex-direction: column;
@@ -333,9 +308,7 @@ body {
     overflow: hidden;
 }
 
-/* ============================================================
-   山野渔夫
-   ============================================================ */
+/* -------- 山野渔夫 -------- */
 .intro-item {
     font-size: 14px;
     line-height: 1.8;
@@ -343,57 +316,85 @@ body {
 }
 
 /* ============================================================
-   详情页
+   详情页专用样式
    ============================================================ */
-.detail-container {
-    padding: 20px 0;
-    width: 100%;
-    overflow: hidden;
+
+/* 详情页激活时，隐藏左侧菜单 */
+body.detail-open .sidebar-menu {
+    display: none;
 }
 
+/* 详情页容器 - 固定宽度800px，白色背景 */
+.detail-view.active .detail-container {
+    max-width: 800px;
+    margin: 0 auto;
+    background-color: #ffffff;
+    padding: 30px 50px 60px 50px;
+    border-radius: 4px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+}
+
+/* 面包屑导航 - 顶部距离30px */
 .detail-container .breadcrumb {
-    font-size: 12px;
-    color: #998b78;
+    font-size: 13px;
+    color: #8c7c68;
+    margin-top: 0;
     margin-bottom: 30px;
+    padding-top: 0;
     cursor: pointer;
     display: inline-block;
+    transition: color 0.2s;
 }
 
 .detail-container .breadcrumb:hover {
     color: #6b5b47;
 }
 
+/* 标题与日期 */
 .detail-container .detail-title {
     font-size: 24px;
-    font-weight: normal;
-    margin-bottom: 12px;
-    overflow: hidden;
-    word-break: break-word;
+    font-weight: 600;
+    color: #333333;
+    margin-bottom: 8px;
+    line-height: 1.4;
 }
 
 .detail-container .detail-date {
     font-size: 14px;
-    margin-bottom: 40px;
-    color: #8c7c68;
+    color: #999999;
+    margin-bottom: 30px;
+    border-bottom: 1px solid #eeeeee;
+    padding-bottom: 16px;
 }
 
+/* 正文内容 */
 .detail-container .detail-body {
-    font-size: 14px;
-    line-height: 2.2;
-    overflow: hidden;
-    word-wrap: break-word;
+    font-size: 16px;
+    line-height: 1.9;
+    color: #3d3d3d;
 }
 
 .detail-container .detail-body p {
-    margin-bottom: 14px;
-    text-align: justify;
+    margin-bottom: 1.2em;
 }
 
-.detail-image {
-    max-width: 100%;
-    height: auto;
-    margin: 12px 0;
-    border-radius: 8px;
+/* 返回按钮 */
+.back-btn {
+    display: inline-block;
+    margin-top: 40px;
+    padding: 8px 28px;
+    border: 1px solid #d0c8bc;
+    color: #6b5b47;
+    background: transparent;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.2s;
+    border-radius: 4px;
+}
+
+.back-btn:hover {
+    background: #f0ebe4;
+    border-color: #b0a090;
 }
 
 /* ============================================================
@@ -429,28 +430,6 @@ body {
 }
 
 /* ============================================================
-   返回按钮
-   ============================================================ */
-.back-btn {
-    display: inline-block;
-    margin-top: 30px;
-    padding: 8px 24px;
-    border: 1px solid #b8a894;
-    color: #6b5b47;
-    background: transparent;
-    cursor: pointer;
-    font-family: "SimSun", "STSong", serif;
-    font-size: 14px;
-    transition: all 0.2s;
-    border-radius: 4px;
-}
-
-.back-btn:hover {
-    background: #b8a894;
-    color: #fff;
-}
-
-/* ============================================================
    视图切换
    ============================================================ */
 .list-view {
@@ -470,7 +449,7 @@ body {
 }
 
 /* ============================================================
-   响应式：小于 1020px 时自动适应
+   响应式
    ============================================================ */
 @media (max-width: 1020px) {
     .wrapper {
@@ -480,7 +459,6 @@ body {
 
     .container {
         grid-template-columns: 1fr;
-        /* 单列 */
         gap: 20px;
     }
 
@@ -516,6 +494,12 @@ body {
 
     .image-wrap {
         grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    }
+
+    /* 详情页移动端适配 */
+    .detail-view.active .detail-container {
+        max-width: 100%;
+        padding: 20px 20px 40px 20px;
     }
 }
 
@@ -570,5 +554,18 @@ body {
     .pagination button {
         padding: 4px 10px;
         font-size: 12px;
+    }
+
+    /* 详情页移动端适配 */
+    .detail-view.active .detail-container {
+        padding: 16px 16px 30px 16px;
+    }
+
+    .detail-container .detail-title {
+        font-size: 20px;
+    }
+
+    .detail-container .detail-body {
+        font-size: 15px;
     }
 }
