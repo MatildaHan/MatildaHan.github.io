@@ -148,12 +148,12 @@ var DataLoader = {
         for (var i = 0; i < lines.length; i++) {
             var line = lines[i];
             var trimmed = line.trim();
-            
+
             if (trimmed === '---') {
                 isReadingFrontmatter = !isReadingFrontmatter;
                 continue;
             }
-            
+
             if (isReadingFrontmatter) {
                 var dateMatch = line.match(/date:\s*(.+)/);
                 if (dateMatch) date = dateMatch[1].trim();
@@ -161,7 +161,7 @@ var DataLoader = {
                 if (titleMatch) title = titleMatch[1].trim();
                 continue;
             }
-            
+
             if (trimmed === '') {
                 if (currentParagraph.length > 0) {
                     paragraphs.push(currentParagraph.join(' '));
@@ -171,15 +171,15 @@ var DataLoader = {
                 currentParagraph.push(trimmed);
             }
         }
-        
+
         if (currentParagraph.length > 0) {
             paragraphs.push(currentParagraph.join(' '));
         }
-        
+
         if (paragraphs.length === 0) {
             paragraphs = [text.replace(/---/g, '').trim() || '暂无内容'];
         }
-        
+
         return { date: date, title: title, paragraphs: paragraphs };
     },
 
