@@ -216,7 +216,7 @@ body.detail-open .content-wrap {
 .poem-item {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 16px;
     cursor: pointer;
     transition: background 0.2s;
     padding: 6px 0;
