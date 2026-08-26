@@ -1,11 +1,11 @@
 /**
- * admin.js - 南山集后台管理（GitHub API 版本）
+ * admin.js - 南山集后台管理（自动创建数据版本）
  */
 
 // ============================================================
-// 1. 配置 - ⚠️ 请修改为你的 GitHub 信息
+// 1. 配置 - 请修改为你的 GitHub 信息
 // ============================================================
-const GITHUB_CONFIG = {
+var GITHUB_CONFIG = {
     owner: 'MatildaHan',
     repo: 'MatildaHan.github.io',
     branch: 'main',
@@ -15,7 +15,7 @@ const GITHUB_CONFIG = {
 // ============================================================
 // 2. 数据文件映射
 // ============================================================
-const DATA_FILES = {
+var DATA_FILES = {
     xingyin: 'data/xingyin.md',
     shinian: 'data/shinian.md',
     xueye: 'data/xueye.md',
@@ -24,8 +24,8 @@ const DATA_FILES = {
     settings: 'data/settings.json'
 };
 
-let currentEdit = { category: null, id: null, isNew: false };
-let githubToken = '';
+var currentEdit = { category: null, id: null, isNew: false };
+var githubToken = '';
 
 // ============================================================
 // 3. GitHub API 操作
@@ -33,10 +33,10 @@ let githubToken = '';
 
 function getToken() {
     if (githubToken) return githubToken;
-    const saved = localStorage.getItem('github_token');
+    var saved = localStorage.getItem('github_token');
     if (saved) { githubToken = saved; return githubToken; }
     
-    const token = prompt(
+    var token = prompt(
         '请输入 GitHub Personal Access Token：\n\n' +
         '获取方式：\n' +
         'GitHub Settings → Developer settings → Personal access tokens → Tokens (classic)\n' +
@@ -51,36 +51,37 @@ function getToken() {
 }
 
 async function readGitHubFile(path) {
-    const token = getToken();
+    var token = getToken();
     if (!token) throw new Error('需要 GitHub Token');
     
-    const url = `https://api.github.com/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/contents/${path}`;
-    const response = await fetch(url, {
-        headers: { 'Authorization': `token ${token}`, 'Accept': 'application/vnd.github.v3+json' }
+    var url = 'https://api.github.com/repos/' + GITHUB_CONFIG.owner + '/' + GITHUB_CONFIG.repo + '/contents/' + path;
+    var response = await fetch(url, {
+        headers: { 'Authorization': 'token ' + token, 'Accept': 'application/vnd.github.v3+json' }
     });
     
     if (response.status === 404) return null;
-    if (!response.ok) throw new Error(`读取失败: ${response.status}`);
+    if (!response.ok) throw new Error('读取失败: ' + response.status);
     
-    const data = await response.json();
+    var data = await response.json();
     return { content: atob(data.content), sha: data.sha };
 }
 
-async function writeGitHubFile(path, content, message = '更新内容') {
-    const token = getToken();
+async function writeGitHubFile(path, content, message) {
+    if (!message) message = '更新内容';
+    var token = getToken();
     if (!token) throw new Error('需要 GitHub Token');
     
-    let sha = '';
+    var sha = '';
     try {
-        const existing = await readGitHubFile(path);
+        var existing = await readGitHubFile(path);
         if (existing) sha = existing.sha;
     } catch (e) {}
     
-    const url = `https://api.github.com/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/contents/${path}`;
-    const response = await fetch(url, {
+    var url = 'https://api.github.com/repos/' + GITHUB_CONFIG.owner + '/' + GITHUB_CONFIG.repo + '/contents/' + path;
+    var response = await fetch(url, {
         method: 'PUT',
         headers: {
-            'Authorization': `token ${token}`,
+            'Authorization': 'token ' + token,
             'Content-Type': 'application/json',
             'Accept': 'application/vnd.github.v3+json'
         },
@@ -93,20 +94,22 @@ async function writeGitHubFile(path, content, message = '更新内容') {
     });
     
     if (!response.ok) {
-        const error = await response.json();
+        var error = await response.json();
         throw new Error(error.message || '写入失败');
     }
     return await response.json();
 }
 
 function updateConnectionStatus(connected) {
-    const el = document.getElementById('connectionStatus');
-    if (connected) {
-        el.textContent = '● 已连接';
-        el.style.color = '#7ddf9a';
-    } else {
-        el.textContent = '● 未连接';
-        el.style.color = '#ff6b6b';
+    var el = document.getElementById('connectionStatus');
+    if (el) {
+        if (connected) {
+            el.textContent = '● 已连接';
+            el.style.color = '#7ddf9a';
+        } else {
+            el.textContent = '● 未连接';
+            el.style.color = '#ff6b6b';
+        }
     }
 }
 
@@ -115,22 +118,20 @@ function updateConnectionStatus(connected) {
 // ============================================================
 
 async function loadDataFile(category) {
-    const path = DATA_FILES[category];
+    var path = DATA_FILES[category];
     if (!path) return '';
     try {
-        const result = await readGitHubFile(path);
+        var result = await readGitHubFile(path);
         return result ? result.content : '';
     } catch (e) {
-        console.error('加载失败:', e);
-        showToast('加载失败: ' + e.message, 'error');
         return '';
     }
 }
 
 async function saveDataFile(category, content) {
-    const path = DATA_FILES[category];
+    var path = DATA_FILES[category];
     try {
-        await writeGitHubFile(path, content, `更新 ${category} 数据`);
+        await writeGitHubFile(path, content, '更新 ' + category + ' 数据');
         return true;
     } catch (e) {
         console.error('保存失败:', e);
@@ -145,50 +146,50 @@ async function saveDataFile(category, content) {
 
 function parseXingyin(text) {
     if (!text) return [];
-    return text.split('\n').filter(line => line.trim()).map(line => {
-        const parts = line.split('|').map(s => s.trim());
+    return text.split('\n').filter(function(line) { return line.trim(); }).map(function(line) {
+        var parts = line.split('|').map(function(s) { return s.trim(); });
         return { id: parts[0] || 'xy-' + Date.now(), text: parts[1] || '', category: parts[2] || '默认', date: parts[3] || '' };
     });
 }
 
 function formatXingyin(items) {
-    return items.map(item => `${item.id} | ${item.text} | ${item.category} | ${item.date}`).join('\n');
+    return items.map(function(item) { return item.id + ' | ' + item.text + ' | ' + item.category + ' | ' + item.date; }).join('\n');
 }
 
 function parseShinian(text) {
     if (!text) return [];
-    return text.split('\n').filter(line => line.trim()).map(line => {
-        const parts = line.split('|').map(s => s.trim());
+    return text.split('\n').filter(function(line) { return line.trim(); }).map(function(line) {
+        var parts = line.split('|').map(function(s) { return s.trim(); });
         return { id: parts[0] || 'sn-' + Date.now(), title: parts[1] || '', summary: parts[2] || '', date: parts[3] || '' };
     });
 }
 
 function formatShinian(items) {
-    return items.map(item => `${item.id} | ${item.title} | ${item.summary} | ${item.date}`).join('\n');
+    return items.map(function(item) { return item.id + ' | ' + item.title + ' | ' + item.summary + ' | ' + item.date; }).join('\n');
 }
 
 function parseXueye(text) {
     if (!text) return [];
-    return text.split('\n').filter(line => line.trim()).map(line => {
-        const parts = line.split('|').map(s => s.trim());
-        return { id: parts[0] || 'xy-' + Date.now(), date: parts[1] || '', images: parts[2] ? parts[2].split(',').map(s => s.trim()) : [] };
+    return text.split('\n').filter(function(line) { return line.trim(); }).map(function(line) {
+        var parts = line.split('|').map(function(s) { return s.trim(); });
+        return { id: parts[0] || 'xy-' + Date.now(), date: parts[1] || '', images: parts[2] ? parts[2].split(',').map(function(s) { return s.trim(); }) : [] };
     });
 }
 
 function formatXueye(items) {
-    return items.map(item => `${item.id} | ${item.date} | ${item.images.join(',')}`).join('\n');
+    return items.map(function(item) { return item.id + ' | ' + item.date + ' | ' + item.images.join(','); }).join('\n');
 }
 
 function parseGexidong(text) {
     if (!text) return [];
-    return text.split('\n').filter(line => line.trim()).map(line => {
-        const parts = line.split('|').map(s => s.trim());
+    return text.split('\n').filter(function(line) { return line.trim(); }).map(function(line) {
+        var parts = line.split('|').map(function(s) { return s.trim(); });
         return { id: parts[0] || 'gx-' + Date.now(), content: parts[1] || '', date: parts[2] || '' };
     });
 }
 
 function formatGexidong(items) {
-    return items.map(item => `${item.id} | ${item.content} | ${item.date}`).join('\n');
+    return items.map(function(item) { return item.id + ' | ' + item.content + ' | ' + item.date; }).join('\n');
 }
 
 function parseShanye(text) {
@@ -200,8 +201,9 @@ function parseShanye(text) {
 // ============================================================
 
 async function renderTable(category) {
-    const text = await loadDataFile(category);
-    let items = [], renderFn = null;
+    var text = await loadDataFile(category);
+    var items = [];
+    var renderFn = null;
     
     switch(category) {
         case 'xingyin': items = parseXingyin(text); renderFn = renderXingyinRow; break;
@@ -210,50 +212,42 @@ async function renderTable(category) {
         case 'gexidong': items = parseGexidong(text); renderFn = renderGexidongRow; break;
     }
     
-    const tbody = document.getElementById(`tbody-${category}`);
+    var tbody = document.getElementById('tbody-' + category);
     if (!tbody) return;
     
     if (items.length === 0) {
-        tbody.innerHTML = `<tr class="empty-row"><td colspan="5">暂无内容，点击 "新增" 添加</td></tr>`;
+        tbody.innerHTML = '<tr class="empty-row"><td colspan="5">暂无内容，点击 "新增" 添加</td></tr>';
         return;
     }
     
-    tbody.innerHTML = items.map(item => renderFn(item, category)).join('');
+    tbody.innerHTML = items.map(function(item) { return renderFn(item); }).join('');
     updateStats(category, items.length);
 }
 
 function renderXingyinRow(item) {
-    return `<tr><td>${item.id}</td><td>${escapeHtml(item.text)}</td><td>${escapeHtml(item.category)}</td><td>${item.date}</td>
-        <td><button onclick="editItem('xingyin','${item.id}')" class="btn btn-primary btn-sm">✏️</button>
-        <button onclick="deleteItem('xingyin','${item.id}')" class="btn btn-danger btn-sm">🗑️</button></td></tr>`;
+    return '<tr><td>' + item.id + '</td><td>' + escapeHtml(item.text) + '</td><td>' + escapeHtml(item.category) + '</td><td>' + item.date + '</td><td><button onclick="editItem(\'xingyin\',\'' + item.id + '\')" class="btn btn-primary btn-sm">✏️</button><button onclick="deleteItem(\'xingyin\',\'' + item.id + '\')" class="btn btn-danger btn-sm">🗑️</button></td></tr>';
 }
 
 function renderShinianRow(item) {
-    const summary = item.summary.length > 50 ? item.summary.slice(0,50)+'...' : item.summary;
-    return `<tr><td>${item.id}</td><td>${escapeHtml(item.title)}</td><td>${escapeHtml(summary)}</td><td>${item.date}</td>
-        <td><button onclick="editItem('shinian','${item.id}')" class="btn btn-primary btn-sm">✏️</button>
-        <button onclick="deleteItem('shinian','${item.id}')" class="btn btn-danger btn-sm">🗑️</button></td></tr>`;
+    var summary = item.summary.length > 50 ? item.summary.slice(0,50)+'...' : item.summary;
+    return '<tr><td>' + item.id + '</td><td>' + escapeHtml(item.title) + '</td><td>' + escapeHtml(summary) + '</td><td>' + item.date + '</td><td><button onclick="editItem(\'shinian\',\'' + item.id + '\')" class="btn btn-primary btn-sm">✏️</button><button onclick="deleteItem(\'shinian\',\'' + item.id + '\')" class="btn btn-danger btn-sm">🗑️</button></td></tr>';
 }
 
 function renderXueyeRow(item) {
-    const preview = item.images.slice(0, 3).map(img => 
-        `<img src="${img}" style="width:40px;height:40px;object-fit:cover;border-radius:4px;" onerror="this.style.display='none'">`
-    ).join('');
-    return `<tr><td>${item.id}</td><td>${item.date}</td><td>${item.images.length}</td>
-        <td><div style="display:flex;gap:4px;">${preview}</div></td>
-        <td><button onclick="editItem('xueye','${item.id}')" class="btn btn-primary btn-sm">✏️</button>
-        <button onclick="deleteItem('xueye','${item.id}')" class="btn btn-danger btn-sm">🗑️</button></td></tr>`;
+    var preview = '';
+    for (var i = 0; i < Math.min(3, item.images.length); i++) {
+        preview += '<img src="' + item.images[i] + '" style="width:40px;height:40px;object-fit:cover;border-radius:4px;" onerror="this.style.display=\'none\'">';
+    }
+    return '<tr><td>' + item.id + '</td><td>' + item.date + '</td><td>' + item.images.length + '</td><td><div style="display:flex;gap:4px;">' + preview + '</div></td><td><button onclick="editItem(\'xueye\',\'' + item.id + '\')" class="btn btn-primary btn-sm">✏️</button><button onclick="deleteItem(\'xueye\',\'' + item.id + '\')" class="btn btn-danger btn-sm">🗑️</button></td></tr>';
 }
 
 function renderGexidongRow(item) {
-    const content = item.content.length > 40 ? item.content.slice(0,40)+'...' : item.content;
-    return `<tr><td>${item.id}</td><td>${escapeHtml(content)}</td><td>${item.date}</td>
-        <td><button onclick="editItem('gexidong','${item.id}')" class="btn btn-primary btn-sm">✏️</button>
-        <button onclick="deleteItem('gexidong','${item.id}')" class="btn btn-danger btn-sm">🗑️</button></td></tr>`;
+    var content = item.content.length > 40 ? item.content.slice(0,40)+'...' : item.content;
+    return '<tr><td>' + item.id + '</td><td>' + escapeHtml(content) + '</td><td>' + item.date + '</td><td><button onclick="editItem(\'gexidong\',\'' + item.id + '\')" class="btn btn-primary btn-sm">✏️</button><button onclick="deleteItem(\'gexidong\',\'' + item.id + '\')" class="btn btn-danger btn-sm">🗑️</button></td></tr>';
 }
 
 function escapeHtml(text) {
-    const div = document.createElement('div');
+    var div = document.createElement('div');
     div.textContent = text;
     return div.innerHTML;
 }
@@ -263,16 +257,17 @@ function escapeHtml(text) {
 // ============================================================
 
 function updateStats(category, count) {
-    const map = { xingyin: 'statXingyin', shinian: 'statShinian', xueye: 'statXueye', gexidong: 'statGexidong' };
-    const el = document.getElementById(map[category]);
+    var map = { xingyin: 'statXingyin', shinian: 'statShinian', xueye: 'statXueye', gexidong: 'statGexidong' };
+    var el = document.getElementById(map[category]);
     if (el) el.textContent = count;
 }
 
 async function updateAllStats() {
-    const categories = ['xingyin', 'shinian', 'xueye', 'gexidong'];
-    for (const cat of categories) {
-        const text = await loadDataFile(cat);
-        let items = [];
+    var categories = ['xingyin', 'shinian', 'xueye', 'gexidong'];
+    for (var i = 0; i < categories.length; i++) {
+        var cat = categories[i];
+        var text = await loadDataFile(cat);
+        var items = [];
         switch(cat) {
             case 'xingyin': items = parseXingyin(text); break;
             case 'shinian': items = parseShinian(text); break;
@@ -288,20 +283,21 @@ async function updateAllStats() {
 // ============================================================
 
 function addItem(category) {
-    currentEdit = { category, id: null, isNew: true };
+    currentEdit = { category: category, id: null, isNew: true };
     showModal(category, null, true);
 }
 
 function editItem(category, id) {
-    currentEdit = { category, id, isNew: false };
+    currentEdit = { category: category, id: id, isNew: false };
     showModal(category, id, false);
 }
 
 async function deleteItem(category, id) {
     if (!confirm('确定删除吗？')) return;
     
-    const text = await loadDataFile(category);
-    let items = [], formatter = null;
+    var text = await loadDataFile(category);
+    var items = [];
+    var formatter = null;
     
     switch(category) {
         case 'xingyin': items = parseXingyin(text); formatter = formatXingyin; break;
@@ -310,8 +306,8 @@ async function deleteItem(category, id) {
         case 'gexidong': items = parseGexidong(text); formatter = formatGexidong; break;
     }
     
-    items = items.filter(item => item.id !== id);
-    const newText = formatter(items);
+    items = items.filter(function(item) { return item.id !== id; });
+    var newText = formatter(items);
     await saveDataFile(category, newText);
     
     renderTable(category);
@@ -324,43 +320,28 @@ async function deleteItem(category, id) {
 // ============================================================
 
 function showModal(category, id, isNew) {
-    const modal = document.getElementById('editModal');
-    const title = document.getElementById('modalTitle');
-    const body = document.getElementById('modalBody');
+    var modal = document.getElementById('editModal');
+    var title = document.getElementById('modalTitle');
+    var body = document.getElementById('modalBody');
     
-    const names = { xingyin: '行吟册·絮', shinian: '十年灯·文', xueye: '雪夜舟·图', gexidong: '各西东·语' };
-    title.textContent = isNew ? `新增 ${names[category]}` : `编辑 ${names[category]}`;
+    var names = { xingyin: '行吟册·絮', shinian: '十年灯·文', xueye: '雪夜舟·图', gexidong: '各西东·语' };
+    title.textContent = isNew ? '新增 ' + names[category] : '编辑 ' + names[category];
     
-    let html = '';
-    const today = new Date().toISOString().slice(0,10);
+    var html = '';
+    var today = new Date().toISOString().slice(0,10);
     
     switch(category) {
         case 'xingyin':
-            html = `
-                <div class="form-group"><label>短句内容</label><textarea id="formText" rows="3"></textarea></div>
-                <div class="form-group"><label>分类</label><input type="text" id="formCategory" value="默认"></div>
-                <div class="form-group"><label>日期</label><input type="date" id="formDate" value="${today}"></div>
-            `;
+            html = '<div class="form-group"><label>短句内容</label><textarea id="formText" rows="3"></textarea></div><div class="form-group"><label>分类</label><input type="text" id="formCategory" value="默认"></div><div class="form-group"><label>日期</label><input type="date" id="formDate" value="' + today + '"></div>';
             break;
         case 'shinian':
-            html = `
-                <div class="form-group"><label>标题</label><input type="text" id="formTitle"></div>
-                <div class="form-group"><label>摘要（列表显示）</label><textarea id="formSummary" rows="2"></textarea></div>
-                <div class="form-group"><label>正文（详情页）</label><textarea id="formContent" rows="6"></textarea></div>
-                <div class="form-group"><label>日期</label><input type="date" id="formDate" value="${today}"></div>
-            `;
+            html = '<div class="form-group"><label>标题</label><input type="text" id="formTitle"></div><div class="form-group"><label>摘要（列表显示）</label><textarea id="formSummary" rows="2"></textarea></div><div class="form-group"><label>正文（详情页）</label><textarea id="formContent" rows="6"></textarea></div><div class="form-group"><label>日期</label><input type="date" id="formDate" value="' + today + '"></div>';
             break;
         case 'xueye':
-            html = `
-                <div class="form-group"><label>日期</label><input type="date" id="formDate" value="${today}"></div>
-                <div class="form-group"><label>图片 URL（逗号分隔）</label><textarea id="formImages" rows="3"></textarea></div>
-            `;
+            html = '<div class="form-group"><label>日期</label><input type="date" id="formDate" value="' + today + '"></div><div class="form-group"><label>图片 URL（逗号分隔）</label><textarea id="formImages" rows="3"></textarea></div>';
             break;
         case 'gexidong':
-            html = `
-                <div class="form-group"><label>留言内容</label><textarea id="formContent" rows="4"></textarea></div>
-                <div class="form-group"><label>日期</label><input type="date" id="formDate" value="${today}"></div>
-            `;
+            html = '<div class="form-group"><label>留言内容</label><textarea id="formContent" rows="4"></textarea></div><div class="form-group"><label>日期</label><input type="date" id="formDate" value="' + today + '"></div>';
             break;
     }
     
@@ -373,9 +354,13 @@ function closeModal() {
 }
 
 async function saveModal() {
-    const { category, id, isNew } = currentEdit;
-    const text = await loadDataFile(category);
-    let items = [], formatter = null;
+    var category = currentEdit.category;
+    var id = currentEdit.id;
+    var isNew = currentEdit.isNew;
+    
+    var text = await loadDataFile(category);
+    var items = [];
+    var formatter = null;
     
     switch(category) {
         case 'xingyin': items = parseXingyin(text); formatter = formatXingyin; break;
@@ -384,20 +369,23 @@ async function saveModal() {
         case 'gexidong': items = parseGexidong(text); formatter = formatGexidong; break;
     }
     
-    const formData = collectFormData(category);
+    var formData = collectFormData(category);
     if (!formData) return;
     
     if (isNew) {
-        const prefix = { xingyin: 'xy', shinian: 'sn', xueye: 'xy', gexidong: 'gx' }[category];
-        formData.id = `${prefix}-${Date.now()}`;
+        var prefix = { xingyin: 'xy', shinian: 'sn', xueye: 'xy', gexidong: 'gx' }[category];
+        formData.id = prefix + '-' + Date.now();
         items.push(formData);
     } else {
-        const index = items.findIndex(i => i.id === id);
+        var index = -1;
+        for (var i = 0; i < items.length; i++) {
+            if (items[i].id === id) { index = i; break; }
+        }
         if (index !== -1) { formData.id = id; items[index] = formData; }
     }
     
-    const newText = formatter(items);
-    const success = await saveDataFile(category, newText);
+    var newText = formatter(items);
+    var success = await saveDataFile(category, newText);
     
     if (success) {
         closeModal();
@@ -409,11 +397,11 @@ async function saveModal() {
 }
 
 function collectFormData(category) {
-    const getVal = (id) => document.getElementById(id)?.value || '';
+    var getVal = function(id) { var el = document.getElementById(id); return el ? el.value : ''; };
     switch(category) {
         case 'xingyin': return { text: getVal('formText'), category: getVal('formCategory') || '默认', date: getVal('formDate') };
         case 'shinian': return { title: getVal('formTitle'), summary: getVal('formSummary'), content: getVal('formContent'), date: getVal('formDate') };
-        case 'xueye': return { date: getVal('formDate'), images: getVal('formImages').split(',').map(s => s.trim()).filter(Boolean) };
+        case 'xueye': return { date: getVal('formDate'), images: getVal('formImages').split(',').map(function(s) { return s.trim(); }).filter(function(s) { return s; }) };
         case 'gexidong': return { content: getVal('formContent'), date: getVal('formDate') };
         default: return null;
     }
@@ -424,12 +412,12 @@ function collectFormData(category) {
 // ============================================================
 
 async function loadShanye() {
-    const text = await loadDataFile('shanye');
+    var text = await loadDataFile('shanye');
     document.getElementById('shanyeContent').value = parseShanye(text);
 }
 
 async function saveShanye() {
-    const content = document.getElementById('shanyeContent').value;
+    var content = document.getElementById('shanyeContent').value;
     await saveDataFile('shanye', content);
     showToast('简介保存成功！', 'success');
 }
@@ -439,10 +427,10 @@ async function saveShanye() {
 // ============================================================
 
 async function loadSettings() {
-    const text = await loadDataFile('settings');
+    var text = await loadDataFile('settings');
     if (text) {
         try {
-            const settings = JSON.parse(text);
+            var settings = JSON.parse(text);
             document.getElementById('settingBgImage').value = settings.bgImage || '';
             document.getElementById('settingBgColor').value = settings.bgColor || '#ecebe9';
             document.getElementById('settingPrimaryColor').value = settings.primaryColor || '#6b5b47';
@@ -453,7 +441,7 @@ async function loadSettings() {
 }
 
 async function saveSettings() {
-    const settings = {
+    var settings = {
         bgImage: document.getElementById('settingBgImage').value,
         bgColor: document.getElementById('settingBgColor').value,
         primaryColor: document.getElementById('settingPrimaryColor').value,
@@ -465,28 +453,15 @@ async function saveSettings() {
 }
 
 function previewSettings() {
-    const bgImage = document.getElementById('settingBgImage').value;
-    const bgColor = document.getElementById('settingBgColor').value;
-    const primaryColor = document.getElementById('settingPrimaryColor').value;
-    const titleColor = document.getElementById('settingTitleColor').value;
-    const subtitle = document.getElementById('settingSubtitle').value;
+    var bgImage = document.getElementById('settingBgImage').value;
+    var bgColor = document.getElementById('settingBgColor').value;
+    var primaryColor = document.getElementById('settingPrimaryColor').value;
+    var titleColor = document.getElementById('settingTitleColor').value;
+    var subtitle = document.getElementById('settingSubtitle').value;
     
-    const modal = document.getElementById('editModal');
+    var modal = document.getElementById('editModal');
     document.getElementById('modalTitle').textContent = '👁️ 主题预览';
-    document.getElementById('modalBody').innerHTML = `
-        <div style="padding:20px;background:${bgColor};border-radius:8px;${bgImage ? `background-image:url(${bgImage});background-size:cover;` : ''}">
-            <div style="background:rgba(255,255,255,0.85);padding:40px;border-radius:8px;">
-                <h1 style="color:${titleColor};font-size:28px;font-weight:bold;">南山集</h1>
-                <p style="color:${primaryColor};font-size:16px;">${subtitle}</p>
-                <hr style="border-color:${primaryColor};margin:16px 0;">
-                <p style="color:${primaryColor};font-size:14px;">预览效果</p>
-                <div style="display:flex;gap:12px;margin-top:16px;">
-                    <span style="background:${primaryColor};color:#fff;padding:4px 16px;border-radius:4px;">按钮</span>
-                    <span style="border:1px solid ${primaryColor};color:${primaryColor};padding:4px 16px;border-radius:4px;">边框</span>
-                </div>
-            </div>
-        </div>
-    `;
+    document.getElementById('modalBody').innerHTML = '<div style="padding:20px;background:' + bgColor + ';border-radius:8px;' + (bgImage ? 'background-image:url(' + bgImage + ');background-size:cover;' : '') + '"><div style="background:rgba(255,255,255,0.85);padding:40px;border-radius:8px;"><h1 style="color:' + titleColor + ';font-size:28px;font-weight:bold;">南山集</h1><p style="color:' + primaryColor + ';font-size:16px;">' + subtitle + '</p><hr style="border-color:' + primaryColor + ';margin:16px 0;"><p style="color:' + primaryColor + ';font-size:14px;">预览效果</p><div style="display:flex;gap:12px;margin-top:16px;"><span style="background:' + primaryColor + ';color:#fff;padding:4px 16px;border-radius:4px;">按钮</span><span style="border:1px solid ' + primaryColor + ';color:' + primaryColor + ';padding:4px 16px;border-radius:4px;">边框</span></div></div></div>';
     modal.classList.add('active');
     document.querySelector('.modal-footer .btn-primary').onclick = closeModal;
 }
@@ -513,22 +488,21 @@ async function syncAll() {
 
 async function deploySite() {
     try {
-        const token = getToken();
+        var token = getToken();
         if (!token) return;
         
-        // 触发 GitHub Pages 重新部署
-        const url = `https://api.github.com/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/git/refs/heads/${GITHUB_CONFIG.branch}`;
-        const response = await fetch(url, {
-            headers: { 'Authorization': `token ${token}` }
+        var url = 'https://api.github.com/repos/' + GITHUB_CONFIG.owner + '/' + GITHUB_CONFIG.repo + '/git/refs/heads/' + GITHUB_CONFIG.branch;
+        var response = await fetch(url, {
+            headers: { 'Authorization': 'token ' + token }
         });
-        const data = await response.json();
-        const latestSha = data.object.sha;
+        var data = await response.json();
+        var latestSha = data.object.sha;
         
-        const commitUrl = `https://api.github.com/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/git/commits`;
+        var commitUrl = 'https://api.github.com/repos/' + GITHUB_CONFIG.owner + '/' + GITHUB_CONFIG.repo + '/git/commits';
         await fetch(commitUrl, {
             method: 'POST',
             headers: {
-                'Authorization': `token ${token}`,
+                'Authorization': 'token ' + token,
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
@@ -548,19 +522,20 @@ async function deploySite() {
 // 13. Toast
 // ============================================================
 
-function showToast(message, type = 'info') {
-    const existing = document.querySelector('.toast');
+function showToast(message, type) {
+    if (!type) type = 'info';
+    var existing = document.querySelector('.toast');
     if (existing) existing.remove();
     
-    const toast = document.createElement('div');
-    toast.className = `toast ${type}`;
+    var toast = document.createElement('div');
+    toast.className = 'toast ' + type;
     toast.textContent = message;
     document.body.appendChild(toast);
     
-    setTimeout(() => toast.classList.add('show'), 10);
-    setTimeout(() => {
+    setTimeout(function() { toast.classList.add('show'); }, 10);
+    setTimeout(function() {
         toast.classList.remove('show');
-        setTimeout(() => toast.remove(), 300);
+        setTimeout(function() { toast.remove(); }, 300);
     }, 4000);
 }
 
@@ -568,30 +543,108 @@ function showToast(message, type = 'info') {
 // 14. 导航切换
 // ============================================================
 
-document.querySelectorAll('.nav-item').forEach(item => {
-    item.addEventListener('click', function(e) {
+var navItems = document.querySelectorAll('.nav-item');
+for (var i = 0; i < navItems.length; i++) {
+    navItems[i].addEventListener('click', function(e) {
         e.preventDefault();
-        document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+        var items = document.querySelectorAll('.nav-item');
+        for (var j = 0; j < items.length; j++) {
+            items[j].classList.remove('active');
+        }
         this.classList.add('active');
         
-        const tab = this.dataset.tab;
-        document.querySelectorAll('.tab-panel').forEach(el => el.classList.remove('active'));
-        const panel = document.getElementById(`panel-${tab}`);
+        var tab = this.dataset.tab;
+        var panels = document.querySelectorAll('.tab-panel');
+        for (var k = 0; k < panels.length; k++) {
+            panels[k].classList.remove('active');
+        }
+        var panel = document.getElementById('panel-' + tab);
         if (panel) {
             panel.classList.add('active');
-            if (['xingyin', 'shinian', 'xueye', 'gexidong'].includes(tab)) renderTable(tab);
+            if (['xingyin', 'shinian', 'xueye', 'gexidong'].indexOf(tab) !== -1) renderTable(tab);
             else if (tab === 'shanye') loadShanye();
             else if (tab === 'settings') loadSettings();
             else if (tab === 'dashboard') updateAllStats();
         }
     });
-});
+}
 
 // ============================================================
-// 15. 初始化
+// 15. 自动创建默认数据（核心功能）
 // ============================================================
 
-const savedToken = localStorage.getItem('github_token');
+// 默认数据模板
+var DEFAULT_DATA = {
+    'xingyin': 'xy-001 | 欢迎使用南山集 | 默认 | ' + new Date().toISOString().slice(0,10) + '\nxy-002 | 在这里管理你的短句 | 默认 | ' + new Date().toISOString().slice(0,10),
+    'shinian': 'sn-001 | 第一篇文章 | 这是文章的摘要，显示在列表页。 | ' + new Date().toISOString().slice(0,10),
+    'xueye': 'xy-001 | ' + new Date().toISOString().slice(0,10) + ' | https://picsum.photos/150/150?1,https://picsum.photos/150/150?2',
+    'gexidong': 'gx-001 | 欢迎留言，记录你的想法。 | ' + new Date().toISOString().slice(0,10),
+    'shanye': '山野居者，渔樵度日。在这里编辑你的个人简介。',
+    'settings': JSON.stringify({
+        bgImage: '',
+        bgColor: '#ecebe9',
+        primaryColor: '#6b5b47',
+        titleColor: '#333333',
+        subtitle: '春山如黛草如烟'
+    }, null, 2)
+};
+
+var DEFAULT_ARTICLE = '---\ndate: ' + new Date().toISOString().slice(0,10) + '\ntitle: 第一篇文章\n---\n\n这是文章正文内容，你可以在这里写任何内容。\n\n多段内容可以用空行分隔。';
+
+/**
+ * 检查并创建默认数据
+ */
+async function initData() {
+    var categories = ['xingyin', 'shinian', 'xueye', 'gexidong', 'shanye', 'settings'];
+    var hasData = false;
+    
+    // 检查是否有数据
+    for (var i = 0; i < categories.length; i++) {
+        var cat = categories[i];
+        var text = await loadDataFile(cat);
+        if (text && text.trim()) {
+            hasData = true;
+            break;
+        }
+    }
+    
+    // 如果没有数据，创建默认数据
+    if (!hasData) {
+        showToast('首次运行，正在创建默认数据...', 'info');
+        
+        for (var j = 0; j < categories.length; j++) {
+            var key = categories[j];
+            var content = DEFAULT_DATA[key] || '';
+            if (content) {
+                await saveDataFile(key, content);
+            }
+        }
+        
+        // 创建默认文章
+        try {
+            await writeGitHubFile('articles/sn-001.md', DEFAULT_ARTICLE, '创建默认文章');
+        } catch (e) {
+            console.log('文章创建失败:', e);
+        }
+        
+        showToast('✅ 默认数据创建完成！', 'success');
+    }
+    
+    // 加载数据
+    await updateAllStats();
+    await renderTable('xingyin');
+    await renderTable('shinian');
+    await renderTable('xueye');
+    await renderTable('gexidong');
+    await loadShanye();
+    await loadSettings();
+}
+
+// ============================================================
+// 16. 启动
+// ============================================================
+
+var savedToken = localStorage.getItem('github_token');
 if (savedToken) {
     githubToken = savedToken;
     updateConnectionStatus(true);
@@ -599,7 +652,8 @@ if (savedToken) {
     updateConnectionStatus(false);
 }
 
-updateAllStats();
+// 初始化数据
+initData();
 
 console.log('📝 南山集后台管理已启动');
 console.log('⚠️ 请确保已配置 GitHub Token');
