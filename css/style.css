@@ -239,7 +239,7 @@ body.detail-open .content-wrap {
     white-space: nowrap;
 }
 
-/* -------- 雪夜舟·图 -------- */
+/* -------- 雪夜舟·图（图片左 + 日期右） -------- */
 .image-item-module {
     display: flex;
     align-items: center;
@@ -267,83 +267,42 @@ body.detail-open .content-wrap {
 .image-item-module .image-date {
     font-size: 14px;
     color: #8c7c68;
+    margin-left: auto;
+    flex-shrink: 0;
 }
 
-.date-image-group {
+/* -------- 各西东·语（内容左 + 日期右） -------- */
+.msg-item-module {
     display: flex;
-    flex-direction: column;
-    gap: 14px;
-    width: 100%;
-    overflow: hidden;
-}
-
-.image-date {
-    font-size: 13px;
-    color: #8c7c68;
-}
-
-.image-wrap {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    padding: 8px 0;
+    transition: background 0.2s;
     gap: 16px;
     width: 100%;
     overflow: hidden;
 }
 
-.image-item {
-    width: 100%;
-    aspect-ratio: 1;
-    background: #ddd;
-    object-fit: cover;
-    cursor: pointer;
-    transition: transform 0.2s;
-    border-radius: 4px;
-    max-width: 100%;
-}
-
-.image-item:hover {
-    transform: scale(1.02);
-}
-
-/* -------- 各西东·语 -------- */
-.msg-item {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    cursor: pointer;
-    padding: 6px 0;
-    transition: background 0.2s;
-    width: 100%;
-    overflow: hidden;
-}
-
-.msg-item:hover {
+.msg-item-module:hover {
     background-color: rgba(184, 168, 148, 0.1);
 }
 
-.msg-head {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-.avatar {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    background: #ccc;
-    flex-shrink: 0;
-}
-
-.nickname {
+.msg-content-text {
     font-size: 15px;
-}
-
-.msg-content {
-    font-size: 14px;
-    padding-left: 62px;
     color: #6b5b47;
     overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    flex: 1;
+    min-width: 0;
+}
+
+.msg-date {
+    font-size: 13px;
+    color: #8c7c68;
+    flex-shrink: 0;
+    margin-left: 12px;
 }
 
 /* -------- 山野渔夫 -------- */
@@ -724,10 +683,6 @@ body.detail-open .content-wrap {
         max-width: 100%;
     }
 
-    .image-wrap {
-        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-    }
-
     .detail-view.active .detail-container {
         max-width: 100%;
         padding: 24px 30px 40px 30px;
@@ -766,11 +721,6 @@ body.detail-open .content-wrap {
     .text-content {
         font-size: 15px;
         white-space: normal;
-    }
-
-    .image-wrap {
-        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-        gap: 10px;
     }
 
     .image-item-module .image-thumb {
@@ -908,6 +858,14 @@ body.detail-open .content-wrap {
 
     .poem-desc {
         font-size: 13px;
+    }
+
+    .msg-content-text {
+        font-size: 14px;
+    }
+
+    .msg-date {
+        font-size: 12px;
     }
 
     .detail-view.active .detail-container {
