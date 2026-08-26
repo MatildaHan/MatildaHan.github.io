@@ -1,7 +1,5 @@
 /**
- * admin.js - 南山集后台管理（简洁版）
- * 十年灯：标题 + 正文（正文在首页自动截断2行）
- * 去除所有图标
+ * admin.js - 南山集后台管理（含评论审核）
  */
 
 // ============================================================
@@ -581,10 +579,10 @@ function showModal(category, id, isNew) {
     var title = document.getElementById('modalTitle');
     var body = document.getElementById('modalBody');
     var names = {
-        xingyin: '行吟册絮',
-        shinian: '十年灯文',
-        xueye: '雪夜舟图',
-        gexidong: '各西东语'
+        xingyin: '行吟册·絮',
+        shinian: '十年灯·文',
+        xueye: '雪夜舟·图',
+        gexidong: '各西东·语'
     };
     title.textContent = isNew ? '新增 ' + names[category] : '编辑 ' + names[category];
 
@@ -1031,6 +1029,8 @@ for (var i = 0; i < navItems.length; i++) {
                 renderCategoryTable('xingyin');
                 renderCategoryTable('shinian');
                 renderCategoryTable('xueye');
+            } else if (tab === 'comments') {
+                renderCommentsPanel();
             } else if (tab === 'dashboard') {
                 updateAllStats();
             }
@@ -1039,7 +1039,148 @@ for (var i = 0; i < navItems.length; i++) {
 }
 
 // ============================================================
-// 15. 默认数据
+// 15. 评论审核功能
+// ============================================================
+
+async function getPendingComments() {
+    try {
+        var token = getToken();
+        if (!token) return [];
+
+        var url = 'https://api.github.com/repos/' + GITHUB_CONFIG.owner + '/' + GITHUB_CONFIG.repo + '/issues?labels=comment,pending&state=open&per_page=100';
+        var response = await fetch(url, {
+            headers: { 'Authorization': 'token ' + token }
+        });
+        if (!response.ok) return [];
+        return await response.json();
+    } catch (e) {
+        console.error('获取待审核评论失败:', e);
+        return [];
+    }
+}
+
+async function renderCommentsPanel() {
+    var issues = await getPendingComments();
+    var tbody = document.getElementById('tbody-comments');
+    if (!tbody) return;
+
+    if (issues.length === 0) {
+        tbody.innerHTML = '<tr class="empty-row"><td colspan="6">暂无待审核评论</td></tr>';
+        return;
+    }
+
+    var html = '';
+    for (var i = 0; i < issues.length; i++) {
+        var issue = issues[i];
+        var body = issue.body || '';
+        var pageMatch = body.match(/\[page:(.+?)\]/);
+        var pageTitle = pageMatch ? pageMatch[1] : '未知页面';
+        var authorMatch = body.match(/评论者：(.+)/);
+        var author = authorMatch ? authorMatch[1].trim() : '匿名';
+        var contentMatch = body.match(/评论内容：\n([\s\S]*?)$/);
+        var content = contentMatch ? contentMatch[1].trim() : body;
+
+        html += '<tr>' +
+            '<td>' + issue.number + '</td>' +
+            '<td>' + escapeHtml(pageTitle) + '</td>' +
+            '<td>' + escapeHtml(author) + '</td>' +
+            '<td title="' + escapeHtml(content) + '">' + escapeHtml(content.slice(0, 50)) + (content.length > 50 ? '...' : '') + '</td>' +
+            '<td>' + new Date(issue.created_at).toLocaleString() + '</td>' +
+            '<td>' +
+            '<button onclick="approveComment(' + issue.number + ')" class="btn btn-success btn-sm">通过</button> ' +
+            '<button onclick="rejectComment(' + issue.number + ')" class="btn btn-danger btn-sm">拒绝</button> ' +
+            '<button onclick="replyComment(' + issue.number + ')" class="btn btn-primary btn-sm">回复</button>' +
+            '</td>' +
+            '</tr>';
+    }
+    tbody.innerHTML = html;
+}
+
+async function approveComment(issueNumber) {
+    if (!confirm('确定通过这条评论吗？')) return;
+
+    try {
+        var token = getToken();
+        var url = 'https://api.github.com/repos/' + GITHUB_CONFIG.owner + '/' + GITHUB_CONFIG.repo + '/issues/' + issueNumber;
+
+        await fetch(url, {
+            method: 'PATCH',
+            headers: {
+                'Authorization': 'token ' + token,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                labels: ['comment', 'approved'],
+                state: 'closed'
+            })
+        });
+
+        showToast('评论已通过审核', 'success');
+        renderCommentsPanel();
+    } catch (e) {
+        showToast('操作失败: ' + e.message, 'error');
+    }
+}
+
+async function rejectComment(issueNumber) {
+    if (!confirm('确定拒绝这条评论吗？')) return;
+
+    try {
+        var token = getToken();
+        var url = 'https://api.github.com/repos/' + GITHUB_CONFIG.owner + '/' + GITHUB_CONFIG.repo + '/issues/' + issueNumber;
+
+        await fetch(url, {
+            method: 'PATCH',
+            headers: {
+                'Authorization': 'token ' + token,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                labels: ['comment', 'rejected'],
+                state: 'closed'
+            })
+        });
+
+        showToast('评论已拒绝', 'success');
+        renderCommentsPanel();
+    } catch (e) {
+        showToast('操作失败: ' + e.message, 'error');
+    }
+}
+
+async function replyComment(issueNumber) {
+    var replyContent = prompt('请输入回复内容：');
+    if (!replyContent || replyContent.trim() === '') return;
+
+    try {
+        var token = getToken();
+        var url = 'https://api.github.com/repos/' + GITHUB_CONFIG.owner + '/' + GITHUB_CONFIG.repo + '/issues/' + issueNumber + '/comments';
+
+        await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Authorization': 'token ' + token,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                body: '📝 **管理员回复：**\n\n' + replyContent.trim()
+            })
+        });
+
+        showToast('回复已发送', 'success');
+        renderCommentsPanel();
+    } catch (e) {
+        showToast('回复失败: ' + e.message, 'error');
+    }
+}
+
+function refreshComments() {
+    renderCommentsPanel();
+    showToast('已刷新', 'info');
+}
+
+// ============================================================
+// 16. 默认数据
 // ============================================================
 
 var DEFAULT_DATA = {
@@ -1108,7 +1249,7 @@ async function initData() {
 }
 
 // ============================================================
-// 16. 启动
+// 17. 启动
 // ============================================================
 
 var savedToken = localStorage.getItem('github_token');
@@ -1121,6 +1262,5 @@ if (savedToken) {
 
 initData();
 
-console.log('南山集后台管理已启动（简洁版）');
-console.log('十年灯：标题 + 正文，正文在首页自动截断2行');
+console.log('南山集后台管理已启动（含评论审核）');
 console.log('请确保已配置 GitHub Token');
