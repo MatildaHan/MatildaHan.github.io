@@ -59,14 +59,58 @@ async function getIssueReplies(issueNumber) {
     }
 }
 
+// ============================================================
+// 提取评论内容（修复版）
+// ============================================================
+
 function extractCommentContent(body) {
+    if (!body) return '内容为空';
+    
+    // 方法1：查找 "评论内容：" 后面的内容
+    var match = body.match(/评论内容：\n([\s\S]*?)(?=\n\n|$)/);
+    if (match && match[1]) {
+        return match[1].trim();
+    }
+    
+    // 方法2：按行提取
     var lines = body.split('\n');
+    var contentLines = [];
+    var found = false;
+    
     for (var i = 0; i < lines.length; i++) {
-        if (lines[i].indexOf('评论内容：') !== -1) {
-            return lines[i].replace('评论内容：', '').trim();
+        var line = lines[i];
+        if (line.indexOf('评论内容：') !== -1) {
+            found = true;
+            var rest = line.replace('评论内容：', '').trim();
+            if (rest) {
+                return rest;
+            }
+            continue;
+        }
+        if (found) {
+            var trimmed = line.trim();
+            if (trimmed === '' || trimmed.indexOf('页面：') === 0 || trimmed.indexOf('评论者：') === 0) {
+                break;
+            }
+            contentLines.push(trimmed);
         }
     }
-    return body;
+    
+    if (contentLines.length > 0) {
+        return contentLines.join(' ').trim();
+    }
+    
+    // 方法3：清理元数据
+    var clean = body.replace(/\[page:.+?\]/, '')
+                    .replace(/页面：.+/, '')
+                    .replace(/评论者：.+/, '')
+                    .replace(/评论内容：/, '')
+                    .trim();
+    if (clean) {
+        return clean;
+    }
+    
+    return '内容为空';
 }
 
 // ============================================================
@@ -133,12 +177,13 @@ function renderComments(comments, containerId) {
     var html = '<div class="comments-list">';
     for (var i = 0; i < comments.length; i++) {
         var c = comments[i];
+        var contentDisplay = c.content || '内容为空';
         html += '<div class="comment-item">' +
             '<div class="comment-header">' +
             '<span class="comment-author">' + escapeHtml(c.author) + '</span>' +
             '<span class="comment-date">' + formatDate(c.created_at) + '</span>' +
             '</div>' +
-            '<div class="comment-body">' + escapeHtml(c.content) + '</div>';
+            '<div class="comment-body">' + escapeHtml(contentDisplay) + '</div>';
 
         if (c.replies && c.replies.length > 0) {
             html += '<div class="comment-replies">';
