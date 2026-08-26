@@ -1,5 +1,5 @@
 /**
- * admin.js - 南山集后台管理（自动创建数据版本）
+ * admin.js - 南山集后台管理（已修复中文乱码）
  */
 
 // ============================================================
@@ -63,7 +63,13 @@ async function readGitHubFile(path) {
     if (!response.ok) throw new Error('读取失败: ' + response.status);
     
     var data = await response.json();
-    return { content: atob(data.content), sha: data.sha };
+    // 修复读取时的解码
+    var content = atob(data.content);
+    // 确保 UTF-8 解码正确
+    try {
+        content = decodeURIComponent(escape(content));
+    } catch (e) {}
+    return { content: content, sha: data.sha };
 }
 
 async function writeGitHubFile(path, content, message) {
@@ -77,6 +83,17 @@ async function writeGitHubFile(path, content, message) {
         if (existing) sha = existing.sha;
     } catch (e) {}
     
+    // ===== 修复编码问题 =====
+    // 使用 TextEncoder 正确处理 UTF-8
+    var encoder = new TextEncoder();
+    var data = encoder.encode(content);
+    var binaryString = '';
+    for (var i = 0; i < data.length; i++) {
+        binaryString += String.fromCharCode(data[i]);
+    }
+    var base64Content = btoa(binaryString);
+    // ===== 修复结束 =====
+    
     var url = 'https://api.github.com/repos/' + GITHUB_CONFIG.owner + '/' + GITHUB_CONFIG.repo + '/contents/' + path;
     var response = await fetch(url, {
         method: 'PUT',
@@ -87,7 +104,7 @@ async function writeGitHubFile(path, content, message) {
         },
         body: JSON.stringify({
             message: message,
-            content: btoa(unescape(encodeURIComponent(content))),
+            content: base64Content,
             sha: sha,
             branch: GITHUB_CONFIG.branch
         })
@@ -570,10 +587,9 @@ for (var i = 0; i < navItems.length; i++) {
 }
 
 // ============================================================
-// 15. 自动创建默认数据（核心功能）
+// 15. 自动创建默认数据
 // ============================================================
 
-// 默认数据模板
 var DEFAULT_DATA = {
     'xingyin': 'xy-001 | 欢迎使用南山集 | 默认 | ' + new Date().toISOString().slice(0,10) + '\nxy-002 | 在这里管理你的短句 | 默认 | ' + new Date().toISOString().slice(0,10),
     'shinian': 'sn-001 | 第一篇文章 | 这是文章的摘要，显示在列表页。 | ' + new Date().toISOString().slice(0,10),
@@ -591,14 +607,10 @@ var DEFAULT_DATA = {
 
 var DEFAULT_ARTICLE = '---\ndate: ' + new Date().toISOString().slice(0,10) + '\ntitle: 第一篇文章\n---\n\n这是文章正文内容，你可以在这里写任何内容。\n\n多段内容可以用空行分隔。';
 
-/**
- * 检查并创建默认数据
- */
 async function initData() {
     var categories = ['xingyin', 'shinian', 'xueye', 'gexidong', 'shanye', 'settings'];
     var hasData = false;
     
-    // 检查是否有数据
     for (var i = 0; i < categories.length; i++) {
         var cat = categories[i];
         var text = await loadDataFile(cat);
@@ -608,7 +620,6 @@ async function initData() {
         }
     }
     
-    // 如果没有数据，创建默认数据
     if (!hasData) {
         showToast('首次运行，正在创建默认数据...', 'info');
         
@@ -620,7 +631,6 @@ async function initData() {
             }
         }
         
-        // 创建默认文章
         try {
             await writeGitHubFile('articles/sn-001.md', DEFAULT_ARTICLE, '创建默认文章');
         } catch (e) {
@@ -630,7 +640,6 @@ async function initData() {
         showToast('✅ 默认数据创建完成！', 'success');
     }
     
-    // 加载数据
     await updateAllStats();
     await renderTable('xingyin');
     await renderTable('shinian');
@@ -652,7 +661,6 @@ if (savedToken) {
     updateConnectionStatus(false);
 }
 
-// 初始化数据
 initData();
 
 console.log('📝 南山集后台管理已启动');
