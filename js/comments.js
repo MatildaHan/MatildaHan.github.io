@@ -1,0 +1,180 @@
+/**
+ * comments.js - GitHub Issues 评论系统
+ */
+
+// ============================================================
+// 配置
+// ============================================================
+var COMMENTS_CONFIG = {
+    owner: 'MatildaHan',
+    repo: 'MatildaHan.github.io'
+};
+
+// ============================================================
+// 获取评论（前台展示）
+// ============================================================
+
+async function getComments(pageId) {
+    try {
+        var url = 'https://api.github.com/repos/' + COMMENTS_CONFIG.owner + '/' + COMMENTS_CONFIG.repo + '/issues?labels=comment,approved&state=closed&per_page=100';
+        var response = await fetch(url);
+        if (!response.ok) return [];
+        var issues = await response.json();
+
+        var result = [];
+        for (var i = 0; i < issues.length; i++) {
+            var issue = issues[i];
+            if (issue.body && issue.body.indexOf('[page:' + pageId + ']') !== -1) {
+                var replies = await getIssueReplies(issue.number);
+                result.push({
+                    id: issue.number,
+                    content: extractCommentContent(issue.body),
+                    author: issue.user.login,
+                    created_at: issue.created_at,
+                    replies: replies
+                });
+            }
+        }
+        return result;
+    } catch (e) {
+        console.error('获取评论失败:', e);
+        return [];
+    }
+}
+
+async function getIssueReplies(issueNumber) {
+    try {
+        var url = 'https://api.github.com/repos/' + COMMENTS_CONFIG.owner + '/' + COMMENTS_CONFIG.repo + '/issues/' + issueNumber + '/comments';
+        var response = await fetch(url);
+        if (!response.ok) return [];
+        var comments = await response.json();
+        return comments.map(function(c) {
+            return {
+                author: c.user.login,
+                content: c.body,
+                created_at: c.created_at
+            };
+        });
+    } catch (e) {
+        return [];
+    }
+}
+
+function extractCommentContent(body) {
+    var lines = body.split('\n');
+    for (var i = 0; i < lines.length; i++) {
+        if (lines[i].indexOf('评论内容：') !== -1) {
+            return lines[i].replace('评论内容：', '').trim();
+        }
+    }
+    return body;
+}
+
+// ============================================================
+// 提交评论（前台用户操作）
+// ============================================================
+
+async function submitComment(pageId, pageTitle, content, author) {
+    if (!content || content.trim() === '') {
+        alert('请输入评论内容');
+        return false;
+    }
+
+    var token = localStorage.getItem('github_token');
+    if (!token) {
+        alert('评论功能暂不可用，请联系管理员');
+        return false;
+    }
+
+    try {
+        var url = 'https://api.github.com/repos/' + COMMENTS_CONFIG.owner + '/' + COMMENTS_CONFIG.repo + '/issues';
+        var response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Authorization': 'token ' + token,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                title: '[评论] ' + pageTitle + ' - ' + new Date().toLocaleString(),
+                body: '[page:' + pageId + ']\n\n' +
+                      '页面：' + pageTitle + '\n\n' +
+                      '评论者：' + (author || '匿名用户') + '\n\n' +
+                      '评论内容：\n' + content.trim(),
+                labels: ['comment', 'pending']
+            })
+        });
+
+        if (response.ok) {
+            alert('评论提交成功！审核通过后将显示在页面中。');
+            return true;
+        } else {
+            var error = await response.json();
+            alert('提交失败：' + (error.message || '请重试'));
+            return false;
+        }
+    } catch (e) {
+        alert('提交失败，请检查网络连接');
+        return false;
+    }
+}
+
+// ============================================================
+// 渲染评论（前台展示）
+// ============================================================
+
+function renderComments(comments, containerId) {
+    var container = document.getElementById(containerId);
+    if (!container) return;
+
+    if (!comments || comments.length === 0) {
+        container.innerHTML = '<div class="comments-empty">暂无评论，来说点什么吧</div>';
+        return;
+    }
+
+    var html = '<div class="comments-list">';
+    for (var i = 0; i < comments.length; i++) {
+        var c = comments[i];
+        html += '<div class="comment-item">' +
+            '<div class="comment-header">' +
+            '<span class="comment-author">' + escapeHtml(c.author) + '</span>' +
+            '<span class="comment-date">' + formatDate(c.created_at) + '</span>' +
+            '</div>' +
+            '<div class="comment-body">' + escapeHtml(c.content) + '</div>';
+
+        if (c.replies && c.replies.length > 0) {
+            html += '<div class="comment-replies">';
+            for (var j = 0; j < c.replies.length; j++) {
+                var r = c.replies[j];
+                var replyContent = r.content;
+                // 检测是否为管理员回复
+                var isAdmin = r.content.indexOf('管理员回复') !== -1 || r.content.indexOf('📝') !== -1;
+                html += '<div class="reply-item' + (isAdmin ? ' reply-admin' : '') + '">' +
+                    '<span class="reply-author">' + escapeHtml(r.author) + '</span>' +
+                    '<span class="reply-content">' + escapeHtml(replyContent) + '</span>' +
+                    '</div>';
+            }
+            html += '</div>';
+        }
+
+        html += '</div>';
+    }
+    html += '</div>';
+
+    container.innerHTML = html;
+}
+
+function escapeHtml(text) {
+    if (!text) return '';
+    var div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+function formatDate(dateStr) {
+    var d = new Date(dateStr);
+    return d.getFullYear() + '/' +
+           String(d.getMonth() + 1).padStart(2, '0') + '/' +
+           String(d.getDate()).padStart(2, '0') + ' ' +
+           String(d.getHours()).padStart(2, '0') + ':' +
+           String(d.getMinutes()).padStart(2, '0');
+}
