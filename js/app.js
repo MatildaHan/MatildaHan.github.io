@@ -56,15 +56,21 @@ function renderContent(key, page) {
             });
             break;
 
-        case 'shinian':
-            pageList.forEach(function(item, idx) {
-                html += '<div class="poem-item" onclick="openDetail(\'' + key + '\', \'' + item.id + '\')">' +
-                    '<div class="poem-title">' + escapeHtml(item.title) + '</div>' +
-                    '<div class="poem-desc line-clamp-2">' + escapeHtml(item.summary) + '</div>' +
-                    '</div>';
-                if (idx !== pageList.length - 1) html += '<div class="item-divider"></div>';
-            });
-            break;
+case 'shinian':
+    pageList.forEach(function(item, idx) {
+        // 正文内容截取前两行（按换行符分割）
+        var contentLines = item.summary ? item.summary.split('\n') : [];
+        var displayContent = contentLines.slice(0, 2).join(' ');
+        if (contentLines.length > 2) {
+            displayContent += '...';
+        }
+        html += '<div class="poem-item" onclick="openDetail(\'' + key + '\', \'' + item.id + '\')">' +
+            '<div class="poem-title">' + escapeHtml(item.title) + '</div>' +
+            '<div class="poem-desc line-clamp-2">' + escapeHtml(displayContent) + '</div>' +
+            '</div>';
+        if (idx !== pageList.length - 1) html += '<div class="item-divider"></div>';
+    });
+    break;
 
         case 'xueye':
             pageList.forEach(function(group, idx) {
