@@ -76,7 +76,7 @@ function renderContent(key, page) {
                 html += '<div class="poem-item" onclick="openDetail(\'' + key + '\', \'' + item.id + '\')">' +
                     '<div style="display:flex;justify-content:space-between;align-items:center;width:100%;">' +
                     '<div style="display:flex;align-items:center;gap:6px;overflow:hidden;flex:1;">' +
-                    (item.top ? '<span style="color:#e74c3c;font-size:14px;flex-shrink:0;">📌</span>' : '') +
+                    (item.top ? '<span style="color:#e74c3c;font-size:18px;flex-shrink:0;">📌</span>' : '') +
                     '<span class="poem-title">' + escapeHtml(item.title) + '</span>' +
                     '</div>' +
                     '<span class="date-text" style="font-size:13px;color:#8c7c68;flex-shrink:0;margin-left:12px;">' + item.date + '</span>' +
