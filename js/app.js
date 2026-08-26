@@ -50,57 +50,61 @@ function renderContent(key, page) {
     switch (key) {
         // ========== 行吟册·絮 ==========
         case 'xingyin':
-            pageList.forEach(function(item, idx) {
+            for (var i = 0; i < pageList.length; i++) {
+                var item = pageList[i];
                 html += '<div class="item-module" onclick="openDetail(\'' + key + '\', \'' + item.id + '\')">' +
-                    '<div class="text-content" style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + escapeHtml(item.text) + '</div>' +
-                    '<div class="date-text" style="flex-shrink:0;">' + item.date + '</div>' +
+                    '<div class="text-content">' + escapeHtml(item.text) + '</div>' +
+                    '<div class="date-text">' + item.date + '</div>' +
                     '</div>';
-                if (idx !== pageList.length - 1) html += '<div class="item-divider"></div>';
-            });
+                if (i !== pageList.length - 1) html += '<div class="item-divider"></div>';
+            }
             break;
 
         // ========== 十年灯·文（置顶 + 显示日期） ==========
         case 'shinian':
-            // 置顶文章排在前面
+            // 置顶排序
             var sortedList = pageList.slice().sort(function(a, b) {
                 if (a.top && !b.top) return -1;
                 if (!a.top && b.top) return 1;
                 return 0;
             });
-            sortedList.forEach(function(item, idx) {
+            for (var j = 0; j < sortedList.length; j++) {
+                var item = sortedList[j];
                 var displayContent = item.content ? item.content.slice(0, 60) : '';
                 if (item.content && item.content.length > 60) {
                     displayContent += '...';
                 }
-                html += '<div class="poem-item" onclick="openDetail(\'' + key + '\', \'' + item.id + '\')" style="padding:6px 0;">' +
+                html += '<div class="poem-item" onclick="openDetail(\'' + key + '\', \'' + item.id + '\')">' +
                     '<div style="display:flex;justify-content:space-between;align-items:center;width:100%;">' +
                     '<div style="display:flex;align-items:center;gap:6px;overflow:hidden;flex:1;">' +
                     (item.top ? '<span style="color:#e74c3c;font-size:14px;flex-shrink:0;">📌</span>' : '') +
-                    '<span style="font-size:16px;font-weight:bold;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + escapeHtml(item.title) + '</span>' +
+                    '<span class="poem-title">' + escapeHtml(item.title) + '</span>' +
                     '</div>' +
-                    '<span style="font-size:13px;color:#8c7c68;flex-shrink:0;margin-left:12px;">' + (item.date || '') + '</span>' +
+                    '<span class="date-text" style="font-size:13px;color:#8c7c68;flex-shrink:0;margin-left:12px;">' + item.date + '</span>' +
                     '</div>' +
-                    (displayContent ? '<div style="font-size:14px;color:#6b5b47;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:2px;">' + escapeHtml(displayContent) + '</div>' : '') +
+                    (displayContent ? '<div class="poem-desc">' + escapeHtml(displayContent) + '</div>' : '') +
                     '</div>';
-                if (idx !== sortedList.length - 1) html += '<div class="item-divider"></div>';
-            });
+                if (j !== sortedList.length - 1) html += '<div class="item-divider"></div>';
+            }
             break;
 
         // ========== 雪夜舟·图（图片80×80 + 日期） ==========
         case 'xueye':
-            pageList.forEach(function(group, idx) {
+            for (var k = 0; k < pageList.length; k++) {
+                var group = pageList[k];
                 var firstImage = group.images && group.images.length > 0 ? group.images[0] : '';
-                html += '<div class="image-item-module" onclick="openDetail(\'' + key + '\', \'' + group.id + '\')" style="display:flex;align-items:center;gap:16px;padding:6px 0;cursor:pointer;transition:background 0.2s;">' +
-                    '<img src="' + firstImage + '" alt="" style="width:80px;height:80px;object-fit:cover;border-radius:4px;flex-shrink:0;background:#ddd;" onerror="this.style.display=\'none\'">' +
-                    '<span style="font-size:14px;color:#8c7c68;">' + (group.date || '') + '</span>' +
+                html += '<div class="image-item-module" onclick="openDetail(\'' + key + '\', \'' + group.id + '\')">' +
+                    '<img src="' + firstImage + '" class="image-thumb" onerror="this.style.display=\'none\'">' +
+                    '<span class="image-date">' + group.date + '</span>' +
                     '</div>';
-                if (idx !== pageList.length - 1) html += '<div class="item-divider"></div>';
-            });
+                if (k !== pageList.length - 1) html += '<div class="item-divider"></div>';
+            }
             break;
 
         // ========== 各西东·语 ==========
         case 'gexidong':
-            pageList.forEach(function(item, idx) {
+            for (var l = 0; l < pageList.length; l++) {
+                var item = pageList[l];
                 html += '<div class="msg-item" onclick="openDetail(\'' + key + '\', \'' + item.id + '\')">' +
                     '<div class="msg-head">' +
                     '<div class="avatar" style="background:#c4b8a8;"></div>' +
@@ -108,16 +112,17 @@ function renderContent(key, page) {
                     '</div>' +
                     '<div class="msg-content line-clamp-2">' + escapeHtml(item.content) + '</div>' +
                     '</div>';
-                if (idx !== pageList.length - 1) html += '<div class="item-divider"></div>';
-            });
+                if (l !== pageList.length - 1) html += '<div class="item-divider"></div>';
+            }
             break;
 
         // ========== 山野渔夫 ==========
         case 'shanye':
-            pageList.forEach(function(item, idx) {
+            for (var m = 0; m < pageList.length; m++) {
+                var item = pageList[m];
                 html += '<div class="intro-item">' + escapeHtml(item.bio) + '</div>';
-                if (idx !== pageList.length - 1) html += '<div class="item-divider"></div>';
-            });
+                if (m !== pageList.length - 1) html += '<div class="item-divider"></div>';
+            }
             break;
     }
 
@@ -143,6 +148,7 @@ function renderPagination(totalPage, page) {
 }
 
 function escapeHtml(text) {
+    if (!text) return '';
     var div = document.createElement('div');
     div.textContent = text;
     return div.innerHTML;
@@ -158,9 +164,21 @@ window.openDetail = async function(key, id) {
     var pageId = key + '-' + id;
 
     if (key === 'shinian') {
+        // 加载文章详情
         detail = await DataLoader.loadArticleById(id);
-        if (!detail) { alert('文章内容未找到'); return; }
-        title = detail.title || '文章';
+        if (!detail) {
+            alert('文章内容未找到，ID: ' + id);
+            // 从列表中获取标题
+            var found = currentData.find(function(d) { return d.id === id; });
+            if (found) {
+                title = found.title || '文章';
+                detail = { title: title, date: found.date || '未知日期', paragraphs: ['文章正文暂无内容'] };
+            } else {
+                return;
+            }
+        } else {
+            title = detail.title || '文章';
+        }
     } else {
         var item = currentData.find(function(d) { return d.id === id; });
         if (!item) { alert('内容未找到'); return; }
@@ -185,13 +203,14 @@ window.openDetail = async function(key, id) {
         '<div class="detail-body">';
 
     if (detail.paragraphs) {
-        detail.paragraphs.forEach(function(p) {
+        for (var i = 0; i < detail.paragraphs.length; i++) {
+            var p = detail.paragraphs[i];
             if (typeof p === 'string' && p.indexOf('<img') !== -1) {
                 html += p;
             } else {
                 html += '<p>' + p + '</p>';
             }
-        });
+        }
     }
 
     html += '</div>';
@@ -220,14 +239,19 @@ window.openDetail = async function(key, id) {
     // 加载评论
     window.currentCommentPage = { id: pageId, title: title };
     if (typeof getComments === 'function') {
-        var comments = await getComments(pageId);
-        if (typeof renderComments === 'function') {
-            renderComments(comments, 'commentsList');
+        try {
+            var comments = await getComments(pageId);
+            if (typeof renderComments === 'function') {
+                renderComments(comments, 'commentsList');
+            }
+        } catch (e) {
+            console.log('评论加载失败:', e);
         }
     }
 
     menuItems.forEach(function(el) { el.classList.remove('active'); });
-    document.querySelector('.menu-item[data-key="' + key + '"]').classList.add('active');
+    var activeMenu = document.querySelector('.menu-item[data-key="' + key + '"]');
+    if (activeMenu) activeMenu.classList.add('active');
 };
 
 window.closeDetail = function() {
@@ -236,7 +260,8 @@ window.closeDetail = function() {
     bodyEl.classList.remove('detail-open');
 
     menuItems.forEach(function(el) { el.classList.remove('active'); });
-    document.querySelector('.menu-item[data-key="' + currentKey + '"]').classList.add('active');
+    var activeMenu = document.querySelector('.menu-item[data-key="' + currentKey + '"]');
+    if (activeMenu) activeMenu.classList.add('active');
     renderContent(currentKey, currentPage);
 };
 
