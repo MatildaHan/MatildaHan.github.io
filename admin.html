@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>南山集 - 后台管理</title>
+    <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+    <div class="admin-wrapper">
+        <header class="admin-header">
+            <h1>📝 南山集 · 后台管理</h1>
+            <div class="header-actions">
+                <span id="connectionStatus" style="font-size:13px;color:#7ddf9a;">● 已连接</span>
+                <a href="index.html" target="_blank">🌐 查看网站</a>
+                <button onclick="syncAll()" class="btn btn-sm btn-primary">🔄 同步</button>
+            </div>
+        </header>
+
+        <div class="admin-body">
+            <aside class="admin-sidebar">
+                <nav class="admin-nav">
+                    <a href="#" class="nav-item active" data-tab="dashboard">📊 概览</a>
+                    <a href="#" class="nav-item" data-tab="xingyin">📝 行吟册·絮</a>
+                    <a href="#" class="nav-item" data-tab="shinian">📄 十年灯·文</a>
+                    <a href="#" class="nav-item" data-tab="xueye">🖼️ 雪夜舟·图</a>
+                    <a href="#" class="nav-item" data-tab="gexidong">💬 各西东·语</a>
+                    <a href="#" class="nav-item" data-tab="shanye">👤 山野渔夫</a>
+                    <a href="#" class="nav-item" data-tab="settings">⚙️ 主题设置</a>
+                </nav>
+            </aside>
+
+            <main class="admin-content">
+                <!-- 概览 -->
+                <div class="tab-panel active" id="panel-dashboard">
+                    <h2>📊 内容概览</h2>
+                    <div class="stats-grid">
+                        <div class="stat-card"><span class="stat-number" id="statXingyin">0</span><span class="stat-label">行吟册·絮</span></div>
+                        <div class="stat-card"><span class="stat-number" id="statShinian">0</span><span class="stat-label">十年灯·文</span></div>
+                        <div class="stat-card"><span class="stat-number" id="statXueye">0</span><span class="stat-label">雪夜舟·图</span></div>
+                        <div class="stat-card"><span class="stat-number" id="statGexidong">0</span><span class="stat-label">各西东·语</span></div>
+                    </div>
+                    <div class="quick-actions">
+                        <button onclick="syncAll()" class="btn btn-primary">🔄 从 GitHub 同步</button>
+                        <button onclick="deploySite()" class="btn btn-success">🚀 提交并部署</button>
+                    </div>
+                    <div style="margin-top:20px;padding:16px;background:#fff8e1;border-radius:8px;border-left:4px solid #f9a825;">
+                        <strong>💡 提示：</strong> 编辑后点击 "提交并部署"，等待 1-3 分钟，前台自动更新。
+                    </div>
+                </div>
+
+                <!-- 行吟册·絮 -->
+                <div class="tab-panel" id="panel-xingyin">
+                    <div class="panel-header">
+                        <h2>📝 行吟册·絮</h2>
+                        <button onclick="addItem('xingyin')" class="btn btn-primary">+ 新增</button>
+                    </div>
+                    <p class="panel-desc">短句 + 日期 + 分类</p>
+                    <div class="table-wrap">
+                        <table class="data-table" id="table-xingyin">
+                            <thead><tr><th>ID</th><th>短句内容</th><th>分类</th><th>日期</th><th>操作</th></tr></thead>
+                            <tbody id="tbody-xingyin"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 十年灯·文 -->
+                <div class="tab-panel" id="panel-shinian">
+                    <div class="panel-header">
+                        <h2>📄 十年灯·文</h2>
+                        <button onclick="addItem('shinian')" class="btn btn-primary">+ 新增文章</button>
+                    </div>
+                    <p class="panel-desc">标题 + 摘要 + 正文内容（详情页） + 日期</p>
+                    <div class="table-wrap">
+                        <table class="data-table" id="table-shinian">
+                            <thead><tr><th>ID</th><th>标题</th><th>摘要</th><th>日期</th><th>操作</th></tr></thead>
+                            <tbody id="tbody-shinian"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 雪夜舟·图 -->
+                <div class="tab-panel" id="panel-xueye">
+                    <div class="panel-header">
+                        <h2>🖼️ 雪夜舟·图</h2>
+                        <button onclick="addItem('xueye')" class="btn btn-primary">+ 新增图片组</button>
+                    </div>
+                    <p class="panel-desc">日期 + 图片URL列表</p>
+                    <div class="table-wrap">
+                        <table class="data-table" id="table-xueye">
+                            <thead><tr><th>ID</th><th>日期</th><th>图片数</th><th>预览</th><th>操作</th></tr></thead>
+                            <tbody id="tbody-xueye"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 各西东·语 -->
+                <div class="tab-panel" id="panel-gexidong">
+                    <div class="panel-header">
+                        <h2>💬 各西东·语</h2>
+                        <button onclick="addItem('gexidong')" class="btn btn-primary">+ 新增留言</button>
+                    </div>
+                    <p class="panel-desc">留言内容 + 日期</p>
+                    <div class="table-wrap">
+                        <table class="data-table" id="table-gexidong">
+                            <thead><tr><th>ID</th><th>留言内容</th><th>日期</th><th>操作</th></tr></thead>
+                            <tbody id="tbody-gexidong"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 山野渔夫 -->
+                <div class="tab-panel" id="panel-shanye">
+                    <div class="panel-header"><h2>👤 山野渔夫</h2></div>
+                    <p class="panel-desc">个人简介，仅一条主要内容</p>
+                    <div class="editor-area">
+                        <textarea id="shanyeContent" rows="6" placeholder="输入个人简介..."></textarea>
+                        <button onclick="saveShanye()" class="btn btn-primary">💾 保存简介</button>
+                    </div>
+                </div>
+
+                <!-- 主题设置 -->
+                <div class="tab-panel" id="panel-settings">
+                    <h2>⚙️ 主题设置</h2>
+                    <div class="settings-grid">
+                        <div class="setting-group">
+                            <label>背景图 URL</label>
+                            <input type="text" id="settingBgImage" placeholder="https://example.com/bg.jpg">
+                            <p class="hint">输入图片链接，留空则使用纯色</p>
+                        </div>
+                        <div class="setting-group">
+                            <label>背景颜色（备用）</label>
+                            <input type="color" id="settingBgColor" value="#ecebe9">
+                        </div>
+                        <div class="setting-group">
+                            <label>主色调</label>
+                            <input type="color" id="settingPrimaryColor" value="#6b5b47">
+                        </div>
+                        <div class="setting-group">
+                            <label>标题颜色</label>
+                            <input type="color" id="settingTitleColor" value="#333333">
+                        </div>
+                        <div class="setting-group">
+                            <label>副标题</label>
+                            <input type="text" id="settingSubtitle" value="春山如黛草如烟">
+                        </div>
+                        <div class="setting-group full-width">
+                            <button onclick="saveSettings()" class="btn btn-primary">💾 保存主题设置</button>
+                            <button onclick="previewSettings()" class="btn btn-secondary">👁️ 预览</button>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- 编辑弹窗 -->
+    <div class="modal" id="editModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">编辑</h3>
+                <button class="modal-close" onclick="closeModal()">×</button>
+            </div>
+            <div class="modal-body" id="modalBody"></div>
+            <div class="modal-footer">
+                <button onclick="closeModal()" class="btn btn-secondary">取消</button>
+                <button onclick="saveModal()" class="btn btn-primary">💾 保存</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/admin.js"></script>
+</body>
+</html>
