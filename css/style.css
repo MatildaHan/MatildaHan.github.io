@@ -36,7 +36,7 @@ body {
 
 /* ========== 头部 ========== */
 .header {
-    height: 50px;
+    height: 120px;
     display: flex;
     align-items: baseline;
     gap: 12px;
@@ -136,7 +136,7 @@ body {
     flex-shrink: 0;
 }
 
-/* ===== 详情页激活时，右侧内容区扩展为 1000px ===== */
+/* 详情页激活时，右侧内容区扩展为 1000px */
 body.detail-open .content-wrap {
     width: 1000px;
     max-width: 1000px;
@@ -151,9 +151,10 @@ body.detail-open .content-wrap {
 }
 
 .item-divider {
-    width: 40px;
+    width: 100%;
+    max-width: 40px;
     border-bottom: 1px solid #b8a894;
-    margin: 12px 0;
+    margin: 6px 0;
 }
 
 .line-clamp-2 {
@@ -179,7 +180,7 @@ body.detail-open .content-wrap {
     justify-content: space-between;
     align-items: center;
     cursor: pointer;
-    padding: 4px 0;
+    padding: 6px 0;
     transition: background 0.2s;
     gap: 12px;
     width: 100%;
@@ -210,10 +211,10 @@ body.detail-open .content-wrap {
 .poem-item {
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 4px;
     cursor: pointer;
     transition: background 0.2s;
-    padding: 4px 0;
+    padding: 6px 0;
     width: 100%;
     overflow: hidden;
 }
@@ -223,7 +224,7 @@ body.detail-open .content-wrap {
 }
 
 .poem-title {
-    font-size: 18px;
+    font-size: 16px;
     font-weight: bold;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -234,9 +235,40 @@ body.detail-open .content-wrap {
     font-size: 14px;
     color: #6b5b47;
     overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 /* -------- 雪夜舟·图 -------- */
+.image-item-module {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 6px 0;
+    cursor: pointer;
+    transition: background 0.2s;
+    width: 100%;
+    overflow: hidden;
+}
+
+.image-item-module:hover {
+    background-color: rgba(184, 168, 148, 0.1);
+}
+
+.image-item-module .image-thumb {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 4px;
+    flex-shrink: 0;
+    background: #ddd;
+}
+
+.image-item-module .image-date {
+    font-size: 14px;
+    color: #8c7c68;
+}
+
 .date-image-group {
     display: flex;
     flex-direction: column;
@@ -279,7 +311,7 @@ body.detail-open .content-wrap {
     flex-direction: column;
     gap: 8px;
     cursor: pointer;
-    padding: 4px 0;
+    padding: 6px 0;
     transition: background 0.2s;
     width: 100%;
     overflow: hidden;
@@ -319,6 +351,7 @@ body.detail-open .content-wrap {
     font-size: 14px;
     line-height: 1.8;
     overflow: hidden;
+    padding: 4px 0;
 }
 
 /* ============================================================
@@ -406,6 +439,14 @@ body.detail-open .content-wrap {
 
 .detail-container .detail-body p {
     margin-bottom: 1.2em;
+}
+
+/* 图片详情 */
+.detail-image {
+    max-width: 100%;
+    height: auto;
+    margin: 12px 0;
+    border-radius: 8px;
 }
 
 /* 返回按钮 */
@@ -732,6 +773,11 @@ body.detail-open .content-wrap {
         gap: 10px;
     }
 
+    .image-item-module .image-thumb {
+        width: 60px;
+        height: 60px;
+    }
+
     .item-module {
         flex-direction: column;
         align-items: flex-start;
@@ -776,5 +822,134 @@ body.detail-open .content-wrap {
 
     .comment-form {
         padding: 16px;
+    }
+
+    .comment-form input[type="text"],
+    .comment-form textarea {
+        font-size: 13px;
+        padding: 8px 10px;
+    }
+
+    .comment-item {
+        padding: 12px 0;
+    }
+
+    .reply-item {
+        padding: 6px 10px;
+        font-size: 13px;
+    }
+}
+
+@media (max-width: 480px) {
+    body {
+        padding-top: 20px;
+        padding-left: 8px;
+        padding-right: 8px;
+        padding-bottom: 30px;
+    }
+
+    .wrapper {
+        padding: 0 4px;
+    }
+
+    .header {
+        height: 60px;
+        margin-bottom: 20px;
+    }
+
+    .header-inner {
+        bottom: 8px;
+        gap: 6px;
+    }
+
+    .title-main {
+        font-size: 16px;
+    }
+
+    .title-sub {
+        font-size: 11px;
+    }
+
+    .text-content {
+        font-size: 14px;
+    }
+
+    .date-text {
+        font-size: 12px;
+    }
+
+    .sidebar-menu {
+        gap: 8px 16px;
+        padding-bottom: 12px;
+    }
+
+    .menu-item {
+        font-size: 13px;
+        padding: 4px 8px;
+    }
+
+    .menu-item.active {
+        border-bottom-width: 2px;
+        padding-bottom: 2px;
+    }
+
+    .image-item-module .image-thumb {
+        width: 50px;
+        height: 50px;
+    }
+
+    .image-item-module .image-date {
+        font-size: 13px;
+    }
+
+    .poem-title {
+        font-size: 14px;
+    }
+
+    .poem-desc {
+        font-size: 13px;
+    }
+
+    .detail-view.active .detail-container {
+        padding: 12px 12px 24px 12px;
+        min-height: 40vh;
+    }
+
+    .detail-container .detail-title {
+        font-size: 18px;
+    }
+
+    .detail-container .detail-body {
+        font-size: 14px;
+        line-height: 1.8;
+    }
+
+    .detail-container .breadcrumb {
+        font-size: 12px;
+        margin-bottom: 16px;
+    }
+
+    .detail-container .detail-date {
+        font-size: 12px;
+        margin-bottom: 16px;
+        padding-bottom: 12px;
+    }
+
+    .back-btn {
+        padding: 6px 16px;
+        font-size: 12px;
+        margin-top: 24px;
+    }
+
+    .comments-title {
+        font-size: 16px;
+    }
+
+    .comment-form {
+        padding: 12px;
+    }
+
+    .comment-form h4 {
+        font-size: 14px;
     }
 }
