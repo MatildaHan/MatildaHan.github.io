@@ -2,16 +2,13 @@
  * comments.js - GitHub Issues 评论系统
  */
 
-// ============================================================
-// 配置
-// ============================================================
 var COMMENTS_CONFIG = {
     owner: 'MatildaHan',
     repo: 'MatildaHan.github.io'
 };
 
 // ============================================================
-// 获取评论（前台展示）
+// 获取评论
 // ============================================================
 
 async function getComments(pageId) {
@@ -73,7 +70,7 @@ function extractCommentContent(body) {
 }
 
 // ============================================================
-// 提交评论（前台用户操作）
+// 提交评论
 // ============================================================
 
 async function submitComment(pageId, pageTitle, content, author) {
@@ -84,7 +81,7 @@ async function submitComment(pageId, pageTitle, content, author) {
 
     var token = localStorage.getItem('github_token');
     if (!token) {
-        alert('评论功能暂不可用，请联系管理员');
+        alert('评论功能需要配置 GitHub Token，请联系管理员');
         return false;
     }
 
@@ -121,7 +118,7 @@ async function submitComment(pageId, pageTitle, content, author) {
 }
 
 // ============================================================
-// 渲染评论（前台展示）
+// 渲染评论
 // ============================================================
 
 function renderComments(comments, containerId) {
