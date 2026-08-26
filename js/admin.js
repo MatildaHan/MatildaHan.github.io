@@ -1,5 +1,5 @@
 /**
- * admin.js - 南山集后台管理（含置顶功能 + 换行修复）
+ * admin.js - 南山集后台管理（含置顶功能 + 列表开关）
  */
 
 // ============================================================
@@ -460,12 +460,27 @@ async function renderTable(category) {
 }
 
 function renderXingyinRow(item) {
-    return '<tr><td>' + item.id + '</td><td title="' + escapeHtml(item.text) + '">' + escapeHtml(item.text) + '</td><td>' + escapeHtml(item.category) + '</td><td>' + item.date + '</td><td><button onclick="editItem(\'xingyin\',\'' + item.id + '\')" class="btn btn-primary btn-sm">编辑</button><button onclick="deleteItem(\'xingyin\',\'' + item.id + '\')" class="btn btn-danger btn-sm">删除</button></td></tr>';
+    return '<tr><td style="width:80px;">' + item.id + '</td><td style="width:400px;" title="' + escapeHtml(item.text) + '">' + escapeHtml(item.text) + '</td><td style="width:120px;">' + escapeHtml(item.category) + '</td><td style="width:120px;">' + item.date + '</td><td style="width:140px;"><button onclick="editItem(\'xingyin\',\'' + item.id + '\')" class="btn btn-primary btn-sm">编辑</button><button onclick="deleteItem(\'xingyin\',\'' + item.id + '\')" class="btn btn-danger btn-sm">删除</button></td></tr>';
 }
 
 function renderShinianRow(item) {
-    var topLabel = item.top ? '📌 ' : '';
-    return '<tr><td>' + item.id + '</td><td title="' + escapeHtml(item.title) + '">' + topLabel + escapeHtml(item.title) + '</td><td>' + escapeHtml(item.category) + '</td><td>' + item.date + '</td><td><button onclick="editItem(\'shinian\',\'' + item.id + '\')" class="btn btn-primary btn-sm">编辑</button><button onclick="deleteItem(\'shinian\',\'' + item.id + '\')" class="btn btn-danger btn-sm">删除</button></td></tr>';
+    var topChecked = item.top ? 'checked' : '';
+    return '<tr>' +
+        '<td style="width:80px;">' + item.id + '</td>' +
+        '<td style="width:200px;" title="' + escapeHtml(item.title) + '">' + escapeHtml(item.title) + '</td>' +
+        '<td style="width:120px;">' + escapeHtml(item.category) + '</td>' +
+        '<td style="width:120px;">' + item.date + '</td>' +
+        '<td style="width:140px;">' +
+        '<label style="display:flex;align-items:center;gap:6px;cursor:pointer;">' +
+        '<input type="checkbox" ' + topChecked + ' onchange="toggleTop(\'shinian\', \'' + item.id + '\', this.checked)">' +
+        '<span style="font-size:12px;color:#888;">置顶</span>' +
+        '</label>' +
+        '</td>' +
+        '<td style="width:140px;">' +
+        '<button onclick="editItem(\'shinian\',\'' + item.id + '\')" class="btn btn-primary btn-sm">编辑</button> ' +
+        '<button onclick="deleteItem(\'shinian\',\'' + item.id + '\')" class="btn btn-danger btn-sm">删除</button>' +
+        '</td>' +
+        '</tr>';
 }
 
 function renderXueyeRow(item) {
@@ -473,12 +488,12 @@ function renderXueyeRow(item) {
     for (var i = 0; i < Math.min(3, item.images.length); i++) {
         preview += '<img src="' + item.images[i] + '" style="width:40px;height:40px;object-fit:cover;border-radius:4px;" onerror="this.style.display=\'none\'">';
     }
-    return '<tr><td>' + item.id + '</td><td>' + item.date + '</td><td>' + escapeHtml(item.category) + '</td><td>' + item.images.length + '</td><td><div style="display:flex;gap:4px;overflow:hidden;">' + preview + '</div></td><td><button onclick="editItem(\'xueye\',\'' + item.id + '\')" class="btn btn-primary btn-sm">编辑</button><button onclick="deleteItem(\'xueye\',\'' + item.id + '\')" class="btn btn-danger btn-sm">删除</button></td></tr>';
+    return '<tr><td style="width:80px;">' + item.id + '</td><td style="width:120px;">' + item.date + '</td><td style="width:120px;">' + escapeHtml(item.category) + '</td><td style="width:80px;">' + item.images.length + '</td><td style="width:200px;"><div style="display:flex;gap:4px;overflow:hidden;">' + preview + '</div></td><td style="width:140px;"><button onclick="editItem(\'xueye\',\'' + item.id + '\')" class="btn btn-primary btn-sm">编辑</button><button onclick="deleteItem(\'xueye\',\'' + item.id + '\')" class="btn btn-danger btn-sm">删除</button></td></tr>';
 }
 
 function renderGexidongRow(item) {
     var content = item.content.length > 40 ? item.content.slice(0, 40) + '...' : item.content;
-    return '<tr><td>' + item.id + '</td><td title="' + escapeHtml(item.content) + '">' + escapeHtml(content) + '</td><td>' + item.date + '</td><td><button onclick="editItem(\'gexidong\',\'' + item.id + '\')" class="btn btn-primary btn-sm">编辑</button><button onclick="deleteItem(\'gexidong\',\'' + item.id + '\')" class="btn btn-danger btn-sm">删除</button></td></tr>';
+    return '<tr><td style="width:80px;">' + item.id + '</td><td style="width:400px;" title="' + escapeHtml(item.content) + '">' + escapeHtml(content) + '</td><td style="width:120px;">' + item.date + '</td><td style="width:140px;"><button onclick="editItem(\'gexidong\',\'' + item.id + '\')" class="btn btn-primary btn-sm">编辑</button><button onclick="deleteItem(\'gexidong\',\'' + item.id + '\')" class="btn btn-danger btn-sm">删除</button></td></tr>';
 }
 
 function escapeHtml(text) {
@@ -574,7 +589,45 @@ async function deleteItem(category, id) {
 }
 
 // ============================================================
-// 9. 弹窗 + 保存（修复换行问题）
+// 9. 置顶切换
+// ============================================================
+
+/**
+ * 切换置顶状态
+ */
+async function toggleTop(category, id, checked) {
+    try {
+        var text = await loadDataFile(category);
+        var items = parseShinian(text);
+
+        var found = false;
+        for (var i = 0; i < items.length; i++) {
+            if (items[i].id === id) {
+                items[i].top = checked;
+                found = true;
+                break;
+            }
+        }
+
+        if (!found) {
+            showToast('未找到该文章', 'error');
+            return;
+        }
+
+        var newText = formatShinian(items);
+        var success = await saveDataFile(category, newText);
+
+        if (success) {
+            showToast(checked ? '已置顶' : '已取消置顶', 'success');
+            renderTable(category);
+        }
+    } catch (e) {
+        showToast('操作失败: ' + e.message, 'error');
+    }
+}
+
+// ============================================================
+// 10. 弹窗
 // ============================================================
 
 function showModal(category, id, isNew) {
@@ -642,17 +695,12 @@ function showModal(category, id, isNew) {
             var contentVal = existingData ? existingData[2] || '' : '';
             var catVal = existingData ? existingData[3] || '' : '';
             var dateVal = existingData ? existingData[4] || today : today;
-            var topVal = existingData ? existingData[5] === 'true' : false;
             html =
                 '<div class="form-group"><label>标题</label><input type="text" id="formTitle" value="' + escapeHtml(titleVal) + '"></div>' +
                 '<div class="form-group"><label>正文内容</label><textarea id="formContent" rows="8" placeholder="文章正文内容...">' + escapeHtml(contentVal) + '</textarea></div>' +
                 '<div class="form-group"><label>分类</label><select id="formCategory" data-target="shinian">' + categoryOptions + '</select></div>' +
-                '<div class="form-group"><label>日期</label><input type="date" id="formDate" value="' + dateVal + '"></div>' +
-                '<div class="form-group" style="display:flex;align-items:center;gap:12px;padding-top:8px;">' +
-                '<label style="margin:0;font-weight:600;">置顶</label>' +
-                '<input type="checkbox" id="formTop" ' + (topVal ? 'checked' : '') + '>' +
-                '<span style="font-size:12px;color:#888;">开启后文章在首页置顶显示</span>' +
-                '</div>';
+                '<div class="form-group"><label>日期</label><input type="date" id="formDate" value="' + dateVal + '"></div>';
+            // 注意：已移除置顶复选框
             setTimeout(function() {
                 var sel = document.getElementById('formCategory');
                 if (sel) sel.value = catVal;
@@ -764,8 +812,7 @@ async function saveModal() {
     var formData = collectFormData(category);
     if (!formData) return;
 
-    // ===== 修复：十年灯·文 正文换行处理 =====
-    // 将换行符替换为空格，确保数据文件中的每条数据只有一行
+    // 修复：十年灯·文 正文换行处理
     if (category === 'shinian' && formData.content) {
         formData.content = formData.content.replace(/\n/g, ' ').replace(/\r/g, ' ');
     }
@@ -798,7 +845,7 @@ async function saveModal() {
     var newText = formatter(items);
     var success = await saveDataFile(category, newText);
 
-    // ===== 保存文章详情（正文完整内容，保留换行） =====
+    // 保存文章详情（正文完整内容，保留换行）
     if (category === 'shinian' && formData.content) {
         var articleId = isNew ? formData.id : id;
         var articleContent = '---\ndate: ' + formData.date + '\ntitle: ' + formData.title + '\n---\n\n' + formData.content;
@@ -837,8 +884,7 @@ function collectFormData(category) {
                 title: getVal('formTitle'),
                 content: getVal('formContent'),
                 category: getSel('formCategory') || '',
-                date: getVal('formDate'),
-                top: document.getElementById('formTop') ? document.getElementById('formTop').checked : false
+                date: getVal('formDate')
             };
         case 'xueye':
             return {
@@ -861,7 +907,7 @@ function collectFormData(category) {
 }
 
 // ============================================================
-// 10. 山野渔夫
+// 11. 山野渔夫
 // ============================================================
 
 async function loadShanye() {
@@ -876,7 +922,7 @@ async function saveShanye() {
 }
 
 // ============================================================
-// 11. 主题设置
+// 12. 主题设置
 // ============================================================
 
 async function loadSettings() {
@@ -919,7 +965,7 @@ function previewSettings() {
 }
 
 // ============================================================
-// 12. 同步与部署
+// 13. 同步与部署
 // ============================================================
 
 async function syncAll() {
@@ -979,7 +1025,7 @@ async function deploySite() {
 }
 
 // ============================================================
-// 13. Toast
+// 14. Toast
 // ============================================================
 
 function showToast(message, type) {
@@ -1002,7 +1048,7 @@ function showToast(message, type) {
 }
 
 // ============================================================
-// 14. 导航切换
+// 15. 导航切换
 // ============================================================
 
 var navItems = document.querySelectorAll('.nav-item');
@@ -1045,7 +1091,7 @@ for (var i = 0; i < navItems.length; i++) {
 }
 
 // ============================================================
-// 15. 评论审核功能
+// 16. 评论审核功能
 // ============================================================
 
 async function getPendingComments() {
@@ -1186,7 +1232,7 @@ function refreshComments() {
 }
 
 // ============================================================
-// 16. 默认数据
+// 17. 默认数据
 // ============================================================
 
 var DEFAULT_DATA = {
@@ -1255,7 +1301,7 @@ async function initData() {
 }
 
 // ============================================================
-// 17. 启动
+// 18. 启动
 // ============================================================
 
 var savedToken = localStorage.getItem('github_token');
@@ -1268,5 +1314,5 @@ if (savedToken) {
 
 initData();
 
-console.log('南山集后台管理已启动（含置顶功能 + 换行修复）');
+console.log('南山集后台管理已启动（含置顶功能 + 列表开关）');
 console.log('请确保已配置 GitHub Token');
