@@ -25,7 +25,7 @@ body {
     background-attachment: fixed;
 }
 
-/* ===== 版心 ===== */
+/* ===== 版心 1000px ===== */
 .wrapper {
     max-width: 1000px;
     margin: 0 auto;
@@ -134,6 +134,12 @@ body {
     min-width: 0;
     overflow: hidden;
     flex-shrink: 0;
+}
+
+/* ===== 详情页激活时，右侧内容区扩展为 1000px ===== */
+body.detail-open .content-wrap {
+    width: 1000px;
+    max-width: 1000px;
 }
 
 .content-list {
@@ -339,11 +345,11 @@ body.detail-open .content-wrap {
     min-height: 80vh;
 }
 
-/* ===== 详情页容器：宽度1000px + 不透明度90% ===== */
+/* 详情页容器：宽度100%，背景白色90%不透明度 */
 .detail-view.active .detail-container {
+    width: 100%;
     max-width: 1000px;
     margin: 0 auto;
-    /* 90% 不透明度白色背景 */
     background-color: rgba(255, 255, 255, 0.9);
     padding: 30px 60px 60px 60px;
     border-radius: 4px;
@@ -668,6 +674,11 @@ body.detail-open .content-wrap {
     }
 
     .content-wrap {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    body.detail-open .content-wrap {
         width: 100%;
         max-width: 100%;
     }
