@@ -18,13 +18,13 @@ body {
 }
 
 .wrapper {
-    max-width: 1200px;
+    max-width: 1000px;
     margin: 0 auto;
 }
 
 /* ========== 头部 ========== */
 .header {
-    height: 120px;
+    height: 60px;
     display: flex;
     align-items: baseline;
     gap: 12px;
