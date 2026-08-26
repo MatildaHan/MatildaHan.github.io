@@ -324,9 +324,9 @@ body.detail-open .sidebar-menu {
     display: none;
 }
 
-/* 详情页容器 - 固定宽度800px，白色背景 */
+/* 详情页容器 - 固定宽度1000px，白色背景 */
 .detail-view.active .detail-container {
-    max-width: 800px;
+    max-width: 1000px;
     margin: 0 auto;
     background-color: #ffffff;
     padding: 30px 50px 60px 50px;
@@ -334,12 +334,12 @@ body.detail-open .sidebar-menu {
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
 }
 
-/* 面包屑导航 - 顶部距离30px */
+/* 面包屑导航 - 顶部距离0px */
 .detail-container .breadcrumb {
     font-size: 13px;
     color: #8c7c68;
     margin-top: 0;
-    margin-bottom: 30px;
+    margin-bottom: 0px;
     padding-top: 0;
     cursor: pointer;
     display: inline-block;
