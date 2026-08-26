@@ -14,7 +14,6 @@ var listView = document.getElementById('listView');
 var detailView = document.getElementById('detailView');
 var detailContainer = document.getElementById('detailContainer');
 
-// 获取 body 元素用于切换类
 var bodyEl = document.body;
 
 async function applySettings() {
@@ -61,7 +60,6 @@ function renderContent(key, page) {
 
         case 'shinian':
             pageList.forEach(function(item, idx) {
-                // 正文内容截取前两行（按换行符分割）
                 var contentLines = item.summary ? item.summary.split('\n') : [];
                 var displayContent = contentLines.slice(0, 2).join(' ');
                 if (contentLines.length > 2) {
@@ -137,12 +135,14 @@ function escapeHtml(text) {
 }
 
 // ============================================================
-// 详情页打开/关闭（添加 body 类控制菜单隐藏）
+// 详情页打开/关闭 + 评论加载
 // ============================================================
 
 window.openDetail = async function(key, id) {
     var detail = null;
     var title = '';
+    var pageId = key + '-' + id;
+
     if (key === 'shinian') {
         detail = await DataLoader.loadArticleById(id);
         if (!detail) { alert('文章内容未找到'); return; }
@@ -161,7 +161,6 @@ window.openDetail = async function(key, id) {
 
     listView.classList.add('hidden');
     detailView.classList.add('active');
-    // 添加 body 类，用于隐藏左侧菜单
     bodyEl.classList.add('detail-open');
 
     var keyTitle = DataLoader.getKeyTitle(key);
@@ -181,9 +180,33 @@ window.openDetail = async function(key, id) {
         });
     }
 
-    html += '</div><button class="back-btn" onclick="closeDetail()">← 返回列表</button>';
+    html += '</div>';
+
+    // ===== 评论区域 =====
+    html += '<div class="comments-section">' +
+        '<h3 class="comments-title">💬 评论</h3>' +
+        '<div id="commentsList"></div>' +
+        '<div class="comment-form">' +
+        '<h4>发表评论</h4>' +
+        '<div class="form-group">' +
+        '<input type="text" id="commentAuthor" placeholder="你的昵称（可选）" maxlength="20">' +
+        '</div>' +
+        '<div class="form-group">' +
+        '<textarea id="commentContent" rows="4" placeholder="写下你的想法..." maxlength="500" oninput="updateCommentCharCount()"></textarea>' +
+        '<div class="char-count"><span id="commentCharCount">0</span>/500</div>' +
+        '</div>' +
+        '<button onclick="submitUserComment()" class="btn btn-primary">提交评论</button>' +
+        '</div>' +
+        '</div>';
+
+    html += '<button class="back-btn" onclick="closeDetail()">← 返回列表</button>';
 
     detailContainer.innerHTML = html;
+
+    // 加载评论
+    window.currentCommentPage = { id: pageId, title: title };
+    var comments = await getComments(pageId);
+    renderComments(comments, 'commentsList');
 
     menuItems.forEach(function(el) { el.classList.remove('active'); });
     document.querySelector('.menu-item[data-key="' + key + '"]').classList.add('active');
@@ -192,13 +215,44 @@ window.openDetail = async function(key, id) {
 window.closeDetail = function() {
     listView.classList.remove('hidden');
     detailView.classList.remove('active');
-    // 移除 body 类，恢复左侧菜单
     bodyEl.classList.remove('detail-open');
 
     menuItems.forEach(function(el) { el.classList.remove('active'); });
     document.querySelector('.menu-item[data-key="' + currentKey + '"]').classList.add('active');
     renderContent(currentKey, currentPage);
 };
+
+// ============================================================
+// 评论提交
+// ============================================================
+
+window.submitUserComment = async function() {
+    var author = document.getElementById('commentAuthor').value;
+    var content = document.getElementById('commentContent').value;
+    var pageInfo = window.currentCommentPage;
+
+    if (!pageInfo) {
+        alert('请先打开一篇文章');
+        return;
+    }
+
+    var success = await submitComment(pageInfo.id, pageInfo.title, content, author);
+    if (success) {
+        document.getElementById('commentContent').value = '';
+        document.getElementById('commentAuthor').value = '';
+        document.getElementById('commentCharCount').textContent = '0';
+        var comments = await getComments(pageInfo.id);
+        renderComments(comments, 'commentsList');
+    }
+};
+
+function updateCommentCharCount() {
+    var el = document.getElementById('commentContent');
+    var countEl = document.getElementById('commentCharCount');
+    if (el && countEl) {
+        countEl.textContent = el.value.length;
+    }
+}
 
 // ============================================================
 // 加载与初始化
