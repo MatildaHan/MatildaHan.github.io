@@ -16,83 +16,395 @@ body {
     background-attachment: fixed;
 }
 
-/* ===== 修复版心 ===== */
+/* ===== 版心核心设置 ===== */
 .wrapper {
     max-width: 1200px;
     margin: 0 auto;
-    /* 防止内容溢出 */
+    /* 防止内容溢出撑破版心 */
     overflow: hidden;
-    /* 或者用 min-width: 0 */
-    min-width: 0;
     padding: 0 20px;
 }
 
-/* ===== 布局：使用 flex 替代 grid 更灵活 ===== */
-.container {
+/* ========== 头部 ========== */
+.header {
+    height: 120px;
     display: flex;
+    align-items: baseline;
+    gap: 12px;
+    margin-bottom: 40px;
+    border-bottom: 1px solid #b8a894;
+    position: relative;
+}
+
+.header-inner {
+    position: absolute;
+    bottom: 20px;
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+}
+
+.title-main {
+    font-size: 24px;
+    font-weight: bold;
+    color: #333333;
+}
+
+.title-sub {
+    font-size: 15px;
+    color: #8c7c68;
+}
+
+/* ========== 布局 ========== */
+.container {
+    display: grid;
+    /* 右侧使用 1fr 自适应，避免固定宽度溢出 */
+    grid-template-columns: 200px 1fr;
     gap: 40px;
-    /* 确保不溢出 */
+    /* 防止内部元素溢出容器 */
     overflow: hidden;
 }
 
-/* ===== 左侧菜单（固定宽度） ===== */
+/* ========== 左侧菜单 ========== */
 .sidebar-menu {
-    flex: 0 0 200px;
-    /* 固定 200px，不伸缩 */
     display: flex;
     flex-direction: column;
     gap: 40px;
     font-size: 14px;
     color: #82725e;
-    /* 防止内容溢出 */
-    overflow: hidden;
-    word-break: break-all;
 }
 
-/* ===== 右侧内容（自适应剩余宽度） ===== */
+.menu-item {
+    cursor: pointer;
+    padding-left: 16px;
+    position: relative;
+    transition: all 0.25s ease;
+    line-height: 14px;
+}
+
+.menu-item.active::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 2px;
+    height: 14px;
+    background-color: #6b5b47;
+}
+
+.menu-item.active {
+    font-weight: bold;
+    color: #6b5b47;
+}
+
+.menu-item:hover {
+    color: #6b5b47;
+}
+
+/* ========== 右侧内容 ========== */
 .content-wrap {
-    flex: 1;
-    /* 占据剩余空间 */
+    /* 关键：防止子元素溢出 */
     min-width: 0;
-    /* 防止溢出 */
     overflow: hidden;
 }
 
-/* ===== 内容列表 ===== */
 .content-list {
     display: flex;
     flex-direction: column;
     gap: 24px;
-    /* 防止溢出 */
-    overflow: hidden;
 }
 
-/* ===== 表格/图片网格溢出控制 ===== */
+.item-divider {
+    width: 40px;
+    border-bottom: 1px solid #b8a894;
+    margin: 12px 0;
+}
+
+.line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    position: relative;
+}
+
+.line-clamp-2::after {
+    content: "…";
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    background-color: #ecebe9;
+    padding-left: 4px;
+}
+
+/* -------- 行吟册絮 -------- */
+.item-module {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    padding: 4px 0;
+    transition: background 0.2s;
+    gap: 12px;
+}
+
+.item-module:hover {
+    background-color: rgba(184, 168, 148, 0.1);
+}
+
+.text-content {
+    font-size: 18px;
+    font-weight: bold;
+    /* 防止长文本溢出 */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.date-text {
+    font-size: 13px;
+    color: #8c7c68;
+    flex-shrink: 0;
+}
+
+/* -------- 十年灯文 -------- */
+.poem-item {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    cursor: pointer;
+    transition: background 0.2s;
+    padding: 4px 0;
+}
+
+.poem-item:hover {
+    background-color: rgba(184, 168, 148, 0.1);
+}
+
+.poem-title {
+    font-size: 18px;
+    font-weight: bold;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.poem-desc {
+    font-size: 14px;
+    color: #6b5b47;
+}
+
+/* -------- 雪夜舟图 -------- */
+.date-image-group {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.image-date {
+    font-size: 13px;
+    color: #8c7c68;
+}
+
 .image-wrap {
     display: grid;
-    grid-template-columns: repeat(6, 150px);
+    /* 自动适应宽度，防止溢出 */
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
     gap: 16px;
-    /* 防止溢出 */
-    overflow: auto;
+    /* 如果图片太多，允许横向滚动 */
+    overflow-x: auto;
     padding-bottom: 4px;
 }
 
-/* ===== 当屏幕小于 1200px 时，菜单和内容自适应 ===== */
+.image-item {
+    width: 100%;
+    aspect-ratio: 1;
+    background: #ddd;
+    object-fit: cover;
+    cursor: pointer;
+    transition: transform 0.2s;
+    border-radius: 4px;
+}
+
+.image-item:hover {
+    transform: scale(1.02);
+}
+
+/* -------- 各西东语 -------- */
+.msg-item {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    cursor: pointer;
+    padding: 4px 0;
+    transition: background 0.2s;
+}
+
+.msg-item:hover {
+    background-color: rgba(184, 168, 148, 0.1);
+}
+
+.msg-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: #ccc;
+    flex-shrink: 0;
+}
+
+.nickname {
+    font-size: 15px;
+}
+
+.msg-content {
+    font-size: 14px;
+    padding-left: 62px;
+    color: #6b5b47;
+}
+
+/* -------- 山野渔夫 -------- */
+.intro-item {
+    font-size: 14px;
+    line-height: 1.8;
+}
+
+/* ========== 详情页 ========== */
+.detail-container {
+    padding: 20px 0;
+    overflow: hidden;
+}
+
+.detail-container .breadcrumb {
+    font-size: 12px;
+    color: #998b78;
+    margin-bottom: 30px;
+    cursor: pointer;
+    display: inline-block;
+}
+
+.detail-container .breadcrumb:hover {
+    color: #6b5b47;
+}
+
+.detail-container .detail-title {
+    font-size: 24px;
+    font-weight: normal;
+    margin-bottom: 12px;
+}
+
+.detail-container .detail-date {
+    font-size: 14px;
+    margin-bottom: 40px;
+    color: #8c7c68;
+}
+
+.detail-container .detail-body {
+    font-size: 14px;
+    line-height: 2.2;
+    overflow-wrap: break-word;
+}
+
+.detail-container .detail-body p {
+    margin-bottom: 14px;
+    text-align: justify;
+}
+
+.detail-image {
+    max-width: 100%;
+    height: auto;
+    margin: 12px 0;
+    border-radius: 8px;
+}
+
+/* ========== 分页 ========== */
+.pagination {
+    margin-top: 48px;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.pagination button {
+    background: transparent;
+    border: 1px solid #b8a894;
+    color: #6b5b47;
+    padding: 6px 14px;
+    font-family: "SimSun", "STSong", serif;
+    font-size: 14px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.pagination button:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+}
+
+.pagination .page-info {
+    font-size: 14px;
+    color: #8c7c68;
+}
+
+/* ========== 返回按钮 ========== */
+.back-btn {
+    display: inline-block;
+    margin-top: 30px;
+    padding: 8px 24px;
+    border: 1px solid #b8a894;
+    color: #6b5b47;
+    background: transparent;
+    cursor: pointer;
+    font-family: "SimSun", "STSong", serif;
+    font-size: 14px;
+    transition: all 0.2s;
+    border-radius: 4px;
+}
+
+.back-btn:hover {
+    background: #b8a894;
+    color: #fff;
+}
+
+/* ========== 视图切换 ========== */
+.list-view {
+    display: block;
+}
+
+.detail-view {
+    display: none;
+}
+
+.detail-view.active {
+    display: block;
+}
+
+.list-view.hidden {
+    display: none;
+}
+
+/* ========== 响应式 ========== */
 @media (max-width: 1200px) {
     .wrapper {
         max-width: 100%;
         padding: 0 16px;
     }
     .container {
-        flex-direction: column;
+        grid-template-columns: 1fr;
         gap: 20px;
     }
     .sidebar-menu {
-        flex: 0 0 auto;
         flex-direction: row;
         flex-wrap: wrap;
         gap: 12px 24px;
-        padding-bottom: 12px;
+        padding-bottom: 16px;
         border-bottom: 1px solid #b8a894;
     }
     .menu-item {
@@ -112,7 +424,7 @@ body {
 
 @media (max-width: 768px) {
     body {
-        padding: 20px 12px;
+        padding: 20px 8px;
     }
     .wrapper {
         padding: 0 8px;
@@ -129,12 +441,17 @@ body {
     .title-sub {
         font-size: 12px;
     }
+    .text-content {
+        font-size: 15px;
+        white-space: normal;
+    }
     .image-wrap {
         grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+        gap: 10px;
     }
-    .image-item {
-        width: 100%;
-        height: auto;
-        aspect-ratio: 1;
+    .item-module {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
     }
 }
