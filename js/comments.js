@@ -48,13 +48,15 @@ async function getIssueReplies(issueNumber) {
         var response = await fetch(url);
         if (!response.ok) return [];
         var comments = await response.json();
-        return comments.map(function(c) {
-            return {
-                author: c.user.login,
-                content: c.body,
-                created_at: c.created_at
-            };
-        });
+        var result = [];
+        for (var i = 0; i < comments.length; i++) {
+            result.push({
+                author: comments[i].user.login,
+                content: comments[i].body,
+                created_at: comments[i].created_at
+            });
+        }
+        return result;
     } catch (e) {
         return [];
     }
@@ -145,12 +147,10 @@ function renderComments(comments, containerId) {
             html += '<div class="comment-replies">';
             for (var j = 0; j < c.replies.length; j++) {
                 var r = c.replies[j];
-                var replyContent = r.content;
-                // 检测是否为管理员回复
                 var isAdmin = r.content.indexOf('管理员回复') !== -1 || r.content.indexOf('📝') !== -1;
                 html += '<div class="reply-item' + (isAdmin ? ' reply-admin' : '') + '">' +
                     '<span class="reply-author">' + escapeHtml(r.author) + '</span>' +
-                    '<span class="reply-content">' + escapeHtml(replyContent) + '</span>' +
+                    '<span class="reply-content">' + escapeHtml(r.content) + '</span>' +
                     '</div>';
             }
             html += '</div>';
@@ -172,9 +172,9 @@ function escapeHtml(text) {
 
 function formatDate(dateStr) {
     var d = new Date(dateStr);
-    return d.getFullYear() + '/' +
-           String(d.getMonth() + 1).padStart(2, '0') + '/' +
-           String(d.getDate()).padStart(2, '0') + ' ' +
-           String(d.getHours()).padStart(2, '0') + ':' +
-           String(d.getMinutes()).padStart(2, '0');
+    var month = String(d.getMonth() + 1).padStart(2, '0');
+    var day = String(d.getDate()).padStart(2, '0');
+    var hours = String(d.getHours()).padStart(2, '0');
+    var minutes = String(d.getMinutes()).padStart(2, '0');
+    return d.getFullYear() + '/' + month + '/' + day + ' ' + hours + ':' + minutes;
 }
