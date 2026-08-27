@@ -1,6 +1,7 @@
 /**
- * admin.js - 南山集后台管理（完整版）
- * 功能：增删改查 + 置顶开关 + 分类管理 + 评论审核 + 换行修复
+ * admin.js - 南山集后台管理（修复版）
+ * 修复：移除日期选择器，自动填充当前日期
+ * 修复：十年灯·文 分类显示错误
  */
 
 // ============================================================
@@ -214,6 +215,7 @@ function getCategoryUsageCount(target, name) {
         var rows = tbody.querySelectorAll('tr');
         for (var r = 0; r < rows.length; r++) {
             var cells = rows[r].querySelectorAll('td');
+            // 不同栏目分类所在列不同
             var colIndex = (target === 'xingyin') ? 2 : (target === 'shinian' ? 3 : 2);
             if (cells.length > colIndex && cells[colIndex].textContent === name) {
                 count++;
@@ -469,6 +471,7 @@ function renderShinianRow(item) {
     return '<tr>' +
         '<td style="width:80px;">' + item.id + '</td>' +
         '<td style="width:200px;" title="' + escapeHtml(item.title) + '">' + escapeHtml(item.title) + '</td>' +
+        '<td style="width:150px;">' + escapeHtml(item.content) + '</td>' +
         '<td style="width:120px;">' + escapeHtml(item.category) + '</td>' +
         '<td style="width:120px;">' + item.date + '</td>' +
         '<td style="width:140px;">' +
@@ -625,7 +628,7 @@ async function toggleTop(category, id, checked) {
 }
 
 // ============================================================
-// 10. 弹窗
+// 10. 弹窗（移除日期选择器）
 // ============================================================
 
 function showModal(category, id, isNew) {
@@ -640,6 +643,7 @@ function showModal(category, id, isNew) {
     };
     title.textContent = isNew ? '新增 ' + names[category] : '编辑 ' + names[category];
 
+    // 获取已有数据（编辑时回填）
     var existingData = null;
     if (!isNew) {
         var tbody = document.getElementById('tbody-' + category);
@@ -659,14 +663,12 @@ function showModal(category, id, isNew) {
     }
 
     var html = '';
-    var today = new Date().toISOString().slice(0, 10);
     var categoryOptions = getCategoryOptions(category);
 
     switch (category) {
         case 'xingyin':
             var textVal = existingData ? existingData[1] || '' : '';
             var catVal = existingData ? existingData[2] || '默认' : '默认';
-            var dateVal = existingData ? existingData[3] || today : today;
             html =
                 '<div class="form-group">' +
                 '<label>短句内容（最多50字，不能换行）</label>' +
@@ -676,10 +678,6 @@ function showModal(category, id, isNew) {
                 '<div class="form-group">' +
                 '<label>分类</label>' +
                 '<select id="formCategory" data-target="xingyin">' + categoryOptions + '</select>' +
-                '</div>' +
-                '<div class="form-group">' +
-                '<label>日期</label>' +
-                '<input type="date" id="formDate" value="' + dateVal + '">' +
                 '</div>' +
                 '<div class="hint">短句不能换行，最多50个字符</div>';
             setTimeout(function() {
@@ -692,12 +690,10 @@ function showModal(category, id, isNew) {
             var titleVal = existingData ? existingData[1] || '' : '';
             var contentVal = existingData ? existingData[2] || '' : '';
             var catVal = existingData ? existingData[3] || '' : '';
-            var dateVal = existingData ? existingData[4] || today : today;
             html =
                 '<div class="form-group"><label>标题</label><input type="text" id="formTitle" value="' + escapeHtml(titleVal) + '"></div>' +
                 '<div class="form-group"><label>正文内容</label><textarea id="formContent" rows="8" placeholder="文章正文内容...">' + escapeHtml(contentVal) + '</textarea></div>' +
-                '<div class="form-group"><label>分类</label><select id="formCategory" data-target="shinian">' + categoryOptions + '</select></div>' +
-                '<div class="form-group"><label>日期</label><input type="date" id="formDate" value="' + dateVal + '"></div>';
+                '<div class="form-group"><label>分类</label><select id="formCategory" data-target="shinian">' + categoryOptions + '</select></div>';
             setTimeout(function() {
                 var sel = document.getElementById('formCategory');
                 if (sel) sel.value = catVal;
@@ -705,11 +701,9 @@ function showModal(category, id, isNew) {
             break;
 
         case 'xueye':
-            var dateVal = existingData ? existingData[1] || today : today;
             var catVal = existingData ? existingData[2] || '' : '';
             var imagesVal = existingData && existingData.length > 3 ? existingData[3] || '' : '';
             html =
-                '<div class="form-group"><label>日期</label><input type="date" id="formDate" value="' + dateVal + '"></div>' +
                 '<div class="form-group"><label>分类</label><select id="formCategory" data-target="xueye">' + categoryOptions + '</select></div>' +
                 '<div class="form-group"><label>图片 URL（逗号分隔）</label><textarea id="formImages" rows="3">' + escapeHtml(imagesVal) + '</textarea></div>';
             setTimeout(function() {
@@ -720,20 +714,13 @@ function showModal(category, id, isNew) {
 
         case 'gexidong':
             var contentVal = existingData ? existingData[1] || '' : '';
-            var dateVal = existingData ? existingData[2] || today : today;
             html =
-                '<div class="form-group"><label>留言内容</label><textarea id="formContent" rows="4">' + escapeHtml(contentVal) + '</textarea></div>' +
-                '<div class="form-group"><label>日期</label><input type="date" id="formDate" value="' + dateVal + '"></div>';
+                '<div class="form-group"><label>留言内容</label><textarea id="formContent" rows="4">' + escapeHtml(contentVal) + '</textarea></div>';
             break;
     }
 
     body.innerHTML = html;
     modal.classList.add('active');
-}
-
-function loadArticleContent(id) {
-    // 此函数已不再需要，保留空函数以防调用
-    return '';
 }
 
 function updateCharCount() {
@@ -798,6 +785,10 @@ async function saveModal() {
         }
     }
 
+    // ===== 自动生成当前日期 =====
+    var currentDate = new Date().toISOString().slice(0, 10);
+    formData.date = currentDate;
+
     if (isNew) {
         var prefix = { xingyin: 'xy', shinian: 'sn', xueye: 'xy', gexidong: 'gx' }[category];
         formData.id = prefix + '-' + Date.now();
@@ -852,19 +843,16 @@ function collectFormData(category) {
         case 'xingyin':
             return {
                 text: getVal('formText'),
-                category: getSel('formCategory') || '默认',
-                date: getVal('formDate')
+                category: getSel('formCategory') || '默认'
             };
         case 'shinian':
             return {
                 title: getVal('formTitle'),
                 content: getVal('formContent'),
-                category: getSel('formCategory') || '',
-                date: getVal('formDate')
+                category: getSel('formCategory') || ''
             };
         case 'xueye':
             return {
-                date: getVal('formDate'),
                 category: getSel('formCategory') || '',
                 images: getVal('formImages').split(',').map(function(s) {
                     return s.trim();
@@ -874,8 +862,7 @@ function collectFormData(category) {
             };
         case 'gexidong':
             return {
-                content: getVal('formContent'),
-                date: getVal('formDate')
+                content: getVal('formContent')
             };
         default:
             return null;
@@ -1213,7 +1200,7 @@ function refreshComments() {
 
 var DEFAULT_DATA = {
     'xingyin': 'xy-001 | 欢迎使用南山集 | 默认 | ' + new Date().toISOString().slice(0, 10) + '\nxy-002 | 在这里管理你的短句 | 默认 | ' + new Date().toISOString().slice(0, 10),
-    'shinian': 'sn-001 | 第一篇文章 | 这是文章正文内容，显示在首页作为摘要。 | 默认 | ' + new Date().toISOString().slice(0, 10) + ' | false',
+    'shinian': 'sn-001 | 第一篇文章 | 这是文章正文内容 | 默认 | ' + new Date().toISOString().slice(0, 10) + ' | false',
     'xueye': 'xy-001 | ' + new Date().toISOString().slice(0, 10) + ' | 默认 | https://picsum.photos/150/150?1,https://picsum.photos/150/150?2',
     'gexidong': 'gx-001 | 欢迎留言，记录你的想法。 | ' + new Date().toISOString().slice(0, 10),
     'shanye': '山野居者，渔樵度日。在这里编辑你的个人简介。',
@@ -1290,5 +1277,5 @@ if (savedToken) {
 
 initData();
 
-console.log('南山集后台管理已启动');
+console.log('南山集后台管理已启动（修复版：自动日期 + 分类修复）');
 console.log('请确保已配置 GitHub Token');
