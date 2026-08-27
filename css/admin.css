@@ -476,4 +476,39 @@ body {
         padding: 8px 10px;
         font-size: 12px;
     }
+    /* ============================================================
+   固定表格列宽
+   ============================================================ */
+
+/* 确保表格使用固定布局 */
+.data-table.fixed-table {
+    table-layout: fixed !important;
+    width: 100%;
+    max-width: 1200px;
+    min-width: 800px;
+}
+
+/* 表头固定宽度 */
+.data-table.fixed-table th {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding: 10px 12px;
+}
+
+/* 单元格固定宽度 + 溢出省略号 */
+.data-table.fixed-table td {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding: 10px 12px;
+    max-width: 0;
+}
+
+/* 空行样式 */
+.data-table.fixed-table .empty-row td {
+    white-space: normal;
+    text-align: center;
+    padding: 40px 0;
+}
 }
