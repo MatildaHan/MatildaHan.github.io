@@ -1,7 +1,6 @@
 /**
  * admin.js - 南山集后台管理（修复版）
- * 修复：移除日期选择器，自动填充当前日期
- * 修复：十年灯·文 分类显示错误
+ * 修复：输入框清空、固定列宽、富文本编辑器
  */
 
 // ============================================================
@@ -215,7 +214,6 @@ function getCategoryUsageCount(target, name) {
         var rows = tbody.querySelectorAll('tr');
         for (var r = 0; r < rows.length; r++) {
             var cells = rows[r].querySelectorAll('td');
-            // 不同栏目分类所在列不同
             var colIndex = (target === 'xingyin') ? 2 : (target === 'shinian' ? 3 : 2);
             if (cells.length > colIndex && cells[colIndex].textContent === name) {
                 count++;
@@ -423,7 +421,7 @@ function parseShanye(text) {
 }
 
 // ============================================================
-// 6. 渲染表格
+// 6. 渲染表格（固定列宽）
 // ============================================================
 
 async function renderTable(category) {
@@ -466,21 +464,22 @@ function renderXingyinRow(item) {
     return '<tr><td style="width:80px;">' + item.id + '</td><td style="width:400px;" title="' + escapeHtml(item.text) + '">' + escapeHtml(item.text) + '</td><td style="width:120px;">' + escapeHtml(item.category) + '</td><td style="width:120px;">' + item.date + '</td><td style="width:140px;"><button onclick="editItem(\'xingyin\',\'' + item.id + '\')" class="btn btn-primary btn-sm">编辑</button><button onclick="deleteItem(\'xingyin\',\'' + item.id + '\')" class="btn btn-danger btn-sm">删除</button></td></tr>';
 }
 
+// 十年灯·文：固定列宽
 function renderShinianRow(item) {
     var topChecked = item.top ? 'checked' : '';
     return '<tr>' +
         '<td style="width:80px;">' + item.id + '</td>' +
-        '<td style="width:200px;" title="' + escapeHtml(item.title) + '">' + escapeHtml(item.title) + '</td>' +
-        '<td style="width:150px;">' + escapeHtml(item.content) + '</td>' +
+        '<td style="width:180px;" title="' + escapeHtml(item.title) + '">' + escapeHtml(item.title) + '</td>' +
+        '<td style="width:250px;" title="' + escapeHtml(item.content) + '">' + escapeHtml(item.content) + '</td>' +
         '<td style="width:120px;">' + escapeHtml(item.category) + '</td>' +
         '<td style="width:120px;">' + item.date + '</td>' +
-        '<td style="width:140px;">' +
+        '<td style="width:100px;">' +
         '<label style="display:flex;align-items:center;gap:6px;cursor:pointer;">' +
         '<input type="checkbox" ' + topChecked + ' onchange="toggleTop(\'shinian\', \'' + item.id + '\', this.checked)">' +
         '<span style="font-size:12px;color:#888;">置顶</span>' +
         '</label>' +
         '</td>' +
-        '<td style="width:140px;">' +
+        '<td style="width:150px;">' +
         '<button onclick="editItem(\'shinian\',\'' + item.id + '\')" class="btn btn-primary btn-sm">编辑</button> ' +
         '<button onclick="deleteItem(\'shinian\',\'' + item.id + '\')" class="btn btn-danger btn-sm">删除</button>' +
         '</td>' +
@@ -628,7 +627,7 @@ async function toggleTop(category, id, checked) {
 }
 
 // ============================================================
-// 10. 弹窗（移除日期选择器）
+// 10. 弹窗（修复：清空输入框 + 富文本编辑器）
 // ============================================================
 
 function showModal(category, id, isNew) {
@@ -662,6 +661,7 @@ function showModal(category, id, isNew) {
         }
     }
 
+    // 先清空之前的表单内容
     var html = '';
     var categoryOptions = getCategoryOptions(category);
 
@@ -692,7 +692,18 @@ function showModal(category, id, isNew) {
             var catVal = existingData ? existingData[3] || '' : '';
             html =
                 '<div class="form-group"><label>标题</label><input type="text" id="formTitle" value="' + escapeHtml(titleVal) + '"></div>' +
-                '<div class="form-group"><label>正文内容</label><textarea id="formContent" rows="8" placeholder="文章正文内容...">' + escapeHtml(contentVal) + '</textarea></div>' +
+                '<div class="form-group"><label>正文内容（支持富文本）</label>' +
+                '<div class="rich-editor-toolbar">' +
+                '<button type="button" onclick="execRichCmd(\'bold\')"><b>B</b></button>' +
+                '<button type="button" onclick="execRichCmd(\'italic\')"><i>I</i></button>' +
+                '<button type="button" onclick="execRichCmd(\'underline\')"><u>U</u></button>' +
+                '<button type="button" onclick="execRichCmd(\'strikeThrough\')"><s>S</s></button>' +
+                '<button type="button" onclick="execRichCmd(\'insertUnorderedList\')">• 列表</button>' +
+                '<button type="button" onclick="execRichCmd(\'insertOrderedList\')">1. 列表</button>' +
+                '</div>' +
+                '<div id="richEditor" contenteditable="true" style="min-height:200px;border:1px solid #ddd;border-radius:4px;padding:10px;font-size:14px;line-height:1.8;background:#fff;overflow-y:auto;">' + contentVal + '</div>' +
+                '<div class="hint">支持加粗、斜体、下划线、删除线、列表等样式，自动保留换行</div>' +
+                '</div>' +
                 '<div class="form-group"><label>分类</label><select id="formCategory" data-target="shinian">' + categoryOptions + '</select></div>';
             setTimeout(function() {
                 var sel = document.getElementById('formCategory');
@@ -721,6 +732,33 @@ function showModal(category, id, isNew) {
 
     body.innerHTML = html;
     modal.classList.add('active');
+    
+    // 聚焦到富文本编辑器
+    setTimeout(function() {
+        var editor = document.getElementById('richEditor');
+        if (editor) {
+            editor.focus();
+        }
+    }, 100);
+}
+
+// 富文本编辑器命令
+function execRichCmd(command) {
+    document.execCommand(command, false, null);
+    // 保持焦点
+    var editor = document.getElementById('richEditor');
+    if (editor) {
+        editor.focus();
+    }
+}
+
+// 获取富文本内容（HTML格式）
+function getRichContent() {
+    var editor = document.getElementById('richEditor');
+    if (editor) {
+        return editor.innerHTML;
+    }
+    return '';
 }
 
 function updateCharCount() {
@@ -739,7 +777,16 @@ function updateCharCount() {
 }
 
 function closeModal() {
-    document.getElementById('editModal').classList.remove('active');
+    // 清空所有表单内容，防止下次打开时残留
+    var modal = document.getElementById('editModal');
+    var body = document.getElementById('modalBody');
+    if (body) {
+        // 清空body内容
+        body.innerHTML = '';
+    }
+    if (modal) {
+        modal.classList.remove('active');
+    }
 }
 
 async function saveModal() {
@@ -772,7 +819,8 @@ async function saveModal() {
 
     // ===== 换行处理 =====
     if (category === 'shinian' && formData.content) {
-        formData.content = formData.content.replace(/\n/g, ' ').replace(/\r/g, ' ');
+        // 富文本内容保留HTML格式，只替换换行符（但富文本用<br>换行，不需要处理）
+        // 但为了数据一致性，保留contenteditable的HTML内容
     }
     if (category === 'gexidong' && formData.content) {
         formData.content = formData.content.replace(/\n/g, ' ').replace(/\r/g, ' ');
@@ -839,6 +887,11 @@ function collectFormData(category) {
         var el = document.getElementById(id);
         return el ? el.value : '';
     };
+    // 获取富文本内容
+    var getRich = function() {
+        var editor = document.getElementById('richEditor');
+        return editor ? editor.innerHTML : '';
+    };
     switch (category) {
         case 'xingyin':
             return {
@@ -848,7 +901,7 @@ function collectFormData(category) {
         case 'shinian':
             return {
                 title: getVal('formTitle'),
-                content: getVal('formContent'),
+                content: getRich(),
                 category: getSel('formCategory') || ''
             };
         case 'xueye':
@@ -1277,5 +1330,5 @@ if (savedToken) {
 
 initData();
 
-console.log('南山集后台管理已启动（修复版：自动日期 + 分类修复）');
+console.log('南山集后台管理已启动（修复版：清空表单 + 固定列宽 + 富文本）');
 console.log('请确保已配置 GitHub Token');
