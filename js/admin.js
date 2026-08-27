@@ -1,6 +1,6 @@
 /**
- * admin.js - 南山集后台管理（修复版）
- * 修复：输入框清空、固定列宽、富文本编辑器
+ * admin.js - 南山集后台管理（完整修复版）
+ * 修复：固定列宽、富文本编辑器、清空表单、自动日期
  */
 
 // ============================================================
@@ -464,7 +464,7 @@ function renderXingyinRow(item) {
     return '<tr><td style="width:80px;">' + item.id + '</td><td style="width:400px;" title="' + escapeHtml(item.text) + '">' + escapeHtml(item.text) + '</td><td style="width:120px;">' + escapeHtml(item.category) + '</td><td style="width:120px;">' + item.date + '</td><td style="width:140px;"><button onclick="editItem(\'xingyin\',\'' + item.id + '\')" class="btn btn-primary btn-sm">编辑</button><button onclick="deleteItem(\'xingyin\',\'' + item.id + '\')" class="btn btn-danger btn-sm">删除</button></td></tr>';
 }
 
-// 十年灯·文：固定列宽
+// ===== 十年灯·文：固定列宽 =====
 function renderShinianRow(item) {
     var topChecked = item.top ? 'checked' : '';
     return '<tr>' +
@@ -627,7 +627,7 @@ async function toggleTop(category, id, checked) {
 }
 
 // ============================================================
-// 10. 弹窗（修复：清空输入框 + 富文本编辑器）
+// 10. 弹窗（清空表单 + 富文本编辑器）
 // ============================================================
 
 function showModal(category, id, isNew) {
@@ -745,20 +745,10 @@ function showModal(category, id, isNew) {
 // 富文本编辑器命令
 function execRichCmd(command) {
     document.execCommand(command, false, null);
-    // 保持焦点
     var editor = document.getElementById('richEditor');
     if (editor) {
         editor.focus();
     }
-}
-
-// 获取富文本内容（HTML格式）
-function getRichContent() {
-    var editor = document.getElementById('richEditor');
-    if (editor) {
-        return editor.innerHTML;
-    }
-    return '';
 }
 
 function updateCharCount() {
@@ -781,7 +771,6 @@ function closeModal() {
     var modal = document.getElementById('editModal');
     var body = document.getElementById('modalBody');
     if (body) {
-        // 清空body内容
         body.innerHTML = '';
     }
     if (modal) {
@@ -818,10 +807,6 @@ async function saveModal() {
     if (!formData) return;
 
     // ===== 换行处理 =====
-    if (category === 'shinian' && formData.content) {
-        // 富文本内容保留HTML格式，只替换换行符（但富文本用<br>换行，不需要处理）
-        // 但为了数据一致性，保留contenteditable的HTML内容
-    }
     if (category === 'gexidong' && formData.content) {
         formData.content = formData.content.replace(/\n/g, ' ').replace(/\r/g, ' ');
     }
@@ -1330,5 +1315,5 @@ if (savedToken) {
 
 initData();
 
-console.log('南山集后台管理已启动（修复版：清空表单 + 固定列宽 + 富文本）');
+console.log('南山集后台管理已启动（完整修复版）');
 console.log('请确保已配置 GitHub Token');
