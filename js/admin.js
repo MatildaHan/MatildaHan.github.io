@@ -1,5 +1,6 @@
 /**
- * admin.js - 南山集后台管理（含置顶功能 + 列表开关 + 换行修复）
+ * admin.js - 南山集后台管理（完整版）
+ * 功能：增删改查 + 置顶开关 + 分类管理 + 评论审核 + 换行修复
  */
 
 // ============================================================
@@ -592,9 +593,6 @@ async function deleteItem(category, id) {
 // 9. 置顶切换
 // ============================================================
 
-/**
- * 切换置顶状态
- */
 async function toggleTop(category, id, checked) {
     try {
         var text = await loadDataFile(category);
@@ -733,35 +731,9 @@ function showModal(category, id, isNew) {
     modal.classList.add('active');
 }
 
-async function loadArticleContent(id) {
-    try {
-        var result = await readGitHubFile('articles/' + id + '.md');
-        if (result) {
-            var content = result.content;
-            var lines = content.split('\n');
-            var start = false;
-            var paragraphs = [];
-            for (var i = 0; i < lines.length; i++) {
-                var line = lines[i];
-                if (line.trim() === '---') {
-                    if (!start) {
-                        start = true;
-                        continue;
-                    } else {
-                        start = false;
-                        continue;
-                    }
-                }
-                if (!start && line.trim() && !line.match(/^date:/) && !line.match(/^title:/)) {
-                    paragraphs.push(line.trim());
-                }
-            }
-            return paragraphs.join('\n\n');
-        }
-        return '';
-    } catch (e) {
-        return '';
-    }
+function loadArticleContent(id) {
+    // 此函数已不再需要，保留空函数以防调用
+    return '';
 }
 
 function updateCharCount() {
@@ -811,16 +783,13 @@ async function saveModal() {
     var formData = collectFormData(category);
     if (!formData) return;
 
-    // ===== 修复：十年灯·文 正文换行处理 =====
+    // ===== 换行处理 =====
     if (category === 'shinian' && formData.content) {
         formData.content = formData.content.replace(/\n/g, ' ').replace(/\r/g, ' ');
     }
-
-    // ===== 修复：各西东·语 内容换行处理 =====
     if (category === 'gexidong' && formData.content) {
         formData.content = formData.content.replace(/\n/g, ' ').replace(/\r/g, ' ');
     }
-
     if (category === 'xingyin' && formData.text) {
         formData.text = formData.text.replace(/\n/g, ' ').trim();
         if (formData.text.length > 50) {
@@ -849,13 +818,16 @@ async function saveModal() {
     var newText = formatter(items);
     var success = await saveDataFile(category, newText);
 
-    // 保存文章详情（十年灯·文）
+    // ===== 保存文章详情（十年灯·文） =====
     if (category === 'shinian' && formData.content) {
         var articleId = isNew ? formData.id : id;
         var articleContent = '---\ndate: ' + formData.date + '\ntitle: ' + formData.title + '\n---\n\n' + formData.content;
         try {
             await writeGitHubFile('articles/' + articleId + '.md', articleContent, '保存文章: ' + formData.title);
-        } catch (e) {}
+        } catch (e) {
+            console.error('保存文章详情失败:', e);
+            showToast('文章内容保存失败，请重试', 'error');
+        }
     }
 
     if (success) {
@@ -1318,5 +1290,5 @@ if (savedToken) {
 
 initData();
 
-console.log('南山集后台管理已启动（含置顶功能 + 列表开关 + 换行修复）');
+console.log('南山集后台管理已启动');
 console.log('请确保已配置 GitHub Token');
