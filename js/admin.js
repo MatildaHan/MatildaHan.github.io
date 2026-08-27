@@ -687,29 +687,55 @@ function showModal(category, id, isNew) {
             break;
 
         case 'shinian':
-            var titleVal = existingData ? existingData[1] || '' : '';
-            var contentVal = existingData ? existingData[2] || '' : '';
-            var catVal = existingData ? existingData[3] || '' : '';
-            html =
-                '<div class="form-group"><label>标题</label><input type="text" id="formTitle" value="' + escapeHtml(titleVal) + '"></div>' +
-                '<div class="form-group"><label>正文内容（支持富文本）</label>' +
-                '<div class="rich-editor-toolbar">' +
-                '<button type="button" onclick="execRichCmd(\'bold\')"><b>B</b></button>' +
-                '<button type="button" onclick="execRichCmd(\'italic\')"><i>I</i></button>' +
-                '<button type="button" onclick="execRichCmd(\'underline\')"><u>U</u></button>' +
-                '<button type="button" onclick="execRichCmd(\'strikeThrough\')"><s>S</s></button>' +
-                '<button type="button" onclick="execRichCmd(\'insertUnorderedList\')">• 列表</button>' +
-                '<button type="button" onclick="execRichCmd(\'insertOrderedList\')">1. 列表</button>' +
-                '</div>' +
-                '<div id="richEditor" contenteditable="true" style="min-height:200px;border:1px solid #ddd;border-radius:4px;padding:10px;font-size:14px;line-height:1.8;background:#fff;overflow-y:auto;">' + contentVal + '</div>' +
-                '<div class="hint">支持加粗、斜体、下划线、删除线、列表等样式，自动保留换行</div>' +
-                '</div>' +
-                '<div class="form-group"><label>分类</label><select id="formCategory" data-target="shinian">' + categoryOptions + '</select></div>';
-            setTimeout(function() {
-                var sel = document.getElementById('formCategory');
-                if (sel) sel.value = catVal;
-            }, 50);
-            break;
+    var titleVal = existingData ? existingData[1] || '' : '';
+    var catVal = existingData ? existingData[3] || '' : '';
+    
+    // 先构建 HTML
+    html =
+        '<div class="form-group"><label>标题</label><input type="text" id="formTitle" value="' + escapeHtml(titleVal) + '"></div>' +
+        '<div class="form-group"><label>正文内容（支持富文本）</label>' +
+        '<div class="rich-editor-toolbar">' +
+        '<button type="button" onclick="execRichCmd(\'bold\')"><b>B</b></button>' +
+        '<button type="button" onclick="execRichCmd(\'italic\')"><i>I</i></button>' +
+        '<button type="button" onclick="execRichCmd(\'underline\')"><u>U</u></button>' +
+        '<button type="button" onclick="execRichCmd(\'strikeThrough\')"><s>S</s></button>' +
+        '<button type="button" onclick="execRichCmd(\'insertUnorderedList\')">列表</button>' +
+        '<button type="button" onclick="execRichCmd(\'insertOrderedList\')">序号</button>' +
+        '</div>' +
+        '<div id="richEditor" contenteditable="true" style="min-height:200px;border:1px solid #ddd;border-radius:4px;padding:10px;font-size:14px;line-height:1.8;background:#fff;overflow-y:auto;"></div>' +
+        '<div class="hint">支持加粗、斜体、下划线、删除线、列表等样式</div>' +
+        '</div>' +
+        '<div class="form-group"><label>分类</label><select id="formCategory" data-target="shinian">' + categoryOptions + '</select></div>';
+    
+    body.innerHTML = html;
+    modal.classList.add('active');
+    
+    // 设置分类值
+    setTimeout(function() {
+        var sel = document.getElementById('formCategory');
+        if (sel) sel.value = catVal;
+    }, 50);
+    
+    // ===== 加载文章内容到富文本编辑器 =====
+    if (!isNew && id) {
+        setTimeout(function() {
+            (async function() {
+                try {
+                    var article = await loadArticleContent(id);
+                    console.log('加载文章内容:', id, article ? '成功' : '失败');
+                    if (article) {
+                        var editor = document.getElementById('richEditor');
+                        if (editor) {
+                            editor.innerHTML = article;
+                        }
+                    }
+                } catch (e) {
+                    console.error('加载文章内容失败:', e);
+                }
+            })();
+        }, 150);
+    }
+    break;
 
         case 'xueye':
             var catVal = existingData ? existingData[2] || '' : '';
