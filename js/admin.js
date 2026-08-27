@@ -934,4 +934,428 @@ function collectFormData(category) {
         case 'xueye':
             return {
                 category: getSel('formCategory') || '',
-                images: getVal('formImages
+                images: getVal('formImages').split(',').map(function(s) {
+                    return s.trim();
+                }).filter(function(s) {
+                    return s;
+                })
+            };
+        case 'gexidong':
+            return {
+                content: getVal('formContent')
+            };
+        default:
+            return null;
+    }
+}
+
+// ============================================================
+// 12. 山野渔夫
+// ============================================================
+
+async function loadShanye() {
+    var text = await loadDataFile('shanye');
+    document.getElementById('shanyeContent').value = parseShanye(text);
+}
+
+async function saveShanye() {
+    var content = document.getElementById('shanyeContent').value;
+    await saveDataFile('shanye', content);
+    showToast('简介保存成功', 'success');
+}
+
+// ============================================================
+// 13. 主题设置
+// ============================================================
+
+async function loadSettings() {
+    var text = await loadDataFile('settings');
+    if (text) {
+        try {
+            var settings = JSON.parse(text);
+            document.getElementById('settingBgImage').value = settings.bgImage || '';
+            document.getElementById('settingBgColor').value = settings.bgColor || '#ecebe9';
+            document.getElementById('settingPrimaryColor').value = settings.primaryColor || '#6b5b47';
+            document.getElementById('settingTitleColor').value = settings.titleColor || '#333333';
+            document.getElementById('settingSubtitle').value = settings.subtitle || '春山如黛草如烟';
+        } catch (e) {}
+    }
+}
+
+async function saveSettings() {
+    var settings = {
+        bgImage: document.getElementById('settingBgImage').value,
+        bgColor: document.getElementById('settingBgColor').value,
+        primaryColor: document.getElementById('settingPrimaryColor').value,
+        titleColor: document.getElementById('settingTitleColor').value,
+        subtitle: document.getElementById('settingSubtitle').value
+    };
+    await saveDataFile('settings', JSON.stringify(settings, null, 2));
+    showToast('主题设置保存成功', 'success');
+}
+
+function previewSettings() {
+    var bgImage = document.getElementById('settingBgImage').value;
+    var bgColor = document.getElementById('settingBgColor').value;
+    var primaryColor = document.getElementById('settingPrimaryColor').value;
+    var titleColor = document.getElementById('settingTitleColor').value;
+    var subtitle = document.getElementById('settingSubtitle').value;
+    var modal = document.getElementById('editModal');
+    document.getElementById('modalTitle').textContent = '主题预览';
+    document.getElementById('modalBody').innerHTML = '<div style="padding:20px;background:' + bgColor + ';border-radius:8px;' + (bgImage ? 'background-image:url(' + bgImage + ');background-size:cover;' : '') + '"><div style="background:rgba(255,255,255,0.85);padding:40px;border-radius:8px;"><h1 style="color:' + titleColor + ';font-size:28px;font-weight:bold;">南山集</h1><p style="color:' + primaryColor + ';font-size:16px;">' + subtitle + '</p><hr style="border-color:' + primaryColor + ';margin:16px 0;"><p style="color:' + primaryColor + ';font-size:14px;">预览效果</p><div style="display:flex;gap:12px;margin-top:16px;"><span style="background:' + primaryColor + ';color:#fff;padding:4px 16px;border-radius:4px;">按钮</span><span style="border:1px solid ' + primaryColor + ';color:' + primaryColor + ';padding:4px 16px;border-radius:4px;">边框</span></div></div></div>';
+    modal.classList.add('active');
+    document.querySelector('.modal-footer .btn-primary').onclick = closeModal;
+}
+
+// ============================================================
+// 14. 同步与部署
+// ============================================================
+
+async function syncAll() {
+    showToast('正在同步数据...', 'info');
+    try {
+        await loadCategories('xingyin');
+        await loadCategories('shinian');
+        await loadCategories('xueye');
+        await updateAllStats();
+        await renderTable('xingyin');
+        await renderTable('shinian');
+        await renderTable('xueye');
+        await renderTable('gexidong');
+        await loadShanye();
+        await loadSettings();
+        renderCategoryTable('xingyin');
+        renderCategoryTable('shinian');
+        renderCategoryTable('xueye');
+        updateCategorySelect('xingyin');
+        updateCategorySelect('shinian');
+        updateCategorySelect('xueye');
+        showToast('同步完成', 'success');
+    } catch (e) {
+        showToast('同步失败: ' + e.message, 'error');
+    }
+}
+
+async function deploySite() {
+    try {
+        var token = getToken();
+        if (!token) return;
+        var url = 'https://api.github.com/repos/' + GITHUB_CONFIG.owner + '/' + GITHUB_CONFIG.repo + '/git/refs/heads/' + GITHUB_CONFIG.branch;
+        var response = await fetch(url, {
+            headers: {
+                'Authorization': 'token ' + token
+            }
+        });
+        var data = await response.json();
+        var latestSha = data.object.sha;
+        var commitUrl = 'https://api.github.com/repos/' + GITHUB_CONFIG.owner + '/' + GITHUB_CONFIG.repo + '/git/commits';
+        await fetch(commitUrl, {
+            method: 'POST',
+            headers: {
+                'Authorization': 'token ' + token,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                message: '部署更新',
+                tree: latestSha,
+                parents: [latestSha]
+            })
+        });
+        showToast('部署已触发，等待 1-3 分钟', 'success');
+    } catch (e) {
+        showToast('数据已保存，GitHub Pages 将自动部署', 'success');
+    }
+}
+
+// ============================================================
+// 15. Toast
+// ============================================================
+
+function showToast(message, type) {
+    if (!type) type = 'info';
+    var existing = document.querySelector('.toast');
+    if (existing) existing.remove();
+    var toast = document.createElement('div');
+    toast.className = 'toast ' + type;
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    setTimeout(function() {
+        toast.classList.add('show');
+    }, 10);
+    setTimeout(function() {
+        toast.classList.remove('show');
+        setTimeout(function() {
+            toast.remove();
+        }, 300);
+    }, 4000);
+}
+
+// ============================================================
+// 16. 导航切换
+// ============================================================
+
+var navItems = document.querySelectorAll('.nav-item');
+for (var i = 0; i < navItems.length; i++) {
+    navItems[i].addEventListener('click', function(e) {
+        e.preventDefault();
+        var items = document.querySelectorAll('.nav-item');
+        for (var j = 0; j < items.length; j++) {
+            items[j].classList.remove('active');
+        }
+        this.classList.add('active');
+        var tab = this.dataset.tab;
+        var panels = document.querySelectorAll('.tab-panel');
+        for (var k = 0; k < panels.length; k++) {
+            panels[k].classList.remove('active');
+        }
+        var panel = document.getElementById('panel-' + tab);
+        if (panel) {
+            panel.classList.add('active');
+            if (['xingyin', 'shinian', 'xueye', 'gexidong'].indexOf(tab) !== -1) {
+                renderTable(tab);
+            } else if (tab === 'shanye') {
+                loadShanye();
+            } else if (tab === 'settings') {
+                loadSettings();
+            } else if (tab === 'category') {
+                loadCategories('xingyin');
+                loadCategories('shinian');
+                loadCategories('xueye');
+                renderCategoryTable('xingyin');
+                renderCategoryTable('shinian');
+                renderCategoryTable('xueye');
+            } else if (tab === 'comments') {
+                renderCommentsPanel();
+            } else if (tab === 'dashboard') {
+                updateAllStats();
+            }
+        }
+    });
+}
+
+// ============================================================
+// 17. 评论审核功能
+// ============================================================
+
+async function getPendingComments() {
+    try {
+        var token = getToken();
+        if (!token) return [];
+
+        var url = 'https://api.github.com/repos/' + GITHUB_CONFIG.owner + '/' + GITHUB_CONFIG.repo + '/issues?labels=comment,pending&state=open&per_page=100';
+        var response = await fetch(url, {
+            headers: { 'Authorization': 'token ' + token }
+        });
+        if (!response.ok) return [];
+        return await response.json();
+    } catch (e) {
+        console.error('获取待审核评论失败:', e);
+        return [];
+    }
+}
+
+async function renderCommentsPanel() {
+    var issues = await getPendingComments();
+    var tbody = document.getElementById('tbody-comments');
+    if (!tbody) return;
+
+    if (issues.length === 0) {
+        tbody.innerHTML = '<tr class="empty-row"><td colspan="6">暂无待审核评论</td></tr>';
+        return;
+    }
+
+    var html = '';
+    for (var i = 0; i < issues.length; i++) {
+        var issue = issues[i];
+        var body = issue.body || '';
+        var pageMatch = body.match(/\[page:(.+?)\]/);
+        var pageTitle = pageMatch ? pageMatch[1] : '未知页面';
+        var authorMatch = body.match(/评论者：(.+)/);
+        var author = authorMatch ? authorMatch[1].trim() : '匿名';
+        var contentMatch = body.match(/评论内容：\n([\s\S]*?)$/);
+        var content = contentMatch ? contentMatch[1].trim() : body;
+
+        html += '<tr>' +
+            '<td>' + issue.number + '</td>' +
+            '<td>' + escapeHtml(pageTitle) + '</td>' +
+            '<td>' + escapeHtml(author) + '</td>' +
+            '<td title="' + escapeHtml(content) + '">' + escapeHtml(content.slice(0, 50)) + (content.length > 50 ? '...' : '') + '</td>' +
+            '<td>' + new Date(issue.created_at).toLocaleString() + '</td>' +
+            '<td>' +
+            '<button onclick="approveComment(' + issue.number + ')" class="btn btn-success btn-sm">通过</button> ' +
+            '<button onclick="rejectComment(' + issue.number + ')" class="btn btn-danger btn-sm">拒绝</button> ' +
+            '<button onclick="replyComment(' + issue.number + ')" class="btn btn-primary btn-sm">回复</button>' +
+            '</td>' +
+            '</tr>';
+    }
+    tbody.innerHTML = html;
+}
+
+async function approveComment(issueNumber) {
+    if (!confirm('确定通过这条评论吗？')) return;
+
+    try {
+        var token = getToken();
+        var url = 'https://api.github.com/repos/' + GITHUB_CONFIG.owner + '/' + GITHUB_CONFIG.repo + '/issues/' + issueNumber;
+
+        await fetch(url, {
+            method: 'PATCH',
+            headers: {
+                'Authorization': 'token ' + token,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                labels: ['comment', 'approved'],
+                state: 'closed'
+            })
+        });
+
+        showToast('评论已通过审核', 'success');
+        renderCommentsPanel();
+    } catch (e) {
+        showToast('操作失败: ' + e.message, 'error');
+    }
+}
+
+async function rejectComment(issueNumber) {
+    if (!confirm('确定拒绝这条评论吗？')) return;
+
+    try {
+        var token = getToken();
+        var url = 'https://api.github.com/repos/' + GITHUB_CONFIG.owner + '/' + GITHUB_CONFIG.repo + '/issues/' + issueNumber;
+
+        await fetch(url, {
+            method: 'PATCH',
+            headers: {
+                'Authorization': 'token ' + token,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                labels: ['comment', 'rejected'],
+                state: 'closed'
+            })
+        });
+
+        showToast('评论已拒绝', 'success');
+        renderCommentsPanel();
+    } catch (e) {
+        showToast('操作失败: ' + e.message, 'error');
+    }
+}
+
+async function replyComment(issueNumber) {
+    var replyContent = prompt('请输入回复内容：');
+    if (!replyContent || replyContent.trim() === '') return;
+
+    try {
+        var token = getToken();
+        var url = 'https://api.github.com/repos/' + GITHUB_CONFIG.owner + '/' + GITHUB_CONFIG.repo + '/issues/' + issueNumber + '/comments';
+
+        await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Authorization': 'token ' + token,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                body: '📝 **管理员回复：**\n\n' + replyContent.trim()
+            })
+        });
+
+        showToast('回复已发送', 'success');
+        renderCommentsPanel();
+    } catch (e) {
+        showToast('回复失败: ' + e.message, 'error');
+    }
+}
+
+function refreshComments() {
+    renderCommentsPanel();
+    showToast('已刷新', 'info');
+}
+
+// ============================================================
+// 18. 默认数据
+// ============================================================
+
+var DEFAULT_DATA = {
+    'xingyin': 'xy-001 | 欢迎使用南山集 | 默认 | ' + new Date().toISOString().slice(0, 10) + '\nxy-002 | 在这里管理你的短句 | 默认 | ' + new Date().toISOString().slice(0, 10),
+    'shinian': 'sn-001 | 第一篇文章 | 这是文章正文内容 | 默认 | ' + new Date().toISOString().slice(0, 10) + ' | false',
+    'xueye': 'xy-001 | ' + new Date().toISOString().slice(0, 10) + ' | 默认 | https://picsum.photos/150/150?1,https://picsum.photos/150/150?2',
+    'gexidong': 'gx-001 | 欢迎留言，记录你的想法。 | ' + new Date().toISOString().slice(0, 10),
+    'shanye': '山野居者，渔樵度日。在这里编辑你的个人简介。',
+    'settings': JSON.stringify({
+        bgImage: '',
+        bgColor: '#ecebe9',
+        primaryColor: '#6b5b47',
+        titleColor: '#333333',
+        subtitle: '春山如黛草如烟'
+    }, null, 2),
+    'categories_xingyin': '默认\n人生感悟\n生活',
+    'categories_shinian': '默认\n文学\n随笔\n诗词',
+    'categories_xueye': '默认\n风景\n人物\n纪实'
+};
+
+var DEFAULT_ARTICLE = '---\ndate: ' + new Date().toISOString().slice(0, 10) + '\ntitle: 第一篇文章\n---\n\n这是文章正文内容，你可以在这里写任何内容。';
+
+async function initData() {
+    var files = ['xingyin', 'shinian', 'xueye', 'gexidong', 'shanye', 'settings', 'categories_xingyin', 'categories_shinian', 'categories_xueye'];
+    var hasData = false;
+    for (var i = 0; i < files.length; i++) {
+        var file = files[i];
+        var text = await loadDataFile(file);
+        if (text && text.trim()) {
+            hasData = true;
+            break;
+        }
+    }
+    if (!hasData) {
+        showToast('首次运行，正在创建默认数据...', 'info');
+        for (var j = 0; j < files.length; j++) {
+            var key = files[j];
+            var content = DEFAULT_DATA[key] || '';
+            if (content) {
+                await saveDataFile(key, content);
+            }
+        }
+        try {
+            await writeGitHubFile('articles/sn-001.md', DEFAULT_ARTICLE, '创建默认文章');
+        } catch (e) {}
+        showToast('默认数据创建完成', 'success');
+    }
+
+    await loadCategories('xingyin');
+    await loadCategories('shinian');
+    await loadCategories('xueye');
+
+    await updateAllStats();
+    await renderTable('xingyin');
+    await renderTable('shinian');
+    await renderTable('xueye');
+    await renderTable('gexidong');
+    await loadShanye();
+    await loadSettings();
+    renderCategoryTable('xingyin');
+    renderCategoryTable('shinian');
+    renderCategoryTable('xueye');
+    updateCategorySelect('xingyin');
+    updateCategorySelect('shinian');
+    updateCategorySelect('xueye');
+}
+
+// ============================================================
+// 19. 启动
+// ============================================================
+
+var savedToken = localStorage.getItem('github_token');
+if (savedToken) {
+    githubToken = savedToken;
+    updateConnectionStatus(true);
+} else {
+    updateConnectionStatus(false);
+}
+
+initData();
+
+console.log('南山集后台管理已启动（修复版：编辑十年灯·文内容不丢失）');
+console.log('请确保已配置 GitHub Token');
