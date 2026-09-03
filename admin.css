@@ -1,0 +1,159 @@
+/* ===================================================================
+   南山集 · 后台管理样式
+   与前台一致的黑白灰极简语言，但强调可操作性
+   =================================================================== */
+
+:root {
+  --ink: #111111;
+  --ink-soft: #555555;
+  --line: #dcdcdc;
+  --paper: #ffffff;
+  --wash: #f7f7f7;
+  --hover: #f0f0f0;
+  --danger: #b03a2e;
+  --sidebar-w: 200px;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: "SimSun", "STSong", "Songti SC", serif;
+  color: var(--ink);
+  background: var(--wash);
+  line-height: 1.7;
+}
+
+a { color: inherit; }
+
+.admin-layout { display: flex; min-height: 100vh; }
+
+.admin-sidebar {
+  width: var(--sidebar-w);
+  flex-shrink: 0;
+  background: var(--paper);
+  border-right: 1px solid var(--line);
+  padding: 32px 0;
+}
+
+.admin-brand { padding: 0 24px 24px; font-size: 18px; letter-spacing: .06em; }
+
+.admin-menu { list-style: none; margin: 0; padding: 0; }
+.admin-menu li { border-top: 1px solid var(--line); }
+.admin-menu button {
+  display: block; width: 100%; text-align: left;
+  padding: 12px 24px; background: none; border: none;
+  font: inherit; font-size: 14px; cursor: pointer;
+}
+.admin-menu button:hover { background: var(--hover); }
+.admin-menu li.active button { background: var(--hover); font-weight: bold; }
+
+.admin-status {
+  padding: 12px 24px; font-size: 12px; color: var(--ink-soft);
+  border-top: 1px solid var(--line); margin-top: 12px;
+}
+.admin-status .connected { color: #1e7e34; }
+.admin-status button {
+  margin-top: 8px; font-size: 12px; background: none; border: 1px solid var(--line);
+  padding: 4px 10px; cursor: pointer; font-family: inherit;
+}
+
+.admin-main { flex: 1; padding: 40px 48px; max-width: 980px; }
+
+.admin-main h2 { font-weight: 400; font-size: 20px; margin: 0 0 4px; }
+.admin-toolbar {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 20px; gap: 12px; flex-wrap: wrap;
+}
+
+.btn {
+  padding: 8px 18px; font-size: 13px; font-family: inherit;
+  border: 1px solid var(--ink); background: var(--ink); color: var(--paper);
+  cursor: pointer;
+}
+.btn:hover { opacity: .85; }
+.btn.secondary { background: var(--paper); color: var(--ink); border-color: var(--line); }
+.btn.danger { background: var(--paper); color: var(--danger); border-color: var(--danger); }
+
+/* 表格 */
+table.admin-table { width: 100%; border-collapse: collapse; font-size: 14px; background: var(--paper); }
+table.admin-table th, table.admin-table td {
+  text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--line);
+  vertical-align: middle;
+}
+table.admin-table th { color: var(--ink-soft); font-weight: normal; font-size: 12px; }
+table.admin-table tr:hover { background: var(--hover); }
+table.admin-table .col-actions { white-space: nowrap; text-align: right; }
+table.admin-table .col-actions button {
+  background: none; border: none; font: inherit; font-size: 13px;
+  cursor: pointer; color: var(--ink-soft); margin-left: 10px;
+}
+table.admin-table .col-actions button:hover { color: var(--ink); }
+
+/* 弹窗 */
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,.35);
+  display: flex; align-items: center; justify-content: center; z-index: 100;
+}
+.modal-box {
+  background: var(--paper); width: 560px; max-width: 92vw; max-height: 86vh;
+  overflow-y: auto; padding: 28px; border: 1px solid var(--line);
+}
+.modal-box h3 { margin: 0 0 20px; font-weight: 400; font-size: 17px; }
+.field { margin-bottom: 16px; }
+.field label { display: block; font-size: 12px; color: var(--ink-soft); margin-bottom: 6px; }
+.field input[type="text"], .field select, .field textarea {
+  width: 100%; padding: 8px 10px; border: 1px solid var(--line);
+  font: inherit; font-size: 14px; background: var(--wash);
+}
+.field textarea { min-height: 90px; resize: vertical; }
+.char-count { font-size: 11px; color: var(--ink-soft); text-align: right; margin-top: 4px; }
+.char-count.warn { color: var(--danger); }
+
+/* 富文本编辑器 */
+.rte-toolbar { display: flex; gap: 4px; margin-bottom: 6px; }
+.rte-toolbar button {
+  width: 30px; height: 30px; border: 1px solid var(--line); background: var(--paper);
+  cursor: pointer; font-size: 13px;
+}
+.rte-toolbar button:hover { background: var(--hover); }
+.rte-editor {
+  min-height: 200px; border: 1px solid var(--line); padding: 10px 12px;
+  font-size: 14px; background: var(--wash); overflow-y: auto;
+}
+
+.modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
+
+.toggle { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; }
+
+.hint { font-size: 12px; color: var(--ink-soft); margin: 4px 0 0; }
+
+.toast {
+  position: fixed; bottom: 28px; right: 28px; background: var(--ink); color: var(--paper);
+  padding: 12px 20px; font-size: 13px; z-index: 200; opacity: 0; transform: translateY(8px);
+  transition: opacity .2s ease, transform .2s ease;
+}
+.toast.show { opacity: 1; transform: translateY(0); }
+
+.category-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 10px 0; border-bottom: 1px solid var(--line); font-size: 14px;
+}
+.category-row .count { color: var(--ink-soft); font-size: 12px; margin-left: 8px; }
+
+.empty { color: var(--ink-soft); font-size: 13px; padding: 16px 0; }
+
+.login-overlay {
+  position: fixed; inset: 0; background: var(--wash);
+  display: flex; align-items: center; justify-content: center; z-index: 300;
+}
+.login-box { background: var(--paper); border: 1px solid var(--line); padding: 32px; width: 380px; }
+.login-box h2 { margin-top: 0; font-weight: 400; }
+.login-box p { font-size: 13px; color: var(--ink-soft); }
+.login-box input { width: 100%; padding: 9px 10px; border: 1px solid var(--line); font: inherit; margin-bottom: 12px; }
+
+@media (max-width: 760px) {
+  .admin-layout { flex-direction: column; }
+  .admin-sidebar { width: 100%; }
+  .admin-main { padding: 24px; }
+}
