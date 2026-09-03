@@ -12,14 +12,14 @@ body {
 }
 
 body {
-    font-family: "SimSun", "STSong", serif;
-    color: #6b5b47;
+    font-family: "SimSun", "STSong", "Georgia", serif;
+    color: #222222;
     min-height: 100vh;
     padding-top: 50px;
     padding-bottom: 60px;
     padding-left: 20px;
     padding-right: 20px;
-    background-color: #ecebe9;
+    background-color: #f7f7f7;
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
@@ -41,7 +41,7 @@ body {
     align-items: baseline;
     gap: 12px;
     margin-bottom: 40px;
-    border-bottom: 1px solid #b8a894;
+    border-bottom: 1px solid #cccccc;
     position: relative;
     width: 100%;
     overflow: hidden;
@@ -57,16 +57,18 @@ body {
 }
 
 .title-main {
-    font-size: 24px;
+    font-size: 28px;
     font-weight: bold;
-    color: #333333;
+    color: #111111;
     flex-shrink: 0;
+    letter-spacing: 2px;
 }
 
 .title-sub {
-    font-size: 15px;
-    color: #8c7c68;
+    font-size: 14px;
+    color: #666666;
     flex-shrink: 0;
+    letter-spacing: 1px;
 }
 
 /* ===== 布局 ===== */
@@ -86,9 +88,9 @@ body {
     min-width: 0;
     display: flex;
     flex-direction: column;
-    gap: 40px;
+    gap: 32px;
     font-size: 14px;
-    color: #82725e;
+    color: #555555;
     overflow: hidden;
     word-break: break-word;
     padding-right: 20px;
@@ -105,6 +107,7 @@ body {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    color: #555555;
 }
 
 .menu-item.active::before {
@@ -115,16 +118,16 @@ body {
     transform: translateY(-50%);
     width: 2px;
     height: 14px;
-    background-color: #6b5b47;
+    background-color: #111111;
 }
 
 .menu-item.active {
     font-weight: bold;
-    color: #6b5b47;
+    color: #111111;
 }
 
 .menu-item:hover {
-    color: #6b5b47;
+    color: #111111;
 }
 
 /* ========== 右侧内容 ========== */
@@ -145,16 +148,16 @@ body.detail-open .content-wrap {
 .content-list {
     display: flex;
     flex-direction: column;
-    gap: 24px;
+    gap: 20px;
     width: 100%;
     overflow: hidden;
 }
 
 .item-divider {
     width: 100%;
-    max-width: 40px;
-    border-bottom: 1px solid #b8a894;
-    margin: 6px 0;
+    max-width: 60px;
+    border-bottom: 1px solid #d0d0d0;
+    margin: 4px 0;
 }
 
 .line-clamp-2 {
@@ -170,7 +173,7 @@ body.detail-open .content-wrap {
     position: absolute;
     right: 0;
     bottom: 0;
-    background-color: #ecebe9;
+    background-color: #f7f7f7;
     padding-left: 4px;
 }
 
@@ -182,32 +185,38 @@ body.detail-open .content-wrap {
     justify-content: space-between;
     align-items: center;
     cursor: pointer;
-    padding: 6px 0;
-    transition: background 0.2s;
+    padding: 8px 0;
+    transition: background 0.15s;
     gap: 12px;
     width: 100%;
     overflow: hidden;
+    border-bottom: 1px solid #eeeeee;
+}
+
+.item-module:last-child {
+    border-bottom: none;
 }
 
 .item-module:hover {
-    background-color: rgba(184, 168, 148, 0.1);
+    background-color: #f0f0f0;
 }
 
 .text-content {
-    font-size: 18px;
-    font-weight: bold;
+    font-size: 17px;
+    font-weight: normal;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
     flex: 1;
     min-width: 0;
-    color: #6b5b47;
+    color: #222222;
 }
 
 .date-text {
     font-size: 13px;
-    color: #8c7c68;
+    color: #888888;
     flex-shrink: 0;
+    font-family: "Georgia", serif;
 }
 
 /* ============================================================
@@ -216,16 +225,21 @@ body.detail-open .content-wrap {
 .poem-item {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 4px;
     cursor: pointer;
-    transition: background 0.2s;
-    padding: 6px 0;
+    transition: background 0.15s;
+    padding: 8px 0;
     width: 100%;
     overflow: hidden;
+    border-bottom: 1px solid #eeeeee;
+}
+
+.poem-item:last-child {
+    border-bottom: none;
 }
 
 .poem-item:hover {
-    background-color: rgba(184, 168, 148, 0.1);
+    background-color: #f0f0f0;
 }
 
 .poem-header {
@@ -238,29 +252,30 @@ body.detail-open .content-wrap {
 .poem-header-left {
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 8px;
     overflow: hidden;
     flex: 1;
 }
 
 .poem-top-badge {
-    color: #e74c3c;
-    font-size: 18px;
+    color: #222222;
+    font-size: 14px;
     flex-shrink: 0;
+    font-weight: bold;
 }
 
 .poem-title {
-    font-size: 20px;
+    font-size: 17px;
     font-weight: bold;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    color: #6b5b47;
+    color: #222222;
 }
 
 .poem-desc {
     font-size: 14px;
-    color: #6b5b47;
+    color: #555555;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -274,29 +289,35 @@ body.detail-open .content-wrap {
     display: flex;
     align-items: center;
     gap: 16px;
-    padding: 6px 0;
+    padding: 8px 0;
     cursor: pointer;
-    transition: background 0.2s;
+    transition: background 0.15s;
     width: 100%;
     overflow: hidden;
+    border-bottom: 1px solid #eeeeee;
+}
+
+.image-item-module:last-child {
+    border-bottom: none;
 }
 
 .image-item-module:hover {
-    background-color: rgba(184, 168, 148, 0.1);
+    background-color: #f0f0f0;
 }
 
 .image-thumb {
     width: 80px;
     height: 80px;
     object-fit: cover;
-    border-radius: 4px;
+    border-radius: 2px;
     flex-shrink: 0;
-    background: #ddd;
+    background: #e0e0e0;
+    border: 1px solid #d0d0d0;
 }
 
 .image-date {
     font-size: 14px;
-    color: #8c7c68;
+    color: #666666;
     margin-left: auto;
     flex-shrink: 0;
 }
@@ -310,19 +331,24 @@ body.detail-open .content-wrap {
     align-items: center;
     cursor: pointer;
     padding: 8px 0;
-    transition: background 0.2s;
+    transition: background 0.15s;
     gap: 16px;
     width: 100%;
     overflow: hidden;
+    border-bottom: 1px solid #eeeeee;
+}
+
+.msg-item-module:last-child {
+    border-bottom: none;
 }
 
 .msg-item-module:hover {
-    background-color: rgba(184, 168, 148, 0.1);
+    background-color: #f0f0f0;
 }
 
 .msg-content-text {
     font-size: 15px;
-    color: #6b5b47;
+    color: #333333;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -332,7 +358,7 @@ body.detail-open .content-wrap {
 
 .msg-date {
     font-size: 13px;
-    color: #8c7c68;
+    color: #888888;
     flex-shrink: 0;
     margin-left: 12px;
 }
@@ -344,8 +370,13 @@ body.detail-open .content-wrap {
     font-size: 14px;
     line-height: 1.8;
     overflow: hidden;
-    padding: 4px 0;
-    color: #6b5b47;
+    padding: 8px 0;
+    color: #333333;
+    border-bottom: 1px solid #eeeeee;
+}
+
+.intro-item:last-child {
+    border-bottom: none;
 }
 
 /* ============================================================
@@ -372,15 +403,15 @@ body.detail-open .content-wrap {
     min-height: 80vh;
 }
 
-/* 详情页容器：宽度100%，背景白色90%不透明度 */
+/* 详情页容器：宽度100%，纯白背景 */
 .detail-view.active .detail-container {
     width: 100%;
     max-width: 1000px;
     margin: 0 auto;
-    background-color: rgba(255, 255, 255, 0.9);
+    background-color: #ffffff;
     padding: 30px 60px 60px 60px;
-    border-radius: 4px;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+    border-radius: 2px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
     flex: 1;
     display: flex;
     flex-direction: column;
@@ -390,25 +421,25 @@ body.detail-open .content-wrap {
 /* 面包屑导航 - 顶部距离30px */
 .detail-container .breadcrumb {
     font-size: 13px;
-    color: #8c7c68;
+    color: #888888;
     margin-top: 0;
     margin-bottom: 30px;
     padding-top: 0;
     cursor: pointer;
     display: inline-block;
-    transition: color 0.2s;
+    transition: color 0.15s;
     flex-shrink: 0;
 }
 
 .detail-container .breadcrumb:hover {
-    color: #6b5b47;
+    color: #222222;
 }
 
 /* 标题与日期 */
 .detail-container .detail-title {
     font-size: 26px;
     font-weight: 600;
-    color: #333333;
+    color: #111111;
     margin-bottom: 8px;
     line-height: 1.4;
     flex-shrink: 0;
@@ -426,8 +457,8 @@ body.detail-open .content-wrap {
 /* 正文内容 - 自动撑开 */
 .detail-container .detail-body {
     font-size: 16px;
-    line-height: 1.9;
-    color: #3d3d3d;
+    line-height: 2;
+    color: #333333;
     flex: 1;
 }
 
@@ -440,7 +471,7 @@ body.detail-open .content-wrap {
     max-width: 100%;
     height: auto;
     margin: 12px 0;
-    border-radius: 8px;
+    border-radius: 2px;
 }
 
 /* 返回按钮 */
@@ -448,19 +479,19 @@ body.detail-open .content-wrap {
     display: inline-block;
     margin-top: 40px;
     padding: 8px 28px;
-    border: 1px solid #d0c8bc;
-    color: #6b5b47;
+    border: 1px solid #cccccc;
+    color: #333333;
     background: transparent;
     cursor: pointer;
     font-size: 14px;
-    transition: all 0.2s;
-    border-radius: 4px;
+    transition: all 0.15s;
+    border-radius: 2px;
     flex-shrink: 0;
 }
 
 .back-btn:hover {
-    background: #f0ebe4;
-    border-color: #b0a090;
+    background: #f0f0f0;
+    border-color: #999999;
 }
 
 /* ============================================================
@@ -470,13 +501,13 @@ body.detail-open .content-wrap {
 .comments-section {
     margin-top: 40px;
     padding-top: 30px;
-    border-top: 2px solid #e8e5e0;
+    border-top: 1px solid #e8e8e8;
 }
 
 .comments-title {
-    font-size: 18px;
+    font-size: 17px;
     font-weight: 600;
-    color: #333;
+    color: #222222;
     margin-bottom: 20px;
 }
 
@@ -486,7 +517,7 @@ body.detail-open .content-wrap {
 
 .comment-item {
     padding: 16px 0;
-    border-bottom: 1px solid #f0ede8;
+    border-bottom: 1px solid #f0f0f0;
 }
 
 .comment-item:last-child {
@@ -502,33 +533,33 @@ body.detail-open .content-wrap {
 
 .comment-author {
     font-weight: 600;
-    color: #333;
+    color: #222222;
     font-size: 14px;
 }
 
 .comment-date {
     font-size: 12px;
-    color: #999;
+    color: #999999;
 }
 
 .comment-body {
     font-size: 14px;
-    color: #555;
+    color: #444444;
     line-height: 1.8;
 }
 
 .comment-replies {
     margin-top: 12px;
     padding-left: 20px;
-    border-left: 3px solid #e8e5e0;
+    border-left: 2px solid #e0e0e0;
 }
 
 .reply-item {
     padding: 8px 12px;
     font-size: 14px;
-    color: #555;
-    background: #f8f7f5;
-    border-radius: 4px;
+    color: #444444;
+    background: #f7f7f7;
+    border-radius: 2px;
     margin-bottom: 6px;
 }
 
@@ -538,32 +569,32 @@ body.detail-open .content-wrap {
 
 .reply-author {
     font-weight: 600;
-    color: #6b5b47;
+    color: #222222;
     margin-right: 8px;
 }
 
 .reply-admin .reply-author {
-    color: #27ae60;
+    color: #222222;
 }
 
 .comments-empty {
-    color: #999;
+    color: #999999;
     font-size: 14px;
     padding: 20px 0;
     text-align: center;
 }
 
 .comment-form {
-    background: #f8f7f5;
+    background: #f7f7f7;
     padding: 24px;
-    border-radius: 8px;
+    border-radius: 2px;
     margin-top: 10px;
 }
 
 .comment-form h4 {
     font-size: 15px;
     margin-bottom: 12px;
-    color: #333;
+    color: #333333;
 }
 
 .comment-form .form-group {
@@ -574,17 +605,19 @@ body.detail-open .content-wrap {
 .comment-form textarea {
     width: 100%;
     padding: 10px 12px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
+    border: 1px solid #dddddd;
+    border-radius: 2px;
     font-size: 14px;
     font-family: inherit;
-    transition: border-color 0.2s;
+    transition: border-color 0.15s;
+    background: #ffffff;
+    color: #333333;
 }
 
 .comment-form input[type="text"]:focus,
 .comment-form textarea:focus {
     outline: none;
-    border-color: #6b5b47;
+    border-color: #888888;
 }
 
 .comment-form textarea {
@@ -595,27 +628,27 @@ body.detail-open .content-wrap {
 .comment-form .char-count {
     text-align: right;
     font-size: 12px;
-    color: #999;
+    color: #999999;
     margin-top: 4px;
 }
 
 .comment-form .char-count.warning {
-    color: #e67e22;
+    color: #888888;
 }
 
 .comment-form .btn-primary {
-    background: #6b5b47;
-    color: #fff;
+    background: #222222;
+    color: #ffffff;
     border: none;
     padding: 8px 24px;
-    border-radius: 4px;
+    border-radius: 2px;
     cursor: pointer;
     font-size: 14px;
-    transition: background 0.2s;
+    transition: background 0.15s;
 }
 
 .comment-form .btn-primary:hover {
-    background: #5a4d3b;
+    background: #444444;
 }
 
 /* ============================================================
@@ -631,13 +664,19 @@ body.detail-open .content-wrap {
 
 .pagination button {
     background: transparent;
-    border: 1px solid #b8a894;
-    color: #6b5b47;
-    padding: 6px 14px;
+    border: 1px solid #cccccc;
+    color: #444444;
+    padding: 6px 16px;
     font-family: "SimSun", "STSong", serif;
     font-size: 14px;
     cursor: pointer;
-    border-radius: 4px;
+    border-radius: 2px;
+    transition: all 0.15s;
+}
+
+.pagination button:hover:not(:disabled) {
+    background: #f0f0f0;
+    border-color: #888888;
 }
 
 .pagination button:disabled {
@@ -647,7 +686,7 @@ body.detail-open .content-wrap {
 
 .pagination .page-info {
     font-size: 14px;
-    color: #8c7c68;
+    color: #888888;
 }
 
 /* ============================================================
@@ -691,7 +730,7 @@ body.detail-open .content-wrap {
         gap: 12px 24px;
         padding-bottom: 16px;
         padding-right: 0;
-        border-bottom: 1px solid #b8a894;
+        border-bottom: 1px solid #cccccc;
     }
 
     .menu-item {
@@ -704,7 +743,7 @@ body.detail-open .content-wrap {
     }
 
     .menu-item.active {
-        border-bottom: 2px solid #6b5b47;
+        border-bottom: 2px solid #222222;
         padding-bottom: 4px;
     }
 
@@ -746,7 +785,7 @@ body.detail-open .content-wrap {
     }
 
     .title-main {
-        font-size: 18px;
+        font-size: 20px;
     }
 
     .title-sub {
@@ -774,7 +813,7 @@ body.detail-open .content-wrap {
     }
 
     .pagination button {
-        padding: 4px 10px;
+        padding: 4px 12px;
         font-size: 12px;
     }
 
@@ -789,7 +828,6 @@ body.detail-open .content-wrap {
     .detail-view.active .detail-container {
         padding: 16px 16px 30px 16px;
         min-height: 50vh;
-        background-color: rgba(255, 255, 255, 0.95);
     }
 
     .detail-container .detail-title {
@@ -848,7 +886,7 @@ body.detail-open .content-wrap {
     }
 
     .title-main {
-        font-size: 16px;
+        font-size: 17px;
     }
 
     .title-sub {
@@ -888,7 +926,7 @@ body.detail-open .content-wrap {
     }
 
     .poem-title {
-        font-size: 16px;
+        font-size: 15px;
     }
 
     .poem-desc {
