@@ -433,3 +433,27 @@ tr:hover { background: #fafafa; }
   }
   .admin-main { padding: 16px; }
 }
+
+/* 富文本工具栏 */
+.rich-toolbar{
+  display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;padding:6px;background:#f5f5f5;border:1px solid #ddd;
+}
+.rich-toolbar button{
+  border:1px solid #ccc;background:#fff;padding:4px 8px;cursor:pointer;
+}
+.rich-editor{
+  min-height:160px;border:1px solid #ccc;padding:10px;
+}
+/* 雪夜舟图片列表 */
+.img-item{
+  display:flex;gap:10px;align-items:center;padding:8px;border:1px solid #eee;margin:6px 0;
+}
+.img-item img{
+  width:80px;height:80px;object-fit:cover;border:1px solid #ddd;
+}
+.img-item .img-desc{
+  flex:1;
+}
+.img-item button{
+  color:#fff;background:#c84242;border:none;padding:4px 8px;cursor:pointer;
+}
