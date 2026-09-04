@@ -1,10 +1,11 @@
-// admin.js 南山集后台完整代码
+// admin.js 南山集后台｜全部富文本 + 雪夜舟图片上传+描述
 const Admin = {
   token: null,
   currentPanel: "xingyin",
   modalWrap: null,
   modalBody: null,
   modalMeta: { key: null, id: null, isNew: false },
+  tempImageList:[], //雪夜舟弹窗临时图片数组 {url,desc}
 
   async init() {
     this.modalWrap = document.getElementById("modalWrap");
@@ -22,7 +23,7 @@ const Admin = {
     }
     document.querySelector("#tokenStatus").innerText = `Token: ${this.token.slice(0, 8)}***`;
 
-    // 导航事件
+    //导航
     document.querySelectorAll(".admin-nav-item").forEach(el => {
       el.onclick = () => {
         document.querySelectorAll(".admin-nav-item").forEach(n => n.classList.remove("active"));
@@ -33,7 +34,7 @@ const Admin = {
     });
     document.querySelector(`.admin-nav-item[data-panel="xingyin"]`).classList.add("active");
 
-    // 弹窗事件
+    //弹窗事件
     document.querySelector("#modalClose").onclick = () => this.closeModal();
     document.querySelector("#modalCancel").onclick = () => this.closeModal();
     document.querySelector("#modalSave").onclick = () => this.onModalSave();
@@ -41,7 +42,7 @@ const Admin = {
     await this.renderPanel("xingyin");
   },
 
-  // GitHub底层写入文件
+  //github写入文件
   async writeGitHubFile(path, content, sha, commitMsg) {
     const body = {
       message: commitMsg || "update file",
@@ -63,7 +64,7 @@ const Admin = {
     return await res.json();
   },
 
-  // GitHub删除文件
+  //github删除文件
   async deleteGitHubFile(path, sha, commitMsg) {
     const body = {
       message: commitMsg || "delete file",
@@ -81,18 +82,102 @@ const Admin = {
     return await res.json();
   },
 
-  // 生成唯一ID
   genId(prefix) {
     return prefix + Date.now().toString(36);
   },
 
-  // 获取当前日期 YYYY‑MM‑DD
   getTodayStr() {
     const d = new Date();
     const y = d.getFullYear();
     const m = String(d.getMonth() + 1).padStart(2, "0");
     const day = String(d.getDate()).padStart(2, "0");
     return `${y}-${m}-${day}`;
+  },
+
+  //富文本工具栏注入
+  buildRichToolbar(editorId){
+    return `
+    <div class="rich-toolbar">
+      <button type="button" onclick="document.getElementById('${editorId}').execCommand('bold',false,null)">B</button>
+      <button type="button" onclick="document.getElementById('${editorId}').execCommand('italic',false,null)">I</button>
+      <button type="button" onclick="document.getElementById('${editorId}').execCommand('underline',false,null)">U</button>
+      <button type="button" onclick="document.getElementById('${editorId}').execCommand('strikeThrough',false,null)">S</button>
+      <button type="button" onclick="document.getElementById('${editorId}').execCommand('insertUnorderedList',false,null)">无序列表</button>
+      <button type="button" onclick="document.getElementById('${editorId}').execCommand('insertOrderedList',false,null)">有序列表</button>
+    </div>
+    <div id="${editorId}" class="rich-editor" contenteditable="true"></div>
+    `;
+  },
+
+  //图片选择上传：本地图片→上传github /upload/xxx 返回线上url
+  async uploadImageToGithub(file){
+    return new Promise((resolve,reject)=>{
+      const reader = new FileReader();
+      reader.onload = async (e)=>{
+        const base64Raw = e.target.result.split(",")[1];
+        const filename = this.genId("img_") + "_" + file.name;
+        const uploadPath = `upload/${filename}`;
+        try{
+          const resp = await fetch(`${DataLoader.baseUrl}/${uploadPath}?ref=${DataLoader.branch}`,{
+            method:"PUT",
+            headers:{
+              "Authorization":`token ${this.token}`,
+              "Content-Type":"application/json"
+            },
+            body:JSON.stringify({
+              message:"upload image",
+              content: base64Raw
+            })
+          })
+          if(!resp.ok) throw new Error("图片上传失败");
+          const json = await resp.json();
+          //github pages raw地址
+          const rawUrl = json.content.html_url.replace("/blob/","/raw/");
+          resolve(rawUrl);
+        }catch(err){
+          reject(err);
+        }
+      }
+      reader.readAsDataURL(file);
+    })
+  },
+
+  //渲染雪夜舟图片列表DOM
+  renderImageListDom(){
+    let html = `<div id="imgWrap">`;
+    this.tempImageList.forEach((item,idx)=>{
+      html += `
+      <div class="img-item">
+        <img src="${item.url}" alt="">
+        <div class="img-desc">
+          <label>图片描述</label>
+          <input value="${item.desc||""}" onchange="Admin.tempImageList[${idx}].desc=this.value">
+        </div>
+        <button onclick="Admin.tempImageList.splice(${idx},1);Admin.renderImageListDom();">删除</button>
+      </div>
+      `
+    })
+    html += `</div>
+    <div style="margin-top:10px;">
+      <input type="file" id="fileInput" accept="image/*">
+      <button onclick="Admin.handleSelectImage()">上传图片到仓库</button>
+    </div>`;
+    document.getElementById("imgContainer").innerHTML = html;
+  },
+
+  async handleSelectImage(){
+    const fileDom = document.getElementById("fileInput");
+    const file = fileDom.files[0];
+    if(!file) return;
+    try{
+      alert("正在上传图片，请稍候");
+      const url = await this.uploadImageToGithub(file);
+      this.tempImageList.push({url:url,desc:""});
+      this.renderImageListDom();
+      alert("图片上传成功");
+    }catch(e){
+      alert("上传失败："+e.message);
+    }
   },
 
   async renderPanel(panelKey) {
@@ -194,10 +279,13 @@ const Admin = {
         const { content } = await DataLoader.getFile("data/shanye.md");
         wrap.innerHTML = `
           <h2>山野渔夫（个人简介）</h2>
-          <textarea id="shanyeText" rows="12">${content}</textarea>
+          ${this.buildRichToolbar("shanyeRich")}
           <br/>
           <button class="btn btn-primary" onclick="Admin.saveShanye()">保存</button>
         `;
+        setTimeout(()=>{
+          document.getElementById("shanyeRich").innerHTML = content;
+        },0)
       } else if (panelKey === "category") {
         wrap.innerHTML = "加载中...";
         const catXingyin = await DataLoader.loadCategoryFile("xingyin");
@@ -273,16 +361,18 @@ const Admin = {
     this.modalMeta = { key, id, isNew };
     document.getElementById("modalTitle").innerText = isNew ? "新增" : "编辑";
     this.modalWrap.classList.remove("hidden");
-    // 根据栏目渲染表单
+    this.tempImageList = [];
+
     if (key === "xingyin") {
       const cats = await DataLoader.loadCategoryFile("xingyin");
       this.modalBody.innerHTML = `
-        <div>内容(最多50字符)：<input id="m_content" maxlength="50"/></div>
         <div>分类：
           <select id="m_cat">
             ${cats.map(c => `<option value="${c}">${c}</option>`).join("")}
           </select>
         </div>
+        <div style="margin-top:8px;">内容（富文本）</div>
+        ${this.buildRichToolbar("rich_xingyin")}
       `;
     } else if (key === "shinian") {
       const cats = await DataLoader.loadCategoryFile("shinian");
@@ -294,7 +384,8 @@ const Admin = {
           </select>
         </div>
         <div>置顶：<input type="checkbox" id="m_top"/></div>
-        <div>正文(富文本)：<div contenteditable id="m_body" style="min-height:180px;border:1px solid #ccc;padding:8px;"></div></div>
+        <div style="margin-top:8px;">正文（富文本）</div>
+        ${this.buildRichToolbar("rich_shinian")}
       `;
     } else if (key === "xueye") {
       const cats = await DataLoader.loadCategoryFile("xueye");
@@ -304,30 +395,44 @@ const Admin = {
             ${cats.map(c => `<option value="${c}">${c}</option>`).join("")}
           </select>
         </div>
-        <div>图片URL(多个逗号分隔)：<input id="m_urls"/></div>
+        <div style="margin-top:10px;">图集管理（上传图片+填写描述）</div>
+        <div id="imgContainer"></div>
       `;
+      this.renderImageListDom();
     } else if (key === "gexidong") {
       this.modalBody.innerHTML = `
-        <div>留言内容：<textarea id="m_content"></textarea></div>
+        <div>留言内容（富文本）</div>
+        ${this.buildRichToolbar("rich_gexidong")}
       `;
     }
-    // 编辑回填数据
+
+    //编辑回填
     if (!isNew) {
       const mdRows = await DataLoader.loadMd(key);
       const row = mdRows.find(r => r[0] === id);
       if (!row) return;
       if (key === "xingyin") {
-        document.getElementById("m_content").value = row[1];
         document.getElementById("m_cat").value = row[2];
+        setTimeout(()=>document.getElementById("rich_xingyin").innerHTML = row[1],0);
       } else if (key === "shinian") {
         document.getElementById("m_title").value = row[1];
         document.getElementById("m_cat").value = row[3];
         document.getElementById("m_top").checked = row[5] === "true";
+        const art = await DataLoader.getFile(`articles/${id}.md`);
+        setTimeout(()=>document.getElementById("rich_shinian").innerHTML = art.content,0);
       } else if (key === "xueye") {
-        document.getElementById("m_cat").value = row[2];
-        document.getElementById("m_urls").value = row[3];
+        let raw = row[3];
+        try{
+          //优先解析JSON新格式
+          this.tempImageList = JSON.parse(raw);
+        }catch(e){
+          //兼容旧逗号分割url格式
+          const arr = raw.split(",");
+          this.tempImageList = arr.map(u=>({url:u.trim(),desc:""}));
+        }
+        this.renderImageListDom();
       } else if (key === "gexidong") {
-        document.getElementById("m_content").value = row[1];
+        setTimeout(()=>document.getElementById("rich_gexidong").innerHTML = row[1],0);
       }
     }
   },
@@ -335,6 +440,7 @@ const Admin = {
   closeModal() {
     this.modalWrap.classList.add("hidden");
     this.modalMeta = { key: null, id: null, isNew: false };
+    this.tempImageList = [];
   },
 
   async onModalSave() {
@@ -346,59 +452,59 @@ const Admin = {
       const today = this.getTodayStr();
 
       if (key === "xingyin") {
-        const content = document.getElementById("m_content").value.trim();
+        const html = document.getElementById("rich_xingyin").innerHTML.trim();
         const cat = document.getElementById("m_cat").value;
-        if (!content) throw new Error("内容不能为空");
+        if (!html) throw new Error("内容不能为空");
         if (isNew) {
           const newId = this.genId("xy");
-          rows.push([newId, content, cat, today]);
+          rows.push([newId, html, cat, today]);
         } else {
           const idx = rows.findIndex(r => r[0] === id);
-          rows[idx] = [id, content, cat, rows[idx][3]];
+          rows[idx] = [id, html, cat, rows[idx][3]];
         }
       } else if (key === "shinian") {
         const title = document.getElementById("m_title").value.trim();
         const cat = document.getElementById("m_cat").value;
         const top = document.getElementById("m_top").checked ? "true" : "false";
-        const bodyHtml = document.getElementById("m_body").innerHTML;
+        const bodyHtml = document.getElementById("rich_shinian").innerHTML;
         if (!title) throw new Error("标题不能为空");
         let articleId;
         if (isNew) {
           articleId = this.genId("sn");
-          rows.push([articleId, title, bodyHtml.slice(0,60)+"…", cat, today, top]);
-          // 写入文章详情文件 articles/sn‑xxx.md
+          const preview = bodyHtml.replace(/<[^>]+>/g,"").slice(0,60)+"…";
+          rows.push([articleId, title, preview, cat, today, top]);
           await this.writeGitHubFile(`articles/${articleId}.md`, bodyHtml, null, `create article ${articleId}`);
         } else {
           articleId = id;
+          const preview = bodyHtml.replace(/<[^>]+>/g,"").slice(0,60)+"…";
           const idx = rows.findIndex(r => r[0] === id);
-          rows[idx] = [id, title, bodyHtml.slice(0,60)+"…", cat, rows[idx][4], top];
-          // 更新文章详情
+          rows[idx] = [id, title, preview, cat, rows[idx][4], top];
           const artFile = await DataLoader.getFile(`articles/${articleId}.md`);
           await this.writeGitHubFile(`articles/${articleId}.md`, bodyHtml, artFile.sha, `update article ${articleId}`);
         }
       } else if (key === "xueye") {
         const cat = document.getElementById("m_cat").value;
-        const urls = document.getElementById("m_urls").value.trim();
+        const jsonStr = JSON.stringify(this.tempImageList);
+        if(this.tempImageList.length===0) throw new Error("至少上传一张图片");
         if (isNew) {
           const newId = this.genId("xyimg");
-          rows.push([newId, today, cat, urls]);
+          rows.push([newId, today, cat, jsonStr]);
         } else {
           const idx = rows.findIndex(r => r[0] === id);
-          rows[idx] = [id, rows[idx][1], cat, urls];
+          rows[idx] = [id, rows[idx][1], cat, jsonStr];
         }
       } else if (key === "gexidong") {
-        const content = document.getElementById("m_content").value.trim();
-        if (!content) throw new Error("内容不能为空");
+        const html = document.getElementById("rich_gexidong").innerHTML.trim();
+        if (!html) throw new Error("留言内容不能为空");
         if (isNew) {
           const newId = this.genId("gy");
-          rows.push([newId, content, today]);
+          rows.push([newId, html, today]);
         } else {
           const idx = rows.findIndex(r => r[0] === id);
-          rows[idx] = [id, content, rows[idx][2]];
+          rows[idx] = [id, html, rows[idx][2]];
         }
       }
 
-      // 回写md文件
       const newMdContent = rows.map(r => r.join("|")).join("\n") + "\n";
       await this.writeGitHubFile(mdPath, newMdContent, sha, isNew ? "add item" : "update item");
       alert("保存成功");
@@ -416,7 +522,6 @@ const Admin = {
       const mdPath = `data/${key}.md`;
       const { content: mdText, sha } = await DataLoader.getFile(mdPath);
       let rows = DataLoader.parsePipe(mdText);
-      // 十年灯额外删除文章文件
       if (key === "shinian") {
         try {
           const artPath = `articles/${id}.md`;
@@ -437,7 +542,7 @@ const Admin = {
 
   async saveShanye() {
     try {
-      const val = document.getElementById("shanyeText").value;
+      const val = document.getElementById("shanyeRich").innerHTML;
       const { sha } = await DataLoader.getFile("data/shanye.md");
       await this.writeGitHubFile("data/shanye.md", val, sha, "update shanye intro");
       alert("保存成功");
