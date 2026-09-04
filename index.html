@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>南山集</title>
+  <meta name="description" content="春山如黛草如烟"/>
+  <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+<div id="app">
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="header-text">
+        <div class="site-title">南山集</div>
+        <div class="site-desc">春山如黛草如烟</div>
+      </div>
+      <button id="menuToggle" class="menu-toggle" aria-label="菜单">☰</button>
+    </div>
+  </header>
+
+  <div class="container">
+    <aside id="sidebar" class="sidebar">
+      <nav class="nav-menu">
+        <div class="nav-item" data-key="xingyin">行吟册·絮</div>
+        <div class="nav-item" data-key="shinian">十年灯·文</div>
+        <div class="nav-item" data-key="xueye">雪夜舟·图</div>
+        <div class="nav-item" data-key="gexidong">各西东·语</div>
+        <div class="nav-item" data-key="shanye">山野渔夫</div>
+      </nav>
+      <div class="sidebar-footer">
+        <a href="./admin.html" class="admin-link">管理入口</a>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <div id="listView" class="view list-view"></div>
+      <div id="detailView" class="view detail-view hidden">
+        <div class="breadcrumb">‹ 返回列表</div>
+        <div class="detail-body"></div>
+        <div id="commentWrap"></div>
+        <button class="back-btn">← 返回列表</button>
+      </div>
+    </main>
+  </div>
+</div>
+
+<script src="./js/data.js"></script>
+<script src="./js/comments.js"></script>
+<script src="./js/app.js"></script>
+</body>
+</html>

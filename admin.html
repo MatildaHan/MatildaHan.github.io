@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>南山集 · 后台管理</title>
+<link rel="stylesheet" href="./css/admin.css">
+</head>
+<body>
+<div id="adminApp">
+  <header class="admin-header">
+    <h1>南山集 · 后台管理</h1>
+    <div id="tokenStatus" class="token-status" title="点击清除 Token"></div>
+  </header>
+  <div class="admin-container">
+    <aside class="admin-sidebar">
+      <div class="admin-nav-item" data-panel="xingyin">行吟册·絮</div>
+      <div class="admin-nav-item" data-panel="shinian">十年灯·文</div>
+      <div class="admin-nav-item" data-panel="xueye">雪夜舟·图</div>
+      <div class="admin-nav-item" data-panel="gexidong">各西东·语</div>
+      <div class="admin-nav-item" data-panel="shanye">山野渔夫</div>
+      <div class="admin-nav-item" data-panel="category">分类管理</div>
+      <div class="admin-nav-item" data-panel="commentAudit">评论审核</div>
+      <div class="admin-nav-item" data-panel="setting">站点设置</div>
+      <div class="admin-nav-item" data-panel="back" onclick="location.href='./index.html'">← 返回前台</div>
+    </aside>
+    <main class="admin-main">
+      <div id="adminPanel"></div>
+    </main>
+  </div>
+
+  <div id="modalWrap" class="modal-wrap hidden">
+    <div class="modal">
+      <div class="modal-head">
+        <span id="modalTitle"></span>
+        <button id="modalClose" class="modal-close">×</button>
+      </div>
+      <div id="modalBody" class="modal-body"></div>
+      <div class="modal-foot">
+        <button id="modalCancel" class="btn">取消</button>
+        <button id="modalSave" class="btn btn-primary">保存</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="./js/data.js"></script>
+<script src="./js/admin.js"></script>
+</body>
+</html>
