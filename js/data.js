@@ -1,4 +1,4 @@
-// data.js 修复中文乱码版本
+// data.js 修复中文乱码 + loadCategoryFile
 const DataLoader = {
   owner:"MatildaHan",
   repo:"MatildaHan.github.io",
@@ -8,13 +8,15 @@ const DataLoader = {
   init(){
     this.baseUrl = `https://api.github.com/repos/${this.owner}/${this.repo}/contents`;
   },
-  // Base64 → UTF8 中文安全解码
+
+  // Base64 → UTF8 中文安全解码 解决中文乱码
   base64ToUtf8(base64) {
     const byteString = atob(base64);
     const uint8 = new Uint8Array([...byteString].map(c => c.charCodeAt(0)));
     return new TextDecoder("utf-8").decode(uint8);
   },
-  // UTF8字符串 → Base64（写入GitHub用）
+
+  // UTF8字符串 → Base64 写入GitHub上传用
   utf8ToBase64(str) {
     const uint8 = new TextEncoder().encode(str);
     return btoa(String.fromCharCode(...uint8));
@@ -42,6 +44,23 @@ const DataLoader = {
       out.push(arr.map(x=>x.trim()));
     }
     return out;
+  },
+
+  /**
+   * 读取栏目分类文件 data/categories_{key}.md
+   * @param {string} key xingyin / shinian / xueye
+   * @returns {string[]}
+   */
+  async loadCategoryFile(key) {
+    const path = `data/categories_${key}.md`;
+    try {
+      const { content } = await this.getFile(path);
+      const list = content.split("\n").map(s => s.trim()).filter(s => s);
+      return list;
+    } catch (e) {
+      console.warn(`分类文件 ${path} 不存在，返回空列表`, e);
+      return [];
+    }
   },
 
   async loadSettings(){
