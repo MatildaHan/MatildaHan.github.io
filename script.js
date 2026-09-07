@@ -20,6 +20,7 @@
         if (!DB.get('site', null)) {
             DB.set('site', {
                 logoColor: '#b89c84',
+                logoImage: '',  // 新增：Logo 图片 Base64 或 URL
                 siteName: '见南山',
                 siteDesc: '春山如黛草如烟',
                 homeTitle: '不再热爱生活。'
@@ -134,23 +135,25 @@
             e.preventDefault();
             const backId = backBtn.dataset.back;
             if (backId) {
-                // 修复：返回按钮统一回到首页
                 showPage('page-home');
             }
         }
     });
 
     // ============================================================
-    // 4. 渲染首页（只展示十年灯·文，最多3条）
+    // 4. 渲染首页
     // ============================================================
     function renderHome() {
         const site = DB.get('site', {});
+        
+        // 更新 Logo
+        updateLogo(site);
+        
         document.getElementById('homeTitle').textContent = site.homeTitle || '不再热爱生活。';
         document.getElementById('homeDate').textContent = new Date().toISOString().slice(0, 10).replace(/-/g, '/');
         document.getElementById('homeImage').style.backgroundColor = site.logoColor || '#b89c84';
 
-        // Logo
-        document.getElementById('logoBlock').style.backgroundColor = site.logoColor || '#b89c84';
+        // 网站名称和描述
         document.getElementById('siteName').textContent = site.siteName || '见南山';
         document.getElementById('siteDesc').textContent = site.siteDesc || '春山如黛草如烟';
 
@@ -160,7 +163,6 @@
 
         let html = '';
         latest3Shinian.forEach((item, index) => {
-            // 截取内容前50字作为摘要
             const summary = item.content ? item.content.substring(0, 50) : '';
             const displaySummary = summary + (item.content && item.content.length > 50 ? '...' : '');
             
@@ -177,7 +179,6 @@
             `;
         });
 
-        // 如果没有文章，显示提示
         if (latest3Shinian.length === 0) {
             html = `
                 <div class="list-item">
@@ -190,7 +191,26 @@
     }
 
     // ============================================================
-    // 5. 行吟册·絮
+    // 5. Logo 更新函数
+    // ============================================================
+    function updateLogo(site) {
+        const logoBlock = document.getElementById('logoBlock');
+        const logoImage = document.getElementById('logoImage');
+        
+        if (site.logoImage && site.logoImage.trim() !== '') {
+            // 有图片 Logo
+            logoImage.src = site.logoImage;
+            logoImage.style.display = 'block';
+            logoBlock.style.backgroundColor = 'transparent';
+        } else {
+            // 无图片，使用颜色
+            logoImage.style.display = 'none';
+            logoBlock.style.backgroundColor = site.logoColor || '#b89c84';
+        }
+    }
+
+    // ============================================================
+    // 6. 行吟册·絮
     // ============================================================
     function renderXingyinList() {
         const list = DB.get('xingyin', []);
@@ -210,7 +230,6 @@
         document.getElementById('xingyinDetailTitle').textContent = item.content;
         document.getElementById('xingyinDetailDate').textContent = item.date;
         document.getElementById('xingyinDetailContent').innerHTML = `<p>${item.content}</p>`;
-        // 侧边栏
         const sidebar = document.getElementById('xingyinSidebar');
         sidebar.innerHTML = list.map(i => `
             <a href="#" data-sub="xingyin-detail" data-id="${i.id}">${i.content.substring(0, 20)}${i.content.length > 20 ? '...' : ''}</a>
@@ -218,7 +237,7 @@
     }
 
     // ============================================================
-    // 6. 十年灯·文
+    // 7. 十年灯·文
     // ============================================================
     function renderShinianCards() {
         const list = DB.get('shinian', []);
@@ -266,7 +285,7 @@
     }
 
     // ============================================================
-    // 7. 雪夜舟·图
+    // 8. 雪夜舟·图
     // ============================================================
     function renderXueyeCards() {
         const list = DB.get('xueye', []);
@@ -301,7 +320,7 @@
     }
 
     // ============================================================
-    // 8. 听雨眠·记
+    // 9. 听雨眠·记
     // ============================================================
     function renderTingyuYears() {
         const list = DB.get('tingyu', []);
@@ -350,7 +369,7 @@
     }
 
     // ============================================================
-    // 9. 各西东·语
+    // 10. 各西东·语
     // ============================================================
     function renderGexiList() {
         const list = DB.get('gexi', []);
@@ -364,7 +383,7 @@
     }
 
     // ============================================================
-    // 10. 山野渔夫
+    // 11. 山野渔夫
     // ============================================================
     function renderAbout() {
         const content = DB.get('about', '');
@@ -373,12 +392,10 @@
     }
 
     // ============================================================
-    // 11. 初始化
+    // 12. 初始化
     // ============================================================
-    // 监听数据变化
     window.addEventListener('storage', function(e) {
         if (e.key && e.key.startsWith('jiananshan_')) {
-            // 刷新当前页面
             const active = document.querySelector('.page-section.active');
             if (active) {
                 const id = active.id;
@@ -393,6 +410,5 @@
         }
     });
 
-    // 默认显示首页
     showPage('page-home');
 })();
