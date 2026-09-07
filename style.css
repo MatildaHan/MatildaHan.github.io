@@ -289,7 +289,7 @@ body {
     width: 120px;
     height: 150px;
     border: 1px solid #c9b39f;
-    border-radius: 16px;
+    border-radius: 8px;
     display: flex;
     flex-direction: column;
     justify-content: center;
