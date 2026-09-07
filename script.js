@@ -144,52 +144,62 @@
     // 4. 渲染首页
     // ============================================================
     function renderHome() {
-        const site = DB.get('site', {});
-        
-        // 更新 Logo
-        updateLogo(site);
-        
-        document.getElementById('homeTitle').textContent = site.homeTitle || '不再热爱生活。';
+    const site = DB.get('site', {});
+    
+    // 更新 Logo
+    updateLogo(site);
+    
+    // 获取"行吟册·絮"最新一条数据
+    const xingyinList = DB.get('xingyin', []);
+    const latestXingyin = xingyinList.length > 0 ? xingyinList[xingyinList.length - 1] : null;
+    
+    // 如果有数据则显示，否则显示默认文案
+    if (latestXingyin) {
+        document.getElementById('homeTitle').textContent = latestXingyin.content;
+        document.getElementById('homeDate').textContent = latestXingyin.date;
+    } else {
+        document.getElementById('homeTitle').textContent = '暂无短句';
         document.getElementById('homeDate').textContent = new Date().toISOString().slice(0, 10).replace(/-/g, '/');
-        document.getElementById('homeImage').style.backgroundColor = site.logoColor || '#b89c84';
+    }
+    
+    document.getElementById('homeImage').style.backgroundColor = site.logoColor || '#b89c84';
 
-        // 网站名称和描述
-        document.getElementById('siteName').textContent = site.siteName || '见南山';
-        document.getElementById('siteDesc').textContent = site.siteDesc || '春山如黛草如烟';
+    // 网站名称和描述
+    document.getElementById('siteName').textContent = site.siteName || '见南山';
+    document.getElementById('siteDesc').textContent = site.siteDesc || '春山如黛草如烟';
 
-        // 只展示十年灯·文，最多3条
-        const shinian = DB.get('shinian', []);
-        const latest3Shinian = shinian.slice(-3).reverse();
+    // 只展示十年灯·文，最多3条（保持不变）
+    const shinian = DB.get('shinian', []);
+    const latest3Shinian = shinian.slice(-3).reverse();
 
-        let html = '';
-        latest3Shinian.forEach((item, index) => {
-            const summary = item.content ? item.content.substring(0, 50) : '';
-            const displaySummary = summary + (item.content && item.content.length > 50 ? '...' : '');
-            
-            html += `
-                <div class="list-item">
-                    <div class="item-header">
-                        <span class="tag">${item.category || '十年灯·文'}</span>
-                        <h3 class="item-title" data-sub="shinian-detail" data-id="${item.id}">${item.title}</h3>
-                        <span class="item-time">${item.date}</span>
-                    </div>
-                    <p class="item-desc">${displaySummary}</p>
-                    ${index < latest3Shinian.length - 1 ? '<span class="divider-line"></span>' : ''}
+    let html = '';
+    latest3Shinian.forEach((item, index) => {
+        const summary = item.content ? item.content.substring(0, 50) : '';
+        const displaySummary = summary + (item.content && item.content.length > 50 ? '...' : '');
+        
+        html += `
+            <div class="list-item">
+                <div class="item-header">
+                    <span class="tag">${item.category || '十年灯·文'}</span>
+                    <h3 class="item-title" data-sub="shinian-detail" data-id="${item.id}">${item.title}</h3>
+                    <span class="item-time">${item.date}</span>
                 </div>
-            `;
-        });
+                <p class="item-desc">${displaySummary}</p>
+                ${index < latest3Shinian.length - 1 ? '<span class="divider-line"></span>' : ''}
+            </div>
+        `;
+    });
 
-        if (latest3Shinian.length === 0) {
-            html = `
-                <div class="list-item">
-                    <p class="item-desc" style="text-align:center;color:#b8b0a8;">暂无文章，请前往后台添加</p>
-                </div>
-            `;
-        }
-
-        document.getElementById('homeLatest').innerHTML = html;
+    if (latest3Shinian.length === 0) {
+        html = `
+            <div class="list-item">
+                <p class="item-desc" style="text-align:center;color:#b8b0a8;">暂无文章，请前往后台添加</p>
+            </div>
+        `;
     }
 
+    document.getElementById('homeLatest').innerHTML = html;
+}
     // ============================================================
     // 5. Logo 更新函数
     // ============================================================
