@@ -84,28 +84,14 @@ body {
     margin: 0 auto;
 }
 
-/* ===== 使用更具体的选择器确保优先级 ===== */
+/* ===== 首页内容区距离顶部80px ===== */
 body #page-home .container,
-#page-home.container,
-#page-home > .container {
-    margin-top: 80px !important;
-}
-
-body .page-section:not(#page-home) .container,
-.page-section:not(#page-home) > .container {
-    margin-top: 30px !important;
-}
-
-/* 或者直接通过 section 控制 */
-#page-home.container {
-    margin-top: 80px !important;
-}
-
-/* 备用方案：直接在 container 上控制 */
 #page-home .container {
     margin-top: 80px !important;
 }
 
+/* ===== 子页面内容区距离顶部30px ===== */
+body .page-section:not(#page-home) .container,
 .page-section:not(#page-home) .container {
     margin-top: 30px !important;
 }
@@ -255,14 +241,14 @@ body .page-section:not(#page-home) .container,
     flex-wrap: wrap;
 }
 
-/* 分类标签 - # + 分类名称 */
+/* 分类标签 - 无背景、无圆角、无矩形 */
 #homeLatest .list-item .item-footer .tag {
-    background: #f3efe9;
-    padding: 2px 12px;
-    font-size: 12px;
+    font-size: 13px;
     color: #8c7562;
-    border-radius: 12px;
     display: inline-block;
+    padding: 0;
+    background: none;
+    border-radius: 0;
 }
 
 /* 日期时间 */
@@ -497,7 +483,6 @@ body .page-section:not(#page-home) .container,
         padding: 0 20px;
         box-sizing: border-box;
     }
-    /* 保持顶部间距 */
     body #page-home .container,
     #page-home .container {
         margin-top: 80px !important;
@@ -549,7 +534,6 @@ body .page-section:not(#page-home) .container,
         order: 2;
         margin-top: 20px;
     }
-    /* 保持顶部间距 */
     body #page-home .container,
     #page-home .container {
         margin-top: 80px !important;
@@ -571,6 +555,9 @@ body .page-section:not(#page-home) .container,
     #homeLatest .list-item .item-footer {
         font-size: 12px;
         gap: 16px;
+    }
+    #homeLatest .list-item .item-footer .tag {
+        font-size: 12px;
     }
 }
 
@@ -626,7 +613,6 @@ body .page-section:not(#page-home) .container,
         width: 100%;
         gap: 24px;
     }
-    /* 保持顶部间距 */
     body #page-home .container,
     #page-home .container {
         margin-top: 80px !important;
@@ -652,7 +638,7 @@ body .page-section:not(#page-home) .container,
     }
     #homeLatest .list-item .item-footer .tag {
         font-size: 11px;
-        padding: 1px 8px;
+        padding: 0;
     }
     #homeLatest .list-item .item-footer .item-time {
         font-size: 11px;
