@@ -15,8 +15,7 @@ body {
     padding: 30px 0;
 }
 .header-wrap {
-    width: 85%;
-    max-width: 1200px;
+    width: 1200px;
     margin: 0 auto;
     display: flex;
     justify-content: space-between;
@@ -70,9 +69,8 @@ body {
 }
 
 .container {
-    width: 85%;
-    max-width: 1200px;
-    margin: 110px auto 0;  /* 原为 30px，改为 200px */
+    width: 1200px;
+    margin: 200px auto 0;
 }
 .breadcrumb {
     font-size: 13px;
@@ -392,7 +390,18 @@ body {
     color: #9c836e;
 }
 
-/* 响应式 */
+/* ===== 响应式：屏幕小于1200px时强制缩放 ===== */
+@media (max-width: 1220px) {
+    .header-wrap,
+    .container {
+        width: 100%;
+        max-width: 1200px;
+        padding: 0 20px;
+        box-sizing: border-box;
+    }
+}
+
+/* ===== 响应式：移动端适配 ===== */
 @media (max-width: 1024px) {
     .home-row {
         grid-template-columns: 1fr;
@@ -424,9 +433,14 @@ body {
         max-width: 100%;
     }
     .container {
-        margin: 150px auto 0;  /* 平板设备适当缩小 */
+        margin: 150px auto 0;
+    }
+    .header-wrap,
+    .container {
+        padding: 0 30px;
     }
 }
+
 @media (max-width: 768px) {
     .header-wrap {
         flex-direction: column;
@@ -464,7 +478,10 @@ body {
         max-width: 260px;
     }
     .container {
-        width: 92%;
-        margin: 120px auto 0;  /* 手机设备进一步缩小 */
+        margin: 120px auto 0;
+    }
+    .header-wrap,
+    .container {
+        padding: 0 16px;
     }
 }
