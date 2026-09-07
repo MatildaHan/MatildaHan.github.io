@@ -84,12 +84,28 @@ body {
     margin: 0 auto;
 }
 
-/* ===== 首页内容区距离顶部80px ===== */
+/* ===== 使用更具体的选择器确保优先级 ===== */
+body #page-home .container,
+#page-home.container,
+#page-home > .container {
+    margin-top: 80px !important;
+}
+
+body .page-section:not(#page-home) .container,
+.page-section:not(#page-home) > .container {
+    margin-top: 30px !important;
+}
+
+/* 或者直接通过 section 控制 */
+#page-home.container {
+    margin-top: 80px !important;
+}
+
+/* 备用方案：直接在 container 上控制 */
 #page-home .container {
     margin-top: 80px !important;
 }
 
-/* ===== 子页面内容区距离顶部30px ===== */
 .page-section:not(#page-home) .container {
     margin-top: 30px !important;
 }
@@ -481,9 +497,12 @@ body {
         padding: 0 20px;
         box-sizing: border-box;
     }
+    /* 保持顶部间距 */
+    body #page-home .container,
     #page-home .container {
         margin-top: 80px !important;
     }
+    body .page-section:not(#page-home) .container,
     .page-section:not(#page-home) .container {
         margin-top: 30px !important;
     }
@@ -530,9 +549,12 @@ body {
         order: 2;
         margin-top: 20px;
     }
+    /* 保持顶部间距 */
+    body #page-home .container,
     #page-home .container {
         margin-top: 80px !important;
     }
+    body .page-section:not(#page-home) .container,
     .page-section:not(#page-home) .container {
         margin-top: 30px !important;
     }
@@ -604,9 +626,12 @@ body {
         width: 100%;
         gap: 24px;
     }
+    /* 保持顶部间距 */
+    body #page-home .container,
     #page-home .container {
         margin-top: 80px !important;
     }
+    body .page-section:not(#page-home) .container,
     .page-section:not(#page-home) .container {
         margin-top: 30px !important;
     }
