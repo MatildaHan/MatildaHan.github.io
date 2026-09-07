@@ -84,14 +84,14 @@ body {
     margin: 0 auto;
 }
 
-/* ===== 首页内容区距离顶部80px ===== */
+/* ===== 首页内容区距离顶部80px（使用 !important 确保生效） ===== */
 #page-home .container {
-    margin-top: 80px;
+    margin-top: 80px !important;
 }
 
 /* ===== 子页面内容区距离顶部30px ===== */
 .page-section:not(#page-home) .container {
-    margin-top: 30px;
+    margin-top: 30px !important;
 }
 
 .breadcrumb {
@@ -481,6 +481,13 @@ body {
         padding: 0 20px;
         box-sizing: border-box;
     }
+    /* 保持首页顶部间距 */
+    #page-home .container {
+        margin-top: 80px !important;
+    }
+    .page-section:not(#page-home) .container {
+        margin-top: 30px !important;
+    }
 }
 
 /* ===== 响应式：平板适配 ===== */
@@ -524,11 +531,12 @@ body {
         order: 2;
         margin-top: 20px;
     }
+    /* 保持首页顶部间距 */
     #page-home .container {
-        margin-top: 80px;
+        margin-top: 80px !important;
     }
     .page-section:not(#page-home) .container {
-        margin-top: 30px;
+        margin-top: 30px !important;
     }
     .header-wrap,
     .container {
@@ -599,11 +607,12 @@ body {
         width: 100%;
         gap: 24px;
     }
+    /* 保持首页顶部间距 */
     #page-home .container {
-        margin-top: 80px;
+        margin-top: 80px !important;
     }
     .page-section:not(#page-home) .container {
-        margin-top: 30px;
+        margin-top: 30px !important;
     }
     .header-wrap,
     .container {
