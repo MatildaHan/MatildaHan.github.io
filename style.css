@@ -78,15 +78,20 @@ body {
     background: #f3efe9;
 }
 
-/* ===== 首页内容区距离顶部80px ===== */
+/* ===== 内容区容器 ===== */
 .container {
     width: 1200px;
-    margin: 80px auto 0;
+    margin: 0 auto;
+}
+
+/* ===== 首页内容区距离顶部80px ===== */
+#page-home .container {
+    margin-top: 80px;
 }
 
 /* ===== 子页面内容区距离顶部30px ===== */
 .page-section:not(#page-home) .container {
-    margin: 30px auto 0;
+    margin-top: 30px;
 }
 
 .breadcrumb {
@@ -160,17 +165,17 @@ body {
 }
 
 /* ===== 首页右侧文章列表 - 每条3行样式 ===== */
-.right-list {
+#homeLatest {
     display: flex;
     flex-direction: column;
-    gap: 28px;
+    gap: 32px;
     max-width: 520px;
     margin: 0 auto;
     width: 100%;
 }
 
-/* 每条文章容器 */
-.list-item {
+/* 每条文章容器 - 3行布局 */
+#homeLatest .list-item {
     display: flex;
     flex-direction: column;
     gap: 4px;
@@ -180,7 +185,7 @@ body {
 }
 
 /* 第一行：文章标题 - 22px 加粗 */
-.list-item .item-title {
+#homeLatest .list-item .item-title {
     font-size: 22px;
     font-weight: bold;
     color: #7a6451;
@@ -190,12 +195,12 @@ body {
     transition: color 0.2s;
     display: block;
 }
-.list-item .item-title:hover {
+#homeLatest .list-item .item-title:hover {
     color: #4a3a2a;
 }
 
 /* 第二行：文章内容 - 单行省略 */
-.list-item .item-desc {
+#homeLatest .list-item .item-desc {
     font-size: 14px;
     color: #9c836e;
     line-height: 1.5;
@@ -208,7 +213,7 @@ body {
 }
 
 /* 第三行：分类标签 + 日期 - 间隔20px */
-.list-item .item-footer {
+#homeLatest .list-item .item-footer {
     display: flex;
     align-items: center;
     gap: 20px;
@@ -219,7 +224,7 @@ body {
 }
 
 /* 分类标签 - # + 分类名称 */
-.list-item .item-footer .tag {
+#homeLatest .list-item .item-footer .tag {
     background: #f3efe9;
     padding: 2px 12px;
     font-size: 12px;
@@ -229,17 +234,16 @@ body {
 }
 
 /* 日期时间 */
-.list-item .item-footer .item-time {
+#homeLatest .list-item .item-footer .item-time {
     font-size: 12px;
     color: #b8a898;
-    margin-left: 0;
 }
 
-/* 隐藏旧的分割线和头部 */
-.list-item .divider-line {
+/* 隐藏旧的元素 */
+#homeLatest .list-item .divider-line {
     display: none;
 }
-.list-item .item-header {
+#homeLatest .list-item .item-header {
     display: none;
 }
 
@@ -491,27 +495,27 @@ body {
     .tilted-card {
         max-width: 300px;
     }
-    .right-list {
+    #homeLatest {
         max-width: 100%;
     }
     #page-home .container {
-        margin: 80px auto 0;
+        margin-top: 80px;
     }
     .page-section:not(#page-home) .container {
-        margin: 30px auto 0;
+        margin-top: 30px;
     }
     .header-wrap,
     .container {
         padding: 0 30px;
     }
     /* 平板端右侧文章列表调整 */
-    .list-item .item-title {
+    #homeLatest .list-item .item-title {
         font-size: 20px;
     }
-    .list-item .item-desc {
+    #homeLatest .list-item .item-desc {
         font-size: 13px;
     }
-    .list-item .item-footer {
+    #homeLatest .list-item .item-footer {
         font-size: 12px;
         gap: 16px;
     }
@@ -555,36 +559,36 @@ body {
         max-width: 260px;
     }
     #page-home .container {
-        margin: 80px auto 0;
+        margin-top: 80px;
     }
     .page-section:not(#page-home) .container {
-        margin: 30px auto 0;
+        margin-top: 30px;
     }
     .header-wrap,
     .container {
         padding: 0 16px;
     }
     /* 手机端右侧文章列表调整 */
-    .right-list {
+    #homeLatest {
         max-width: 100%;
-        gap: 20px;
+        gap: 24px;
     }
-    .list-item .item-title {
+    #homeLatest .list-item .item-title {
         font-size: 18px;
     }
-    .list-item .item-desc {
+    #homeLatest .list-item .item-desc {
         font-size: 13px;
     }
-    .list-item .item-footer {
+    #homeLatest .list-item .item-footer {
         font-size: 11px;
         gap: 12px;
         flex-wrap: wrap;
     }
-    .list-item .item-footer .tag {
+    #homeLatest .list-item .item-footer .tag {
         font-size: 11px;
         padding: 1px 8px;
     }
-    .list-item .item-footer .item-time {
+    #homeLatest .list-item .item-footer .item-time {
         font-size: 11px;
     }
 }
