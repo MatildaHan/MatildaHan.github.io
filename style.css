@@ -84,17 +84,23 @@ body {
     margin: 0 auto;
 }
 
-/* ===== 首页内容区距离顶部80px ===== */
-body #page-home .container,
+/* ===== 直接修改首页内容区的父级容器 ===== */
+#page-home {
+    margin-top: 0;
+    padding-top: 0;
+}
+
 #page-home .container {
     margin-top: 80px !important;
 }
 
 /* ===== 子页面内容区距离顶部30px ===== */
-body .page-section:not(#page-home) .container,
 .page-section:not(#page-home) .container {
     margin-top: 30px !important;
 }
+
+/* ===== 备用方案：通过 JS 直接添加内联样式 ===== */
+/* 在页面加载时通过 JavaScript 设置，见 script.js 底部 */
 
 .breadcrumb {
     font-size: 13px;
@@ -483,11 +489,9 @@ body .page-section:not(#page-home) .container,
         padding: 0 20px;
         box-sizing: border-box;
     }
-    body #page-home .container,
     #page-home .container {
         margin-top: 80px !important;
     }
-    body .page-section:not(#page-home) .container,
     .page-section:not(#page-home) .container {
         margin-top: 30px !important;
     }
@@ -534,11 +538,9 @@ body .page-section:not(#page-home) .container,
         order: 2;
         margin-top: 20px;
     }
-    body #page-home .container,
     #page-home .container {
         margin-top: 80px !important;
     }
-    body .page-section:not(#page-home) .container,
     .page-section:not(#page-home) .container {
         margin-top: 30px !important;
     }
@@ -613,11 +615,9 @@ body .page-section:not(#page-home) .container,
         width: 100%;
         gap: 24px;
     }
-    body #page-home .container,
     #page-home .container {
         margin-top: 80px !important;
     }
-    body .page-section:not(#page-home) .container,
     .page-section:not(#page-home) .container {
         margin-top: 30px !important;
     }
