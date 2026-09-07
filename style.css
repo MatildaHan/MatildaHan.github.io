@@ -78,29 +78,11 @@ body {
     background: #f3efe9;
 }
 
-/* ===== 内容区容器 ===== */
+/* ===== 内容区容器（由 JS 控制 margin-top） ===== */
 .container {
     width: 1200px;
     margin: 0 auto;
 }
-
-/* ===== 直接修改首页内容区的父级容器 ===== */
-#page-home {
-    margin-top: 0;
-    padding-top: 0;
-}
-
-#page-home .container {
-    margin-top: 80px !important;
-}
-
-/* ===== 子页面内容区距离顶部30px ===== */
-.page-section:not(#page-home) .container {
-    margin-top: 30px !important;
-}
-
-/* ===== 备用方案：通过 JS 直接添加内联样式 ===== */
-/* 在页面加载时通过 JavaScript 设置，见 script.js 底部 */
 
 .breadcrumb {
     font-size: 13px;
@@ -489,12 +471,6 @@ body {
         padding: 0 20px;
         box-sizing: border-box;
     }
-    #page-home .container {
-        margin-top: 80px !important;
-    }
-    .page-section:not(#page-home) .container {
-        margin-top: 30px !important;
-    }
 }
 
 /* ===== 响应式：平板适配 ===== */
@@ -537,12 +513,6 @@ body {
     .sidebar {
         order: 2;
         margin-top: 20px;
-    }
-    #page-home .container {
-        margin-top: 80px !important;
-    }
-    .page-section:not(#page-home) .container {
-        margin-top: 30px !important;
     }
     .header-wrap,
     .container {
@@ -614,12 +584,6 @@ body {
         max-width: 100%;
         width: 100%;
         gap: 24px;
-    }
-    #page-home .container {
-        margin-top: 80px !important;
-    }
-    .page-section:not(#page-home) .container {
-        margin-top: 30px !important;
     }
     .header-wrap,
     .container {
