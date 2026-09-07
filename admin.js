@@ -25,28 +25,48 @@ function initDefaultData() {
             logoColor: '#b89c84',
             logoImage: '',
             siteName: '见南山',
-            siteDesc: '春山如黛草如烟',
-            homeTitle: '不再热爱生活。'
+            siteDesc: '春山如黛草如烟'
         });
     }
     if (!DB.get('xingyin', null)) {
         DB.set('xingyin', [
             { id: 1, content: '我决定，从今天开始不再热爱生活。', date: '2026/08/25' },
             { id: 2, content: '山间有雾，心里有你。', date: '2026/08/26' },
-            { id: 3, content: '春水初生，春林初盛。', date: '2026/08/27' },
+            { id: 3, content: '春水初生，春林初盛。', date: '2026/08/27' }
         ]);
     }
     if (!DB.get('shinian', null)) {
         DB.set('shinian', [
-            { id: 1, title: '不再热爱生活。', category: '闲聊几句', categoryDesc: '没什么要紧事，就是灯下坐着，忽然想跟你聊几句。', content: '汤之问棘也是已：穷发之北，有冥海者，天池也。有鱼焉，其广数千里，未有知其修者，其名为鲲。有鸟焉，其名为鹏，背若泰山，翼若垂天之云，抟扶摇羊角而上者九万里，绝云气，负青天，然后图南，且适南冥也。', date: '2026/08/25' },
-            { id: 2, title: '灯火可亲', category: '灯火可亲', categoryDesc: '家事，食事，灯下琐事。外面风雨再大，推开门就小了。', content: '家是港湾，灯火是归途。无论走多远，总有一盏灯为你而亮。', date: '2026/08/26' },
-            { id: 3, title: '半杯凉茶', category: '半杯凉茶', categoryDesc: '主打冷静、清醒的观察，聊聊读到的书，遇到的人，像凉茶一样，入口微苦，却有余甘。', content: '人生如茶，苦后回甘。有时候需要一杯凉茶，让自己清醒地看世界。', date: '2026/08/27' },
+            { 
+                id: 1, 
+                title: '不再热爱生活。', 
+                category: '闲聊几句', 
+                categoryDesc: '没什么要紧事，就是灯下坐着，忽然想跟你聊几句。', 
+                content: '汤之问棘也是已：穷发之北，有冥海者，天池也。有鱼焉，其广数千里，未有知其修者，其名为鲲。有鸟焉，其名为鹏，背若泰山，翼若垂天之云，抟扶摇羊角而上者九万里，绝云气，负青天，然后图南，且适南冥也。', 
+                date: '2026/08/25' 
+            },
+            { 
+                id: 2, 
+                title: '灯火可亲', 
+                category: '灯火可亲', 
+                categoryDesc: '家事，食事，灯下琐事。外面风雨再大，推开门就小了。', 
+                content: '家是港湾，灯火是归途。无论走多远，总有一盏灯为你而亮。', 
+                date: '2026/08/26' 
+            },
+            { 
+                id: 3, 
+                title: '半杯凉茶', 
+                category: '半杯凉茶', 
+                categoryDesc: '主打冷静、清醒的观察，聊聊读到的书，遇到的人，像凉茶一样，入口微苦，却有余甘。', 
+                content: '人生如茶，苦后回甘。有时候需要一杯凉茶，让自己清醒地看世界。', 
+                date: '2026/08/27' 
+            }
         ]);
     }
     if (!DB.get('xueye', null)) {
         DB.set('xueye', [
             { id: 1, category: '四季有信', categoryDesc: '跟随时令的自然影像——春芽、夏荷、秋叶、冬雪，同一棵树的一年十二个月。', count: 6, date: '2026/08/25' },
-            { id: 2, category: '旧物不言', categoryDesc: '静物与旧物件——一把老椅子，泛黄的书页，窗台的灰尘与光影，沉默里有故事。', count: 6, date: '2026/08/26' },
+            { id: 2, category: '旧物不言', categoryDesc: '静物与旧物件——一把老椅子，泛黄的书页，窗台的灰尘与光影，沉默里有故事。', count: 6, date: '2026/08/26' }
         ]);
     }
     if (!DB.get('tingyu', null)) {
@@ -55,13 +75,13 @@ function initDefaultData() {
             { id: 2, title: '《活着》', year: '2026' },
             { id: 3, title: '《局外人》', year: '2025' },
             { id: 4, title: '《追风筝的人》', year: '2026' },
-            { id: 5, title: '《小王子》', year: '2025' },
+            { id: 5, title: '《小王子》', year: '2025' }
         ]);
     }
     if (!DB.get('gexi', null)) {
         DB.set('gexi', [
             { id: 1, content: '各西东，语未休。', date: '2026/08/25' },
-            { id: 2, content: '山高水长，江湖再见。', date: '2026/08/26' },
+            { id: 2, content: '山高水长，江湖再见。', date: '2026/08/26' }
         ]);
     }
     if (!DB.get('about', null)) {
@@ -71,7 +91,7 @@ function initDefaultData() {
 initDefaultData();
 
 // ============================================================
-// 3. 行吟册·絮 (CRUD) - 必须先定义
+// 3. 行吟册·絮 (CRUD)
 // ============================================================
 function getXingyin() { return DB.get('xingyin', []); }
 function setXingyin(data) { DB.set('xingyin', data); }
@@ -82,7 +102,7 @@ function renderXingyin() {
     if (!tbody) return;
     tbody.innerHTML = list.map((item, idx) => `
         <tr>
-            <td>${idx+1}</td>
+            <td>${idx + 1}</td>
             <td>${item.content}</td>
             <td>${item.date}</td>
             <td class="actions">
@@ -97,7 +117,7 @@ function openXingyinForm() {
     document.getElementById('xingyin-form').style.display = 'block';
     document.getElementById('xingyin-edit-id').value = '';
     document.getElementById('xingyin-content').value = '';
-    document.getElementById('xingyin-date').value = new Date().toISOString().slice(0,10).replace(/-/g,'/');
+    document.getElementById('xingyin-date').value = new Date().toISOString().slice(0, 10).replace(/-/g, '/');
 }
 
 function closeXingyinForm() {
@@ -153,9 +173,9 @@ function renderShinian() {
     if (!tbody) return;
     tbody.innerHTML = list.map((item, idx) => `
         <tr>
-            <td>${idx+1}</td>
+            <td>${idx + 1}</td>
             <td><strong>${item.title}</strong></td>
-            <td>${item.category}${item.categoryDesc ? ' ('+item.categoryDesc+')' : ''}</td>
+            <td>${item.category}${item.categoryDesc ? ' (' + item.categoryDesc + ')' : ''}</td>
             <td>${item.date}</td>
             <td class="actions">
                 <button class="btn" onclick="editShinian(${item.id})">编辑</button>
@@ -172,10 +192,12 @@ function openShinianForm() {
     document.getElementById('shinian-category').value = '闲聊几句';
     document.getElementById('shinian-category-desc').value = '';
     document.getElementById('shinian-content').value = '';
-    document.getElementById('shinian-date').value = new Date().toISOString().slice(0,10).replace(/-/g,'/');
+    document.getElementById('shinian-date').value = new Date().toISOString().slice(0, 10).replace(/-/g, '/');
 }
 
-function closeShinianForm() { document.getElementById('shinian-form').style.display = 'none'; }
+function closeShinianForm() { 
+    document.getElementById('shinian-form').style.display = 'none'; 
+}
 
 function editShinian(id) {
     const list = getShinian();
@@ -201,7 +223,13 @@ function saveShinian() {
     let list = getShinian();
     if (id) {
         const item = list.find(i => i.id === Number(id));
-        if (item) { item.title = title; item.category = category; item.categoryDesc = categoryDesc; item.content = content; item.date = date; }
+        if (item) { 
+            item.title = title; 
+            item.category = category; 
+            item.categoryDesc = categoryDesc; 
+            item.content = content; 
+            item.date = date; 
+        }
     } else {
         list.push({ id: genId(), title, category, categoryDesc, content, date });
     }
@@ -232,7 +260,7 @@ function renderXueye() {
     if (!tbody) return;
     tbody.innerHTML = list.map((item, idx) => `
         <tr>
-            <td>${idx+1}</td>
+            <td>${idx + 1}</td>
             <td><strong>${item.category}</strong></td>
             <td>${item.categoryDesc || '-'}</td>
             <td><span class="img-preview"></span> ×${item.count || 6}</td>
@@ -251,10 +279,12 @@ function openXueyeForm() {
     document.getElementById('xueye-category').value = '';
     document.getElementById('xueye-category-desc').value = '';
     document.getElementById('xueye-count').value = 6;
-    document.getElementById('xueye-date').value = new Date().toISOString().slice(0,10).replace(/-/g,'/');
+    document.getElementById('xueye-date').value = new Date().toISOString().slice(0, 10).replace(/-/g, '/');
 }
 
-function closeXueyeForm() { document.getElementById('xueye-form').style.display = 'none'; }
+function closeXueyeForm() { 
+    document.getElementById('xueye-form').style.display = 'none'; 
+}
 
 function editXueye(id) {
     const list = getXueye();
@@ -278,7 +308,12 @@ function saveXueye() {
     let list = getXueye();
     if (id) {
         const item = list.find(i => i.id === Number(id));
-        if (item) { item.category = category; item.categoryDesc = categoryDesc; item.count = count; item.date = date; }
+        if (item) { 
+            item.category = category; 
+            item.categoryDesc = categoryDesc; 
+            item.count = count; 
+            item.date = date; 
+        }
     } else {
         list.push({ id: genId(), category, categoryDesc, count, date });
     }
@@ -309,7 +344,7 @@ function renderTingyu() {
     if (!tbody) return;
     tbody.innerHTML = list.map((item, idx) => `
         <tr>
-            <td>${idx+1}</td>
+            <td>${idx + 1}</td>
             <td>${item.title}</td>
             <td>${item.year}</td>
             <td class="actions">
@@ -327,7 +362,9 @@ function openTingyuForm() {
     document.getElementById('tingyu-year').value = new Date().getFullYear();
 }
 
-function closeTingyuForm() { document.getElementById('tingyu-form').style.display = 'none'; }
+function closeTingyuForm() { 
+    document.getElementById('tingyu-form').style.display = 'none'; 
+}
 
 function editTingyu(id) {
     const list = getTingyu();
@@ -379,7 +416,7 @@ function renderGexi() {
     if (!tbody) return;
     tbody.innerHTML = list.map((item, idx) => `
         <tr>
-            <td>${idx+1}</td>
+            <td>${idx + 1}</td>
             <td>${item.content}</td>
             <td>${item.date}</td>
             <td class="actions">
@@ -394,10 +431,12 @@ function openGexiForm() {
     document.getElementById('gexi-form').style.display = 'block';
     document.getElementById('gexi-edit-id').value = '';
     document.getElementById('gexi-content').value = '';
-    document.getElementById('gexi-date').value = new Date().toISOString().slice(0,10).replace(/-/g,'/');
+    document.getElementById('gexi-date').value = new Date().toISOString().slice(0, 10).replace(/-/g, '/');
 }
 
-function closeGexiForm() { document.getElementById('gexi-form').style.display = 'none'; }
+function closeGexiForm() { 
+    document.getElementById('gexi-form').style.display = 'none'; 
+}
 
 function editGexi(id) {
     const list = getGexi();
@@ -457,7 +496,6 @@ function loadSiteSettings() {
     document.getElementById('site-logo-color').value = s.logoColor || '#b89c84';
     document.getElementById('site-name').value = s.siteName || '见南山';
     document.getElementById('site-desc').value = s.siteDesc || '春山如黛草如烟';
-    document.getElementById('site-home-title').value = s.homeTitle || '不再热爱生活。';
     
     const logoImage = s.logoImage || '';
     const preview = document.getElementById('logo-preview');
@@ -506,7 +544,6 @@ function saveSiteSettings() {
     const logoColor = document.getElementById('site-logo-color').value || '#b89c84';
     const siteName = document.getElementById('site-name').value || '见南山';
     const siteDesc = document.getElementById('site-desc').value || '春山如黛草如烟';
-    const homeTitle = document.getElementById('site-home-title').value || '不再热爱生活。';
     
     let logoImage = window._tempLogoImage || '';
     if (!logoImage || logoImage.trim() === '') {
@@ -518,8 +555,7 @@ function saveSiteSettings() {
         logoColor: logoColor,
         logoImage: logoImage,
         siteName: siteName,
-        siteDesc: siteDesc,
-        homeTitle: homeTitle
+        siteDesc: siteDesc
     };
     DB.set('site', s);
     window._tempLogoImage = '';
@@ -530,15 +566,21 @@ function saveSiteSettings() {
 // 10. 总览数据刷新
 // ============================================================
 function refreshDashboard() {
-    document.getElementById('count-xingyin').textContent = getXingyin().length;
-    document.getElementById('count-shinian').textContent = getShinian().length;
-    document.getElementById('count-xueye').textContent = getXueye().length;
-    document.getElementById('count-tingyu').textContent = getTingyu().length;
-    document.getElementById('count-gexi').textContent = getGexi().length;
+    const countXingyin = document.getElementById('count-xingyin');
+    const countShinian = document.getElementById('count-shinian');
+    const countXueye = document.getElementById('count-xueye');
+    const countTingyu = document.getElementById('count-tingyu');
+    const countGexi = document.getElementById('count-gexi');
+    
+    if (countXingyin) countXingyin.textContent = getXingyin().length;
+    if (countShinian) countShinian.textContent = getShinian().length;
+    if (countXueye) countXueye.textContent = getXueye().length;
+    if (countTingyu) countTingyu.textContent = getTingyu().length;
+    if (countGexi) countGexi.textContent = getGexi().length;
 }
 
 // ============================================================
-// 11. 面板切换 (必须在所有 render 函数定义之后)
+// 11. 面板切换
 // ============================================================
 document.querySelectorAll('.admin-sidebar nav a').forEach(link => {
     link.addEventListener('click', function(e) {
