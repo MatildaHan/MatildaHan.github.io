@@ -120,18 +120,26 @@ body {
     100% { opacity: 1; transform: translateY(0); }
 }
 
-/* ===== 首页样式 ===== */
+/* ===== 首页样式 - 三列水平居中 ===== */
 .home-row {
     display: grid;
     grid-template-columns: 1fr 1fr 1.6fr;
-    align-items: flex-start;
+    align-items: center;
     gap: 40px;
     max-width: 1200px;
     margin: 0 auto;
+    justify-items: center;
 }
+
+/* 左侧列 - 居中 */
 .home-left {
     text-align: center;
     padding: 0 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
 }
 .home-left .post-title {
     font-size: 20px;
@@ -150,6 +158,14 @@ body {
     background: #b89c84;
     margin: 10px auto 0;
 }
+
+/* 中间列 - 居中 */
+.center-image {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
 .tilted-card {
     width: 100%;
     max-width: 260px;
@@ -164,7 +180,7 @@ body {
     transform: rotate(0deg);
 }
 
-/* ===== 首页右侧文章列表 - 每条3行样式 ===== */
+/* 右侧列 - 居中 */
 #homeLatest {
     display: flex;
     flex-direction: column;
@@ -474,6 +490,22 @@ body {
         gap: 50px;
         justify-items: center;
         max-width: 600px;
+        margin: 0 auto;
+    }
+    .home-left {
+        width: 100%;
+    }
+    .center-image {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+    }
+    .tilted-card {
+        max-width: 300px;
+    }
+    #homeLatest {
+        max-width: 100%;
+        width: 100%;
     }
     .card-grid {
         grid-template-columns: repeat(2, 1fr);
@@ -491,12 +523,6 @@ body {
     .sidebar {
         order: 2;
         margin-top: 20px;
-    }
-    .tilted-card {
-        max-width: 300px;
-    }
-    #homeLatest {
-        max-width: 100%;
     }
     #page-home .container {
         margin-top: 80px;
@@ -554,9 +580,24 @@ body {
     .home-row {
         gap: 30px;
         max-width: 100%;
+        margin: 0 auto;
+    }
+    .home-left {
+        width: 100%;
+        padding: 0;
+    }
+    .center-image {
+        width: 100%;
+        display: flex;
+        justify-content: center;
     }
     .tilted-card {
         max-width: 260px;
+    }
+    #homeLatest {
+        max-width: 100%;
+        width: 100%;
+        gap: 24px;
     }
     #page-home .container {
         margin-top: 80px;
@@ -569,10 +610,6 @@ body {
         padding: 0 16px;
     }
     /* 手机端右侧文章列表调整 */
-    #homeLatest {
-        max-width: 100%;
-        gap: 24px;
-    }
     #homeLatest .list-item .item-title {
         font-size: 18px;
     }
