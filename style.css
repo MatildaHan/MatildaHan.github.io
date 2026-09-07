@@ -48,7 +48,7 @@ body {
 .logo-name {
     font-size: 22px;
     color: #444;
-    font-weight: bold;  /* ← 改为 font-weight: bold; */
+    font-weight: bold;
 }
 .logo-slogan {
     font-size: 15px;
@@ -78,10 +78,43 @@ body {
     background: #f3efe9;
 }
 
+/* ===== 首页内容区距离顶部80px ===== */
 .container {
     width: 1200px;
-    margin: 100px auto 0;
+    margin: 80px auto 0;
 }
+
+/* ===== 子页面内容区距离顶部30px ===== */
+.page-section:not(#page-home) .container {
+    margin: 30px auto 0;
+}
+
+/* ===== 注意：因为 .container 是父级，子页面使用单独的间距控制 ===== */
+/* 更好的做法：在 body 或 wrapper 层面控制 */
+/* 但这里我们通过修改每个子页面的第一个元素间距来实现 */
+
+/* 修正：子页面的面包屑顶部间距 */
+.page-section:not(#page-home) .breadcrumb {
+    margin-top: 0;
+}
+
+/* 更精确的控制：给所有非首页的 .page-section 内的第一个元素加间距 */
+.page-section:not(#page-home) {
+    padding-top: 0;
+}
+
+/* 但由于容器是共用的，我们采用另一种方式：为首页单独设置容器间距，其他页面通过内部元素控制 */
+/* 重置 .container 的 margin，通过父级 .page-section 控制 */
+
+/* 实际采用方案：首页用 .page-home 控制，其他页面用通用样式 */
+#page-home .container {
+    margin: 80px auto 0;
+}
+
+.page-section:not(#page-home) .container {
+    margin: 30px auto 0;
+}
+
 .breadcrumb {
     font-size: 13px;
     color: #9c836e;
@@ -108,7 +141,7 @@ body {
     100% { opacity: 1; transform: translateY(0); }
 }
 
-/* 首页样式 */
+/* ===== 首页样式 ===== */
 .home-row {
     display: grid;
     grid-template-columns: 1fr 1fr 1.6fr;
@@ -151,47 +184,77 @@ body {
 .tilted-card:hover {
     transform: rotate(0deg);
 }
+
+/* ===== 首页右侧文章列表 - 新样式 ===== */
 .right-list {
     display: flex;
     flex-direction: column;
     gap: 32px;
-    max-width: 480px;
+    max-width: 520px;
     margin: 0 auto;
+    width: 100%;
 }
-.list-item .item-header {
+.list-item {
     display: flex;
-    align-items: center;
-    gap: 10px;
-    flex-wrap: wrap;
+    flex-direction: column;
+    gap: 6px;
+    padding: 0;
+    border-bottom: none;
 }
-.tag {
-    background: #f3efe9;
-    padding: 2px 6px;
-    font-size: 11px;
-    color: #8c7562;
-    border-radius: 2px;
-}
-.item-title {
-    font-size: 17px;
+/* 第一行：文章标题 */
+.list-item .item-title {
+    font-size: 22px;
     font-weight: bold;
     color: #7a6451;
     cursor: pointer;
+    line-height: 1.4;
+    margin: 0;
+    transition: color 0.2s;
 }
-.item-title:hover {
-    color: #6d5745;
+.list-item .item-title:hover {
+    color: #5a4a3a;
 }
-.item-time {
-    margin-left: auto;
-    font-size: 12px;
-    color: #a8917e;
-}
-.item-desc {
-    font-size: 13px;
+/* 第二行：文章内容（单行省略） */
+.list-item .item-desc {
+    font-size: 14px;
     color: #9c836e;
-    line-height: 1.7;
+    line-height: 1.6;
+    margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+/* 第三行：分类标签 + 日期 */
+.list-item .item-footer {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    font-size: 13px;
+    color: #a8917e;
+    margin-top: 2px;
+}
+.list-item .item-footer .tag {
+    background: #f3efe9;
+    padding: 2px 10px;
+    font-size: 12px;
+    color: #8c7562;
+    border-radius: 12px;
+    display: inline-block;
+}
+.list-item .item-footer .item-time {
+    font-size: 12px;
+    color: #b8a898;
+}
+/* 隐藏旧的分割线 */
+.list-item .divider-line {
+    display: none;
+}
+/* 移除旧的头部分隔样式 */
+.list-item .item-header {
+    display: none;
 }
 
-/* 通用列表 */
+/* 通用列表（行吟册·絮 / 各西东·语 / 十年灯子列表） */
 .article-item {
     display: grid;
     grid-template-columns: 120px 1fr;
@@ -216,7 +279,7 @@ body {
     text-decoration: underline;
 }
 
-/* 卡片网格 */
+/* 十年灯·文 系列卡片 */
 .card-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -254,7 +317,7 @@ body {
     color: #6d5745;
 }
 
-/* 图集 */
+/* 雪夜舟·图 图集 */
 .gallery-group {
     display: grid;
     grid-template-columns: 130px 1fr;
@@ -278,7 +341,7 @@ body {
     border-radius: 4px;
 }
 
-/* 书单 */
+/* 听雨眠·记 年度书单 */
 .year-block {
     display: flex;
     align-items: flex-start;
@@ -286,10 +349,10 @@ body {
     margin-bottom: 48px;
 }
 .year-card {
-    width: 120px;
-    height: 150px;
+    width: 220px;
+    height: 300px;
     border: 1px solid #c9b39f;
-    border-radius: 8px;
+    border-radius: 16px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -411,7 +474,7 @@ body {
     }
 }
 
-/* ===== 响应式：移动端适配 ===== */
+/* ===== 响应式：平板适配 ===== */
 @media (max-width: 1024px) {
     .home-row {
         grid-template-columns: 1fr;
@@ -442,15 +505,27 @@ body {
     .right-list {
         max-width: 100%;
     }
-    .container {
-        margin: 150px auto 0;
+    #page-home .container {
+        margin: 80px auto 0;
+    }
+    .page-section:not(#page-home) .container {
+        margin: 30px auto 0;
     }
     .header-wrap,
     .container {
         padding: 0 30px;
     }
+    /* 平板端右侧文章列表调整 */
+    .list-item .item-title {
+        font-size: 20px;
+    }
+    .list-item .item-footer {
+        font-size: 12px;
+        gap: 16px;
+    }
 }
 
+/* ===== 响应式：手机适配 ===== */
 @media (max-width: 768px) {
     .header-wrap {
         flex-direction: column;
@@ -487,11 +562,37 @@ body {
     .tilted-card {
         max-width: 260px;
     }
-    .container {
-        margin: 120px auto 0;
+    #page-home .container {
+        margin: 80px auto 0;
+    }
+    .page-section:not(#page-home) .container {
+        margin: 30px auto 0;
     }
     .header-wrap,
     .container {
         padding: 0 16px;
+    }
+    /* 手机端右侧文章列表调整 */
+    .right-list {
+        max-width: 100%;
+        gap: 24px;
+    }
+    .list-item .item-title {
+        font-size: 18px;
+    }
+    .list-item .item-desc {
+        font-size: 13px;
+    }
+    .list-item .item-footer {
+        font-size: 11px;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+    .list-item .item-footer .tag {
+        font-size: 11px;
+        padding: 1px 8px;
+    }
+    .list-item .item-footer .item-time {
+        font-size: 11px;
     }
 }
