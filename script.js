@@ -37,6 +37,7 @@
                 { id: 1, title: '不再热爱生活。', category: '闲聊几句', categoryDesc: '没什么要紧事，就是灯下坐着，忽然想跟你聊几句。', content: '汤之问棘也是已：穷发之北，有冥海者，天池也。有鱼焉，其广数千里，未有知其修者，其名为鲲。有鸟焉，其名为鹏，背若泰山，翼若垂天之云，抟扶摇羊角而上者九万里，绝云气，负青天，然后图南，且适南冥也。', date: '2026/08/25' },
                 { id: 2, title: '灯火可亲', category: '灯火可亲', categoryDesc: '家事，食事，灯下琐事。外面风雨再大，推开门就小了。', content: '家是港湾，灯火是归途。无论走多远，总有一盏灯为你而亮。', date: '2026/08/26' },
                 { id: 3, title: '半杯凉茶', category: '半杯凉茶', categoryDesc: '主打冷静、清醒的观察，聊聊读到的书，遇到的人，像凉茶一样，入口微苦，却有余甘。', content: '人生如茶，苦后回甘。有时候需要一杯凉茶，让自己清醒地看世界。', date: '2026/08/27' },
+                { id: 4, title: '旧椅子时光', category: '旧椅子时光', categoryDesc: '主打回忆与故人。就像坐在一把吱呀作响的老椅子上，把从前的事，慢慢摇给你听。', content: '记忆就像一把旧椅子，坐上去就会想起很多事。', date: '2026/08/28' },
             ]);
         }
         if (!DB.get('xueye', null)) {
@@ -133,18 +134,14 @@
             e.preventDefault();
             const backId = backBtn.dataset.back;
             if (backId) {
-                const section = document.getElementById(backId);
-                if (section) {
-                    sections.forEach(sec => sec.classList.remove('active'));
-                    section.classList.add('active');
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                }
+                // 修复：返回按钮统一回到首页
+                showPage('page-home');
             }
         }
     });
 
     // ============================================================
-    // 4. 渲染首页
+    // 4. 渲染首页（只展示十年灯·文，最多3条）
     // ============================================================
     function renderHome() {
         const site = DB.get('site', {});
@@ -157,56 +154,38 @@
         document.getElementById('siteName').textContent = site.siteName || '见南山';
         document.getElementById('siteDesc').textContent = site.siteDesc || '春山如黛草如烟';
 
-        // 最新内容
-        const xingyin = DB.get('xingyin', []);
+        // 只展示十年灯·文，最多3条
         const shinian = DB.get('shinian', []);
-        const xueye = DB.get('xueye', []);
-
-        const latestXingyin = xingyin.length > 0 ? xingyin[xingyin.length - 1] : null;
-        const latestXueye = xueye.length > 0 ? xueye[xueye.length - 1] : null;
         const latest3Shinian = shinian.slice(-3).reverse();
 
         let html = '';
-        if (latestXingyin) {
+        latest3Shinian.forEach((item, index) => {
+            // 截取内容前50字作为摘要
+            const summary = item.content ? item.content.substring(0, 50) : '';
+            const displaySummary = summary + (item.content && item.content.length > 50 ? '...' : '');
+            
             html += `
                 <div class="list-item">
                     <div class="item-header">
-                        <span class="tag">行吟册·絮</span>
-                        <h3 class="item-title">${latestXingyin.content}</h3>
-                        <span class="item-time">${latestXingyin.date}</span>
-                    </div>
-                    <span class="divider-line"></span>
-                </div>
-            `;
-        }
-        latest3Shinian.forEach(item => {
-            html += `
-                <div class="list-item">
-                    <div class="item-header">
-                        <span class="tag">${item.category}</span>
+                        <span class="tag">${item.category || '十年灯·文'}</span>
                         <h3 class="item-title" data-sub="shinian-detail" data-id="${item.id}">${item.title}</h3>
                         <span class="item-time">${item.date}</span>
                     </div>
-                    <p class="item-desc">${item.content.substring(0, 50)}${item.content.length > 50 ? '...' : ''}</p>
-                    <span class="divider-line"></span>
+                    <p class="item-desc">${displaySummary}</p>
+                    ${index < latest3Shinian.length - 1 ? '<span class="divider-line"></span>' : ''}
                 </div>
             `;
         });
-        if (latestXueye) {
-            html += `
+
+        // 如果没有文章，显示提示
+        if (latest3Shinian.length === 0) {
+            html = `
                 <div class="list-item">
-                    <div class="item-header">
-                        <span class="tag">雪夜舟·图</span>
-                        <h3 class="item-title">${latestXueye.category}</h3>
-                        <span class="item-time">${latestXueye.date}</span>
-                    </div>
-                    <div style="display:flex;gap:8px;margin-top:8px;">
-                        ${Array.from({length: Math.min(latestXueye.count || 3, 4)}, () => '<div class="img-placeholder" style="width:50px;height:40px;"></div>').join('')}
-                    </div>
-                    <span class="divider-line"></span>
+                    <p class="item-desc" style="text-align:center;color:#b8b0a8;">暂无文章，请前往后台添加</p>
                 </div>
             `;
         }
+
         document.getElementById('homeLatest').innerHTML = html;
     }
 
