@@ -48,7 +48,7 @@ body {
 .logo-name {
     font-size: 22px;
     color: #444;
-    font-weight: normal;
+    font-weight: bold;  /* ← 改为 font-weight: bold; */
 }
 .logo-slogan {
     font-size: 15px;
