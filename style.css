@@ -31,9 +31,19 @@ body {
 .logo-block {
     width: 42px;
     height: 42px;
-    background-color: #b89c84;
     border-radius: 4px;
     flex-shrink: 0;
+    overflow: hidden;
+    background-color: #b89c84;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.logo-block img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 4px;
 }
 .logo-name {
     font-size: 22px;
