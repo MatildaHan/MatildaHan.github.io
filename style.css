@@ -84,7 +84,7 @@ body {
     margin: 0 auto;
 }
 
-/* ===== 首页内容区距离顶部80px（使用 !important 确保生效） ===== */
+/* ===== 首页内容区距离顶部80px ===== */
 #page-home .container {
     margin-top: 80px !important;
 }
@@ -180,7 +180,7 @@ body {
     transform: rotate(0deg);
 }
 
-/* 右侧列 - 居中 */
+/* ===== 首页右侧文章列表 - 每条3行样式 ===== */
 #homeLatest {
     display: flex;
     flex-direction: column;
@@ -194,7 +194,7 @@ body {
 #homeLatest .list-item {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 6px;
     padding: 0;
     border-bottom: none;
     width: 100%;
@@ -202,8 +202,8 @@ body {
 
 /* 第一行：文章标题 - 22px 加粗 */
 #homeLatest .list-item .item-title {
-    font-size: 22px;
-    font-weight: bold;
+    font-size: 22px !important;
+    font-weight: bold !important;
     color: #7a6451;
     cursor: pointer;
     line-height: 1.3;
@@ -257,10 +257,10 @@ body {
 
 /* 隐藏旧的元素 */
 #homeLatest .list-item .divider-line {
-    display: none;
+    display: none !important;
 }
 #homeLatest .list-item .item-header {
-    display: none;
+    display: none !important;
 }
 
 /* 通用列表（行吟册·絮 / 各西东·语 / 十年灯子列表） */
@@ -481,7 +481,6 @@ body {
         padding: 0 20px;
         box-sizing: border-box;
     }
-    /* 保持首页顶部间距 */
     #page-home .container {
         margin-top: 80px !important;
     }
@@ -531,7 +530,6 @@ body {
         order: 2;
         margin-top: 20px;
     }
-    /* 保持首页顶部间距 */
     #page-home .container {
         margin-top: 80px !important;
     }
@@ -542,9 +540,8 @@ body {
     .container {
         padding: 0 30px;
     }
-    /* 平板端右侧文章列表调整 */
     #homeLatest .list-item .item-title {
-        font-size: 20px;
+        font-size: 20px !important;
     }
     #homeLatest .list-item .item-desc {
         font-size: 13px;
@@ -607,7 +604,6 @@ body {
         width: 100%;
         gap: 24px;
     }
-    /* 保持首页顶部间距 */
     #page-home .container {
         margin-top: 80px !important;
     }
@@ -618,9 +614,8 @@ body {
     .container {
         padding: 0 16px;
     }
-    /* 手机端右侧文章列表调整 */
     #homeLatest .list-item .item-title {
-        font-size: 18px;
+        font-size: 18px !important;
     }
     #homeLatest .list-item .item-desc {
         font-size: 13px;
