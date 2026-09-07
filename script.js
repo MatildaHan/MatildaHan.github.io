@@ -2,7 +2,7 @@
     // ============================================================
     // 1. 数据存储
     // ============================================================
-    const DB = {
+    var DB = {
         get: function(key, def) {
             try {
                 var data = localStorage.getItem('jiananshan_' + key);
@@ -96,6 +96,9 @@
     var sections = document.querySelectorAll('.page-section');
     var navLinks = document.querySelectorAll('#globalNav a');
 
+    // ============================================================
+    // 核心：showPage 函数 - 控制页面切换和顶部间距
+    // ============================================================
     function showPage(pageId) {
         var i;
         for (i = 0; i < sections.length; i++) {
@@ -110,6 +113,20 @@
                 navLinks[i].classList.add('active');
             }
         }
+        
+        // ============================================================
+        // 直接控制 .container 的顶部间距
+        // 首页 80px，子页面 30px
+        // ============================================================
+        var container = document.querySelector('.container');
+        if (container) {
+            if (pageId === 'page-home') {
+                container.style.marginTop = '80px';
+            } else {
+                container.style.marginTop = '30px';
+            }
+        }
+        
         window.scrollTo({ top: 0, behavior: 'smooth' });
 
         // 加载对应页面数据
@@ -146,8 +163,14 @@
                         sections[i].classList.remove('active');
                     }
                     section.classList.add('active');
+                    
+                    // 子页面也应用 30px 间距
+                    var container = document.querySelector('.container');
+                    if (container) {
+                        container.style.marginTop = '30px';
+                    }
+                    
                     window.scrollTo({ top: 0, behavior: 'smooth' });
-                    // 加载子页面数据
                     if (sub === 'xingyin-detail') loadXingyinDetail(target.dataset.id);
                     if (sub === 'shinian-list') loadShinianList(target.dataset.category);
                     if (sub === 'shinian-detail') loadShinianDetail(target.dataset.id);
@@ -174,14 +197,11 @@
     function renderHome() {
         var site = DB.get('site', {});
         
-        // 更新 Logo
         updateLogo(site);
         
-        // 获取"行吟册·絮"最新一条数据
         var xingyinList = DB.get('xingyin', []);
         var latestXingyin = xingyinList.length > 0 ? xingyinList[xingyinList.length - 1] : null;
         
-        // 左侧显示最新短句
         var homeTitle = document.getElementById('homeTitle');
         var homeDate = document.getElementById('homeDate');
         if (homeTitle) {
@@ -196,13 +216,11 @@
             homeImage.style.backgroundColor = site.logoColor || '#b89c84';
         }
 
-        // 网站名称和描述
         var siteNameEl = document.getElementById('siteName');
         var siteDescEl = document.getElementById('siteDesc');
         if (siteNameEl) siteNameEl.textContent = site.siteName || '见南山';
         if (siteDescEl) siteDescEl.textContent = site.siteDesc || '春山如黛草如烟';
 
-        // ===== 右侧展示十年灯·文，最多3条 =====
         var shinian = DB.get('shinian', []);
         var latest3Shinian = shinian.slice(-3).reverse();
 
@@ -212,19 +230,13 @@
         if (latest3Shinian.length > 0) {
             for (var i = 0; i < latest3Shinian.length; i++) {
                 var item = latest3Shinian[i];
-                // 文章内容截取，单行显示
                 var summary = item.content ? item.content.substring(0, 80) : '';
                 var displaySummary = summary + (item.content && item.content.length > 80 ? '...' : '');
-                
-                // 日期格式化
                 var dateDisplay = item.date || '';
                 
                 html += '<div class="list-item">';
-                // 第一行：文章标题 - 22px 加粗
                 html += '<h3 class="item-title" data-sub="shinian-detail" data-id="' + item.id + '">' + item.title + '</h3>';
-                // 第二行：文章内容（单行省略）
                 html += '<p class="item-desc">' + displaySummary + '</p>';
-                // 第三行：分类标签 + 日期（间隔20px）
                 html += '<div class="item-footer">';
                 html += '<span class="tag">#' + (item.category || '未分类') + '</span>';
                 html += '<span class="item-time">' + dateDisplay + '</span>';
@@ -586,7 +598,18 @@
     });
 
     // ============================================================
-    // 14. 初始化 - 默认显示首页
+    // 14. 页面加载完成后确保间距正确
+    // ============================================================
+    document.addEventListener('DOMContentLoaded', function() {
+        var container = document.querySelector('.container');
+        if (container) {
+            // 默认首页显示 80px
+            container.style.marginTop = '80px';
+        }
+    });
+
+    // ============================================================
+    // 15. 初始化 - 默认显示首页
     // ============================================================
     showPage('page-home');
 })();
