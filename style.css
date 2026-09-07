@@ -286,8 +286,8 @@ body {
     margin-bottom: 48px;
 }
 .year-card {
-    width: 220px;
-    height: 300px;
+    width: 120px;
+    height: 150px;
     border: 1px solid #c9b39f;
     border-radius: 16px;
     display: flex;
