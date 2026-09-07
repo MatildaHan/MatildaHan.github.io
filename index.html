@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>见南山</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="site-header">
+        <div class="header-wrap">
+            <div class="logo-area">
+                <div class="logo-block" id="logoBlock"></div>
+                <h1 class="logo-name" id="siteName">见南山</h1>
+                <span class="logo-slogan" id="siteDesc">春山如黛草如烟</span>
+            </div>
+            <nav class="nav-list" id="globalNav">
+                <a data-page="page-home" class="active">首页</a>
+                <a data-page="page-xingyin">行吟册·絮</a>
+                <a data-page="page-shinian">十年灯·文</a>
+                <a data-page="page-xueye">雪夜舟·图</a>
+                <a data-page="page-tingyu">听雨眠·记</a>
+                <a data-page="page-gexi">各西东·语</a>
+                <a data-page="page-about">山野渔夫</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container" id="app">
+        <!-- ===== 首页 ===== -->
+        <section id="page-home" class="page-section active">
+            <div class="home-row">
+                <div class="home-left">
+                    <h2 class="post-title" id="homeTitle">不再热爱生活。</h2>
+                    <div class="post-date" id="homeDate">2026/09/07</div>
+                    <span class="divider-line"></span>
+                </div>
+                <div class="center-image">
+                    <div class="tilted-card" id="homeImage" style="background-color: #b89c84;"></div>
+                </div>
+                <div class="right-list" id="homeLatest">
+                    <!-- 动态渲染最新内容 -->
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== 行吟册·絮 ===== -->
+        <section id="page-xingyin" class="page-section">
+            <div class="breadcrumb">家 / 行吟册·絮</div>
+            <div class="article-list" id="xingyinList"></div>
+        </section>
+
+        <!-- ===== 行吟册·絮 详情 ===== -->
+        <section id="xingyin-detail" class="page-section">
+            <div class="detail-grid">
+                <div class="breadcrumb">家 / 行吟册·絮</div>
+                <div class="book-main">
+                    <h2 class="title" id="xingyinDetailTitle"></h2>
+                    <div class="date" id="xingyinDetailDate"></div>
+                    <div class="book-content" id="xingyinDetailContent"></div>
+                    <button class="back-btn" data-back="page-xingyin">返回</button>
+                </div>
+                <aside class="sidebar">
+                    <h3 class="sidebar-title">系列 / 絮语</h3>
+                    <div class="sidebar-list" id="xingyinSidebar"></div>
+                </aside>
+            </div>
+        </section>
+
+        <!-- ===== 十年灯·文 ===== -->
+        <section id="page-shinian" class="page-section">
+            <div class="breadcrumb">家 / 十年灯·文</div>
+            <div class="card-grid" id="shinianCards"></div>
+        </section>
+
+        <!-- ===== 十年灯·文 子列表 ===== -->
+        <section id="shinian-list" class="page-section">
+            <div class="breadcrumb">家 / 十年灯·文</div>
+            <div class="article-list" id="shinianList"></div>
+            <button class="back-btn" data-back="page-shinian">返回</button>
+        </section>
+
+        <!-- ===== 十年灯·文 详情 ===== -->
+        <section id="shinian-detail" class="page-section">
+            <div class="detail-grid">
+                <div class="breadcrumb">家 / 十年灯·文</div>
+                <div class="book-main">
+                    <h2 class="title" id="shinianDetailTitle"></h2>
+                    <div class="date" id="shinianDetailDate"></div>
+                    <div class="book-content" id="shinianDetailContent"></div>
+                    <button class="back-btn" data-back="shinian-list">返回</button>
+                </div>
+                <aside class="sidebar">
+                    <h3 class="sidebar-title" id="shinianSidebarTitle">系列</h3>
+                    <div class="sidebar-list" id="shinianSidebar"></div>
+                </aside>
+            </div>
+        </section>
+
+        <!-- ===== 雪夜舟·图 ===== -->
+        <section id="page-xueye" class="page-section">
+            <div class="breadcrumb">家 / 雪夜舟·图</div>
+            <div class="card-grid" id="xueyeCards"></div>
+        </section>
+
+        <!-- ===== 雪夜舟·图 图集 ===== -->
+        <section id="xueye-gallery" class="page-section">
+            <div class="breadcrumb">家 / 雪夜舟·图</div>
+            <div id="xueyeGallery"></div>
+            <button class="back-btn" data-back="page-xueye">返回</button>
+        </section>
+
+        <!-- ===== 听雨眠·记 ===== -->
+        <section id="page-tingyu" class="page-section">
+            <div class="breadcrumb">家 / 听雨眠·记</div>
+            <div id="tingyuYears"></div>
+        </section>
+
+        <!-- ===== 听雨眠·记 书籍详情 ===== -->
+        <section id="tingyu-detail" class="page-section">
+            <div class="detail-grid">
+                <div class="breadcrumb">家 / 听雨眠·记</div>
+                <div class="book-main">
+                    <h2 class="book-title" id="tingyuDetailTitle"></h2>
+                    <div class="book-date" id="tingyuDetailDate"></div>
+                    <div class="book-content" id="tingyuDetailContent"></div>
+                    <button class="back-btn" data-back="page-tingyu">返回</button>
+                </div>
+                <aside class="sidebar">
+                    <div class="sidebar-year" id="tingyuSidebarYear" style="font-size:22px;margin-bottom:16px;"></div>
+                    <ul class="sidebar-list" id="tingyuSidebar" style="list-style:none;"></ul>
+                </aside>
+            </div>
+        </section>
+
+        <!-- ===== 各西东·语 ===== -->
+        <section id="page-gexi" class="page-section">
+            <div class="breadcrumb">家 / 各西东·语</div>
+            <div class="talk-list" id="gexiList"></div>
+        </section>
+
+        <!-- ===== 山野渔夫 ===== -->
+        <section id="page-about" class="page-section">
+            <div class="breadcrumb">家 / 山野渔夫</div>
+            <div class="about-text" id="aboutContent"></div>
+            <div class="date-footer">2026/09/07</div>
+        </section>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>

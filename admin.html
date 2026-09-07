@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>见南山 · 后台管理</title>
+    <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+<div class="admin-wrapper">
+    <!-- 侧边栏 -->
+    <aside class="admin-sidebar">
+        <div class="logo">见南山 <span>后台管理</span></div>
+        <nav>
+            <a href="#" data-panel="panel-dashboard" class="active">总览</a>
+            <a href="#" data-panel="panel-site">站点设置</a>
+            <a href="#" data-panel="panel-xingyin">行吟册·絮</a>
+            <a href="#" data-panel="panel-shinian">十年灯·文</a>
+            <a href="#" data-panel="panel-xueye">雪夜舟·图</a>
+            <a href="#" data-panel="panel-tingyu">听雨眠·记</a>
+            <a href="#" data-panel="panel-gexi">各西东·语</a>
+            <a href="#" data-panel="panel-about">山野渔夫</a>
+        </nav>
+        <div class="footer">© 2026 见南山 · v1.0</div>
+    </aside>
+
+    <!-- 主内容 -->
+    <main class="admin-main">
+        <div class="admin-header">
+            <h2 id="panelTitle">总览</h2>
+            <span class="user">管理员</span>
+        </div>
+
+        <!-- ===== 面板：总览 ===== -->
+        <section id="panel-dashboard" class="panel active">
+            <div class="form-card">
+                <h3>📊 数据概览</h3>
+                <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:20px;">
+                    <div><strong>行吟册·絮</strong><br><span id="count-xingyin">0</span> 条</div>
+                    <div><strong>十年灯·文</strong><br><span id="count-shinian">0</span> 篇</div>
+                    <div><strong>雪夜舟·图</strong><br><span id="count-xueye">0</span> 组</div>
+                    <div><strong>听雨眠·记</strong><br><span id="count-tingyu">0</span> 本</div>
+                    <div><strong>各西东·语</strong><br><span id="count-gexi">0</span> 条</div>
+                </div>
+            </div>
+            <div class="form-card">
+                <h3>🔗 前端预览</h3>
+                <p style="color:#8a7a6a;">所有数据修改后，请刷新前端页面查看效果。</p>
+                <p style="margin-top:8px;"><a href="index.html" target="_blank" style="color:#8c7562;text-decoration:underline;">→ 打开前端首页</a></p>
+            </div>
+        </section>
+
+        <!-- ===== 面板：站点设置 ===== -->
+        <section id="panel-site" class="panel">
+            <div class="form-card">
+                <h3>🏠 站点基本设置</h3>
+                <div class="form-group">
+                    <label>Logo 标识色 (十六进制)</label>
+                    <input type="text" id="site-logo-color" value="#b89c84" placeholder="#b89c84">
+                </div>
+                <div class="form-group">
+                    <label>网站名称</label>
+                    <input type="text" id="site-name" value="见南山" placeholder="见南山">
+                </div>
+                <div class="form-group">
+                    <label>网站描述 (副标题)</label>
+                    <input type="text" id="site-desc" value="春山如黛草如烟" placeholder="春山如黛草如烟">
+                </div>
+                <div class="form-group">
+                    <label>首页最新标题 (展示于左侧)</label>
+                    <input type="text" id="site-home-title" value="不再热爱生活。" placeholder="不再热爱生活。">
+                </div>
+                <button class="btn btn-primary" onclick="saveSiteSettings()">保存站点设置</button>
+            </div>
+        </section>
+
+        <!-- ===== 面板：行吟册·絮 ===== -->
+        <section id="panel-xingyin" class="panel">
+            <div class="toolbar">
+                <button class="btn btn-primary" onclick="openXingyinForm()">+ 新增短句</button>
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>#</th><th>短句内容</th><th>日期</th><th>操作</th></tr></thead>
+                    <tbody id="xingyin-list"></tbody>
+                </table>
+            </div>
+            <div id="xingyin-form" style="display:none;margin-top:24px;background:#fcfafa;padding:20px;border-radius:8px;border:1px solid #e0d6cc;">
+                <h4 style="margin-bottom:12px;">编辑短句</h4>
+                <input type="hidden" id="xingyin-edit-id">
+                <div class="form-group"><label>短句内容</label><textarea id="xingyin-content" rows="2"></textarea></div>
+                <div class="form-group"><label>日期 (YYYY/MM/DD)</label><input type="text" id="xingyin-date" value="2026/09/07"></div>
+                <div style="display:flex;gap:12px;">
+                    <button class="btn btn-primary" onclick="saveXingyin()">保存</button>
+                    <button class="btn" onclick="closeXingyinForm()">取消</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== 面板：十年灯·文 ===== -->
+        <section id="panel-shinian" class="panel">
+            <div class="toolbar">
+                <button class="btn btn-primary" onclick="openShinianForm()">+ 新增文章</button>
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>#</th><th>标题</th><th>分类</th><th>日期</th><th>操作</th></tr></thead>
+                    <tbody id="shinian-list"></tbody>
+                </table>
+            </div>
+            <div id="shinian-form" style="display:none;margin-top:24px;background:#fcfafa;padding:20px;border-radius:8px;border:1px solid #e0d6cc;">
+                <h4 style="margin-bottom:12px;">编辑文章</h4>
+                <input type="hidden" id="shinian-edit-id">
+                <div class="form-group"><label>标题</label><input type="text" id="shinian-title"></div>
+                <div class="form-group"><label>分类</label>
+                    <select id="shinian-category">
+                        <option value="闲聊几句">闲聊几句</option>
+                        <option value="灯火可亲">灯火可亲</option>
+                        <option value="半杯凉茶">半杯凉茶</option>
+                        <option value="旧椅子时光">旧椅子时光</option>
+                        <option value="纸上山川">纸上山川</option>
+                        <option value="收音机杂音">收音机杂音</option>
+                    </select>
+                </div>
+                <div class="form-group"><label>分类描述</label><input type="text" id="shinian-category-desc" placeholder="分类描述"></div>
+                <div class="form-group"><label>内容</label><textarea id="shinian-content" rows="6"></textarea></div>
+                <div class="form-group"><label>日期</label><input type="text" id="shinian-date" value="2026/09/07"></div>
+                <div style="display:flex;gap:12px;">
+                    <button class="btn btn-primary" onclick="saveShinian()">保存</button>
+                    <button class="btn" onclick="closeShinianForm()">取消</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== 面板：雪夜舟·图 ===== -->
+        <section id="panel-xueye" class="panel">
+            <div class="toolbar">
+                <button class="btn btn-primary" onclick="openXueyeForm()">+ 新增图片组</button>
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>#</th><th>分类</th><th>分类描述</th><th>图片预览</th><th>日期</th><th>操作</th></tr></thead>
+                    <tbody id="xueye-list"></tbody>
+                </table>
+            </div>
+            <div id="xueye-form" style="display:none;margin-top:24px;background:#fcfafa;padding:20px;border-radius:8px;border:1px solid #e0d6cc;">
+                <h4 style="margin-bottom:12px;">编辑图片组</h4>
+                <input type="hidden" id="xueye-edit-id">
+                <div class="form-group"><label>分类名称</label><input type="text" id="xueye-category"></div>
+                <div class="form-group"><label>分类描述</label><input type="text" id="xueye-category-desc"></div>
+                <div class="form-group"><label>图片数量 (占位)</label><input type="number" id="xueye-count" value="6" min="1" max="12"></div>
+                <div class="form-group"><label>日期</label><input type="text" id="xueye-date" value="2026/09/07"></div>
+                <div style="display:flex;gap:12px;">
+                    <button class="btn btn-primary" onclick="saveXueye()">保存</button>
+                    <button class="btn" onclick="closeXueyeForm()">取消</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== 面板：听雨眠·记 ===== -->
+        <section id="panel-tingyu" class="panel">
+            <div class="toolbar">
+                <button class="btn btn-primary" onclick="openTingyuForm()">+ 新增书籍</button>
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>#</th><th>书名</th><th>年份</th><th>操作</th></tr></thead>
+                    <tbody id="tingyu-list"></tbody>
+                </table>
+            </div>
+            <div id="tingyu-form" style="display:none;margin-top:24px;background:#fcfafa;padding:20px;border-radius:8px;border:1px solid #e0d6cc;">
+                <h4 style="margin-bottom:12px;">编辑书籍</h4>
+                <input type="hidden" id="tingyu-edit-id">
+                <div class="form-group"><label>书名</label><input type="text" id="tingyu-title" placeholder="《书名》"></div>
+                <div class="form-group"><label>年份 (YYYY)</label><input type="text" id="tingyu-year" placeholder="2026"></div>
+                <div style="display:flex;gap:12px;">
+                    <button class="btn btn-primary" onclick="saveTingyu()">保存</button>
+                    <button class="btn" onclick="closeTingyuForm()">取消</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== 面板：各西东·语 ===== -->
+        <section id="panel-gexi" class="panel">
+            <div class="toolbar">
+                <button class="btn btn-primary" onclick="openGexiForm()">+ 新增短句</button>
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>#</th><th>短句内容</th><th>日期</th><th>操作</th></tr></thead>
+                    <tbody id="gexi-list"></tbody>
+                </table>
+            </div>
+            <div id="gexi-form" style="display:none;margin-top:24px;background:#fcfafa;padding:20px;border-radius:8px;border:1px solid #e0d6cc;">
+                <h4 style="margin-bottom:12px;">编辑短句</h4>
+                <input type="hidden" id="gexi-edit-id">
+                <div class="form-group"><label>短句内容</label><textarea id="gexi-content" rows="2"></textarea></div>
+                <div class="form-group"><label>日期</label><input type="text" id="gexi-date" value="2026/09/07"></div>
+                <div style="display:flex;gap:12px;">
+                    <button class="btn btn-primary" onclick="saveGexi()">保存</button>
+                    <button class="btn" onclick="closeGexiForm()">取消</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== 面板：山野渔夫 ===== -->
+        <section id="panel-about" class="panel">
+            <div class="form-card">
+                <h3>🧑‍🌾 个人简介</h3>
+                <div class="form-group">
+                    <label>简介内容 (支持多行)</label>
+                    <textarea id="about-content" rows="8" style="min-height:200px;"></textarea>
+                </div>
+                <button class="btn btn-primary" onclick="saveAbout()">保存简介</button>
+            </div>
+        </section>
+    </main>
+</div>
+
+<script src="admin.js"></script>
+</body>
+</html>
