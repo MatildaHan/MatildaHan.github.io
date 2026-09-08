@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>见南山 · 后台管理</title>
+    <title>見南山 · 后台管理</title>
     <link rel="stylesheet" href="admin.css">
 </head>
 <body>
@@ -818,6 +818,7 @@ function openXueyeItemEdit(id) {
         document.getElementById('xueye-image-upload').value = '';
         document.getElementById('xueye-image-preview').innerHTML = '';
         xueyeTempImages = [];
+        // 如果有存储的图片，显示预览
         if (item.images && item.images.length > 0) {
             var previewContainer = document.getElementById('xueye-image-preview');
             for (var i = 0; i < item.images.length; i++) {
@@ -912,6 +913,7 @@ async function saveXueyeItem() {
     var date = document.getElementById('xueye-date').value.trim();
     if (!category) { alert('请选择分类'); return; }
 
+    // 获取已有的图片（编辑时从 DB 读取）
     var existingImages = [];
     if (id) {
         var existing = await DB.getById('xueye', id);
@@ -919,6 +921,7 @@ async function saveXueyeItem() {
             existingImages = existing.images;
         }
     }
+    // 合并已有图片和新上传图片
     var allImages = existingImages.concat(xueyeTempImages);
 
     var data = { 
@@ -934,6 +937,8 @@ async function saveXueyeItem() {
     } else {
         await DB.insert('xueye', data);
     }
+    // 清空临时图片数组
+    xueyeTempImages = [];
     closeXueyeItemForm();
     await renderXueye();
     await refreshDashboard();
@@ -1295,14 +1300,14 @@ async function saveSiteSettings() {
 }
 
 // ============================================================
-// 总览数据刷新
+// 总览数据刷新（修复：使用 DB.get 同步读取）
 // ============================================================
-async function refreshDashboard() {
-    var xingyin = await DB.getAll('xingyin');
-    var shinian = await DB.getAll('shinian');
-    var xueye = await DB.getAll('xueye');
-    var tingyu = await DB.getAll('tingyu');
-    var gexi = await DB.getAll('gexi');
+function refreshDashboard() {
+    var xingyin = DB.get('xingyin', []);
+    var shinian = DB.get('shinian', []);
+    var xueye = DB.get('xueye', []);
+    var tingyu = DB.get('tingyu', []);
+    var gexi = DB.get('gexi', []);
     
     document.getElementById('count-xingyin').textContent = xingyin ? xingyin.length : 0;
     document.getElementById('count-shinian').textContent = shinian ? shinian.length : 0;
@@ -1336,7 +1341,7 @@ document.querySelectorAll('.admin-sidebar nav a').forEach(function(link) {
 });
 
 // ============================================================
-// 听雨眠·记 前端渲染（修复内容调取）
+// 听雨眠·记 前端渲染（修复：使用 DB.get 同步读取）
 // ============================================================
 function renderTingyuYears() {
     var list = DB.get('tingyu', []);
@@ -1456,16 +1461,16 @@ function updateLogo(site) {
 // 初始化
 // ============================================================
 async function initAdmin() {
-    await refreshDashboard();
+    refreshDashboard();
     await renderXingyin();
     await renderShinian();
-    await renderShinianCategories();
+    renderShinianCategories();
     await renderXueye();
-    await renderXueyeCategories();
+    renderXueyeCategories();
     await renderTingyu();
     await renderGexi();
     await loadAbout();
-    await loadSiteSettings();
+    loadSiteSettings();
     generateYearOptions();
     renderTingyuYears();
     renderHome();
