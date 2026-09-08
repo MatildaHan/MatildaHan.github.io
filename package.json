@@ -1,0 +1,8 @@
+{
+    "name": "jiananshan",
+    "version": "1.0.0",
+    "description": "见南山博客系统",
+    "scripts": {
+        "dev": "echo '开发模式'"
+    }
+}
