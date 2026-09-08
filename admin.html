@@ -5,9 +5,367 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>见南山 · 后台管理</title>
     <link rel="stylesheet" href="admin.css">
+    <style>
+        /* ===== 登录界面样式 ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: "Songti SC", "SimSun", serif;
+            background: #f5f2ef;
+            color: #5a4a3a;
+            font-size: 14px;
+            line-height: 1.7;
+        }
+        .login-container {
+            max-width: 400px;
+            margin: 120px auto;
+            padding: 50px 40px 40px;
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 8px 40px rgba(0,0,0,0.06);
+            text-align: center;
+        }
+        .login-container .login-logo {
+            font-size: 28px;
+            color: #4a3a2a;
+            margin-bottom: 6px;
+            letter-spacing: 4px;
+        }
+        .login-container .login-sub {
+            font-size: 14px;
+            color: #9a8a7a;
+            margin-bottom: 32px;
+        }
+        .login-container .form-group {
+            margin-bottom: 18px;
+            text-align: left;
+        }
+        .login-container .form-group label {
+            display: block;
+            font-size: 13px;
+            color: #6a5a4a;
+            margin-bottom: 4px;
+        }
+        .login-container .form-group input {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid #d5c8bc;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+            background: #fcfaf8;
+            transition: border-color 0.2s;
+        }
+        .login-container .form-group input:focus {
+            outline: none;
+            border-color: #b89c84;
+            background: #ffffff;
+        }
+        .login-container .btn-login {
+            width: 100%;
+            padding: 12px;
+            background: #8c7562;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            font-family: inherit;
+            transition: background 0.2s;
+            margin-top: 8px;
+        }
+        .login-container .btn-login:hover {
+            background: #7a6451;
+        }
+        .login-container .btn-login:active {
+            transform: scale(0.98);
+        }
+        .login-container .error {
+            color: #c0392b;
+            font-size: 13px;
+            margin-top: 12px;
+            display: none;
+        }
+        .login-container .error.show {
+            display: block;
+        }
+
+        /* ===== 后台内容默认隐藏 ===== */
+        .admin-wrapper {
+            display: none;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .admin-wrapper.show {
+            display: flex;
+        }
+
+        /* ===== 后台样式 ===== */
+        .admin-sidebar {
+            width: 220px;
+            background: #2c241e;
+            color: #d4c5b8;
+            padding: 30px 0;
+            flex-shrink: 0;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow-y: auto;
+        }
+        .admin-sidebar .logo {
+            font-size: 22px;
+            color: #e8ddd0;
+            padding: 0 24px 30px;
+            border-bottom: 1px solid #3f332b;
+            letter-spacing: 2px;
+        }
+        .admin-sidebar .logo span {
+            display: block;
+            font-size: 13px;
+            color: #9a8a7a;
+            letter-spacing: 0;
+            margin-top: 4px;
+        }
+        .admin-sidebar nav a {
+            display: block;
+            padding: 12px 24px;
+            color: #c4b5a6;
+            transition: 0.2s;
+            border-left: 3px solid transparent;
+            font-size: 14px;
+            text-decoration: none;
+        }
+        .admin-sidebar nav a:hover {
+            background: #3f332b;
+            color: #f0e6dc;
+        }
+        .admin-sidebar nav a.active {
+            background: #3f332b;
+            color: #f0e6dc;
+            border-left-color: #b89c84;
+        }
+        .admin-sidebar .footer {
+            padding: 30px 24px 0;
+            font-size: 12px;
+            color: #6a5a4a;
+            border-top: 1px solid #3f332b;
+            margin-top: 30px;
+        }
+
+        .admin-main {
+            flex: 1;
+            padding: 30px 40px 60px;
+            max-width: 980px;
+        }
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e0d6cc;
+            margin-bottom: 30px;
+        }
+        .admin-header h2 {
+            font-weight: normal;
+            font-size: 24px;
+            color: #4a3a2a;
+        }
+        .admin-header .user {
+            color: #8a7a6a;
+            font-size: 13px;
+        }
+        .admin-header .logout-btn {
+            color: #a8917e;
+            font-size: 13px;
+            cursor: pointer;
+            text-decoration: underline;
+            margin-left: 16px;
+        }
+        .admin-header .logout-btn:hover {
+            color: #6a5a4a;
+        }
+
+        .panel {
+            display: none;
+            animation: fade 0.25s ease;
+        }
+        .panel.active {
+            display: block;
+        }
+        @keyframes fade {
+            0% { opacity: 0.6; transform: translateY(6px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        .toolbar {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 24px;
+        }
+        .btn {
+            padding: 6px 18px;
+            border: 1px solid #c9b39f;
+            background: #fff;
+            color: #5a4a3a;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+            font-family: inherit;
+            transition: 0.2s;
+        }
+        .btn:hover {
+            background: #f3efe9;
+        }
+        .btn-primary {
+            background: #8c7562;
+            color: #fff;
+            border-color: #8c7562;
+        }
+        .btn-primary:hover {
+            background: #7a6451;
+            border-color: #7a6451;
+        }
+        .btn-danger {
+            border-color: #c0392b;
+            color: #c0392b;
+        }
+        .btn-danger:hover {
+            background: #c0392b;
+            color: #fff;
+        }
+
+        .table-wrap {
+            background: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            overflow-x: auto;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+        th {
+            text-align: left;
+            padding: 10px 12px;
+            background: #f8f5f1;
+            color: #5a4a3a;
+            font-weight: normal;
+            border-bottom: 2px solid #e0d6cc;
+        }
+        td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #f0ebe6;
+            vertical-align: top;
+        }
+        .actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .actions .btn {
+            padding: 2px 12px;
+            font-size: 12px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            color: #6a5a4a;
+            margin-bottom: 4px;
+        }
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #d5c8bc;
+            border-radius: 4px;
+            font-family: inherit;
+            font-size: 13px;
+            background: #fff;
+            color: #3a2a1a;
+        }
+        .form-group textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+        .form-card {
+            background: #fff;
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 30px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+        }
+        .form-card h3 {
+            font-weight: normal;
+            font-size: 18px;
+            color: #4a3a2a;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #f0ebe6;
+        }
+
+        .img-preview {
+            width: 80px;
+            height: 60px;
+            background: #b89c84;
+            border-radius: 4px;
+            display: inline-block;
+        }
+
+        @media (max-width: 768px) {
+            .admin-wrapper { flex-direction: column; }
+            .admin-sidebar { width: 100%; height: auto; position: relative; padding: 16px 0; }
+            .admin-sidebar .logo { padding: 0 20px 16px; }
+            .admin-sidebar nav a { padding: 10px 20px; }
+            .admin-main { max-width: 100%; padding: 16px; }
+            .admin-header { flex-direction: column; align-items: flex-start; gap: 8px; }
+            .table-wrap { padding: 12px; }
+            .actions { flex-direction: column; gap: 4px; }
+            .login-container { margin: 60px 20px; padding: 30px 20px; }
+        }
+        @media (max-width: 1024px) {
+            .admin-sidebar { width: 180px; }
+            .admin-main { padding: 20px 24px; }
+        }
+    </style>
 </head>
 <body>
-<div class="admin-wrapper">
+
+<!-- ============================================================
+     登录界面
+     ============================================================ -->
+<div class="login-container" id="loginContainer">
+    <div class="login-logo">见南山</div>
+    <div class="login-sub">后台管理登录</div>
+    <div class="form-group">
+        <label>用户名</label>
+        <input type="text" id="login-username" value="admin" placeholder="请输入用户名">
+    </div>
+    <div class="form-group">
+        <label>密码</label>
+        <input type="password" id="login-password" placeholder="请输入密码">
+    </div>
+    <button class="btn-login" onclick="handleLogin()">登 录</button>
+    <div class="error" id="loginError">用户名或密码错误</div>
+</div>
+
+
+<!-- ============================================================
+     后台管理界面（登录后显示）
+     ============================================================ -->
+<div class="admin-wrapper" id="adminWrapper">
+
+    <!-- 侧边栏 -->
     <aside class="admin-sidebar">
         <div class="logo">见南山 <span>后台管理</span></div>
         <nav>
@@ -23,10 +381,14 @@
         <div class="footer">© 2026 见南山 · v1.0</div>
     </aside>
 
+    <!-- 主内容 -->
     <main class="admin-main">
         <div class="admin-header">
             <h2 id="panelTitle">总览</h2>
-            <span class="user">管理员</span>
+            <div>
+                <span class="user">管理员</span>
+                <span class="logout-btn" onclick="handleLogout()">退出登录</span>
+            </div>
         </div>
 
         <!-- ===== 面板：总览 ===== -->
@@ -216,10 +578,631 @@
                 <button class="btn btn-primary" onclick="saveAbout()">保存简介</button>
             </div>
         </section>
+
     </main>
 </div>
 
+<!-- ============================================================
+     引入 Supabase 和脚本
+     ============================================================ -->
 <script src="supabase.js"></script>
-<script src="admin.js"></script>
+<script>
+// ============================================================
+// 登录验证逻辑
+// ============================================================
+
+// 获取管理员密码哈希
+async function getAdminPasswordHash() {
+    try {
+        var list = await DB.getAll('admin_users');
+        if (list && list.length > 0) {
+            return list[0].password_hash;
+        }
+        return null;
+    } catch (e) {
+        console.error('获取管理员信息失败:', e);
+        return null;
+    }
+}
+
+// 处理登录
+async function handleLogin() {
+    var username = document.getElementById('login-username').value.trim();
+    var password = document.getElementById('login-password').value.trim();
+    var errorEl = document.getElementById('loginError');
+    
+    if (!username || !password) {
+        errorEl.textContent = '请输入用户名和密码';
+        errorEl.className = 'error show';
+        return;
+    }
+    
+    // 获取存储的密码哈希
+    var hash = await getAdminPasswordHash();
+    if (!hash) {
+        errorEl.textContent = '系统错误，请联系管理员';
+        errorEl.className = 'error show';
+        return;
+    }
+    
+    // 简单验证（密码为 admin123）
+    if (password === 'admin123') {
+        localStorage.setItem('admin_logged_in', 'true');
+        document.getElementById('loginContainer').style.display = 'none';
+        document.getElementById('adminWrapper').className = 'admin-wrapper show';
+        initAdmin();
+    } else {
+        errorEl.textContent = '用户名或密码错误';
+        errorEl.className = 'error show';
+    }
+}
+
+// 退出登录
+function handleLogout() {
+    if (confirm('确定要退出登录吗？')) {
+        localStorage.removeItem('admin_logged_in');
+        document.getElementById('adminWrapper').className = 'admin-wrapper';
+        document.getElementById('loginContainer').style.display = 'block';
+        document.getElementById('login-password').value = '';
+        var errorEl = document.getElementById('loginError');
+        errorEl.className = 'error';
+    }
+}
+
+// 检查登录状态
+function checkLogin() {
+    var loggedIn = localStorage.getItem('admin_logged_in');
+    if (loggedIn === 'true') {
+        document.getElementById('loginContainer').style.display = 'none';
+        document.getElementById('adminWrapper').className = 'admin-wrapper show';
+        initAdmin();
+    }
+}
+
+// 回车键触发登录
+document.getElementById('login-password').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') {
+        handleLogin();
+    }
+});
+document.getElementById('login-username').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') {
+        handleLogin();
+    }
+});
+
+// ============================================================
+// 工具：生成 ID
+// ============================================================
+function genId() { return Date.now() + Math.random() * 1000; }
+
+// ============================================================
+// 行吟册·絮 (CRUD)
+// ============================================================
+async function renderXingyin() {
+    var list = await DB.getAll('xingyin', { orderBy: 'id' });
+    var tbody = document.getElementById('xingyin-list');
+    if (!tbody) return;
+    var html = '';
+    for (var i = 0; i < list.length; i++) {
+        var item = list[i];
+        html += '<tr>';
+        html += '<td>' + (i + 1) + '</td>';
+        html += '<td>' + item.content + '</td>';
+        html += '<td>' + item.date + '</td>';
+        html += '<td class="actions">';
+        html += '<button class="btn" onclick="editXingyin(' + item.id + ')">编辑</button>';
+        html += '<button class="btn btn-danger" onclick="deleteXingyin(' + item.id + ')">删除</button>';
+        html += '</td>';
+        html += '</tr>';
+    }
+    tbody.innerHTML = html;
+}
+
+function openXingyinForm() {
+    document.getElementById('xingyin-form').style.display = 'block';
+    document.getElementById('xingyin-edit-id').value = '';
+    document.getElementById('xingyin-content').value = '';
+    document.getElementById('xingyin-date').value = new Date().toISOString().slice(0, 10).replace(/-/g, '/');
+}
+
+function closeXingyinForm() {
+    document.getElementById('xingyin-form').style.display = 'none';
+}
+
+async function editXingyin(id) {
+    var item = await DB.getById('xingyin', id);
+    if (!item) return;
+    document.getElementById('xingyin-form').style.display = 'block';
+    document.getElementById('xingyin-edit-id').value = id;
+    document.getElementById('xingyin-content').value = item.content;
+    document.getElementById('xingyin-date').value = item.date;
+}
+
+async function saveXingyin() {
+    var id = document.getElementById('xingyin-edit-id').value;
+    var content = document.getElementById('xingyin-content').value.trim();
+    var date = document.getElementById('xingyin-date').value.trim();
+    if (!content) { alert('请输入内容'); return; }
+
+    if (id) {
+        await DB.update('xingyin', id, { content: content, date: date });
+    } else {
+        await DB.insert('xingyin', { content: content, date: date });
+    }
+    closeXingyinForm();
+    await renderXingyin();
+    await refreshDashboard();
+}
+
+async function deleteXingyin(id) {
+    if (!confirm('确定删除？')) return;
+    await DB.delete('xingyin', id);
+    await renderXingyin();
+    await refreshDashboard();
+}
+
+// ============================================================
+// 十年灯·文 (CRUD)
+// ============================================================
+async function renderShinian() {
+    var list = await DB.getAll('shinian', { orderBy: 'id' });
+    var tbody = document.getElementById('shinian-list');
+    if (!tbody) return;
+    var html = '';
+    for (var i = 0; i < list.length; i++) {
+        var item = list[i];
+        html += '<tr>';
+        html += '<td>' + (i + 1) + '</td>';
+        html += '<td><strong>' + item.title + '</strong></td>';
+        html += '<td>' + item.category + (item.category_desc ? ' (' + item.category_desc + ')' : '') + '</td>';
+        html += '<td>' + item.date + '</td>';
+        html += '<td class="actions">';
+        html += '<button class="btn" onclick="editShinian(' + item.id + ')">编辑</button>';
+        html += '<button class="btn btn-danger" onclick="deleteShinian(' + item.id + ')">删除</button>';
+        html += '</td>';
+        html += '</tr>';
+    }
+    tbody.innerHTML = html;
+}
+
+function openShinianForm() {
+    document.getElementById('shinian-form').style.display = 'block';
+    document.getElementById('shinian-edit-id').value = '';
+    document.getElementById('shinian-title').value = '';
+    document.getElementById('shinian-category').value = '闲聊几句';
+    document.getElementById('shinian-category-desc').value = '';
+    document.getElementById('shinian-content').value = '';
+    document.getElementById('shinian-date').value = new Date().toISOString().slice(0, 10).replace(/-/g, '/');
+}
+
+function closeShinianForm() {
+    document.getElementById('shinian-form').style.display = 'none';
+}
+
+async function editShinian(id) {
+    var item = await DB.getById('shinian', id);
+    if (!item) return;
+    document.getElementById('shinian-form').style.display = 'block';
+    document.getElementById('shinian-edit-id').value = id;
+    document.getElementById('shinian-title').value = item.title;
+    document.getElementById('shinian-category').value = item.category || '闲聊几句';
+    document.getElementById('shinian-category-desc').value = item.category_desc || '';
+    document.getElementById('shinian-content').value = item.content || '';
+    document.getElementById('shinian-date').value = item.date;
+}
+
+async function saveShinian() {
+    var id = document.getElementById('shinian-edit-id').value;
+    var title = document.getElementById('shinian-title').value.trim();
+    var category = document.getElementById('shinian-category').value;
+    var categoryDesc = document.getElementById('shinian-category-desc').value.trim();
+    var content = document.getElementById('shinian-content').value.trim();
+    var date = document.getElementById('shinian-date').value.trim();
+    if (!title) { alert('请输入标题'); return; }
+
+    var data = { title: title, category: category, category_desc: categoryDesc, content: content, date: date };
+
+    if (id) {
+        await DB.update('shinian', id, data);
+    } else {
+        await DB.insert('shinian', data);
+    }
+    closeShinianForm();
+    await renderShinian();
+    await refreshDashboard();
+}
+
+async function deleteShinian(id) {
+    if (!confirm('确定删除？')) return;
+    await DB.delete('shinian', id);
+    await renderShinian();
+    await refreshDashboard();
+}
+
+// ============================================================
+// 雪夜舟·图 (CRUD)
+// ============================================================
+async function renderXueye() {
+    var list = await DB.getAll('xueye', { orderBy: 'id' });
+    var tbody = document.getElementById('xueye-list');
+    if (!tbody) return;
+    var html = '';
+    for (var i = 0; i < list.length; i++) {
+        var item = list[i];
+        html += '<tr>';
+        html += '<td>' + (i + 1) + '</td>';
+        html += '<td><strong>' + item.category + '</strong></td>';
+        html += '<td>' + (item.category_desc || '-') + '</td>';
+        html += '<td><span class="img-preview"></span> ×' + (item.count || 6) + '</td>';
+        html += '<td>' + item.date + '</td>';
+        html += '<td class="actions">';
+        html += '<button class="btn" onclick="editXueye(' + item.id + ')">编辑</button>';
+        html += '<button class="btn btn-danger" onclick="deleteXueye(' + item.id + ')">删除</button>';
+        html += '</td>';
+        html += '</tr>';
+    }
+    tbody.innerHTML = html;
+}
+
+function openXueyeForm() {
+    document.getElementById('xueye-form').style.display = 'block';
+    document.getElementById('xueye-edit-id').value = '';
+    document.getElementById('xueye-category').value = '';
+    document.getElementById('xueye-category-desc').value = '';
+    document.getElementById('xueye-count').value = 6;
+    document.getElementById('xueye-date').value = new Date().toISOString().slice(0, 10).replace(/-/g, '/');
+}
+
+function closeXueyeForm() {
+    document.getElementById('xueye-form').style.display = 'none';
+}
+
+async function editXueye(id) {
+    var item = await DB.getById('xueye', id);
+    if (!item) return;
+    document.getElementById('xueye-form').style.display = 'block';
+    document.getElementById('xueye-edit-id').value = id;
+    document.getElementById('xueye-category').value = item.category;
+    document.getElementById('xueye-category-desc').value = item.category_desc || '';
+    document.getElementById('xueye-count').value = item.count || 6;
+    document.getElementById('xueye-date').value = item.date;
+}
+
+async function saveXueye() {
+    var id = document.getElementById('xueye-edit-id').value;
+    var category = document.getElementById('xueye-category').value.trim();
+    var categoryDesc = document.getElementById('xueye-category-desc').value.trim();
+    var count = parseInt(document.getElementById('xueye-count').value) || 6;
+    var date = document.getElementById('xueye-date').value.trim();
+    if (!category) { alert('请输入分类名称'); return; }
+
+    var data = { category: category, category_desc: categoryDesc, count: count, date: date };
+
+    if (id) {
+        await DB.update('xueye', id, data);
+    } else {
+        await DB.insert('xueye', data);
+    }
+    closeXueyeForm();
+    await renderXueye();
+    await refreshDashboard();
+}
+
+async function deleteXueye(id) {
+    if (!confirm('确定删除？')) return;
+    await DB.delete('xueye', id);
+    await renderXueye();
+    await refreshDashboard();
+}
+
+// ============================================================
+// 听雨眠·记 (CRUD)
+// ============================================================
+async function renderTingyu() {
+    var list = await DB.getAll('tingyu', { orderBy: 'id' });
+    var tbody = document.getElementById('tingyu-list');
+    if (!tbody) return;
+    var html = '';
+    for (var i = 0; i < list.length; i++) {
+        var item = list[i];
+        html += '<tr>';
+        html += '<td>' + (i + 1) + '</td>';
+        html += '<td>' + item.title + '</td>';
+        html += '<td>' + item.year + '</td>';
+        html += '<td class="actions">';
+        html += '<button class="btn" onclick="editTingyu(' + item.id + ')">编辑</button>';
+        html += '<button class="btn btn-danger" onclick="deleteTingyu(' + item.id + ')">删除</button>';
+        html += '</td>';
+        html += '</tr>';
+    }
+    tbody.innerHTML = html;
+}
+
+function openTingyuForm() {
+    document.getElementById('tingyu-form').style.display = 'block';
+    document.getElementById('tingyu-edit-id').value = '';
+    document.getElementById('tingyu-title').value = '';
+    document.getElementById('tingyu-year').value = new Date().getFullYear();
+}
+
+function closeTingyuForm() {
+    document.getElementById('tingyu-form').style.display = 'none';
+}
+
+async function editTingyu(id) {
+    var item = await DB.getById('tingyu', id);
+    if (!item) return;
+    document.getElementById('tingyu-form').style.display = 'block';
+    document.getElementById('tingyu-edit-id').value = id;
+    document.getElementById('tingyu-title').value = item.title;
+    document.getElementById('tingyu-year').value = item.year;
+}
+
+async function saveTingyu() {
+    var id = document.getElementById('tingyu-edit-id').value;
+    var title = document.getElementById('tingyu-title').value.trim();
+    var year = document.getElementById('tingyu-year').value.trim();
+    if (!title) { alert('请输入书名'); return; }
+    if (!year) { alert('请输入年份'); return; }
+
+    var data = { title: title, year: year };
+
+    if (id) {
+        await DB.update('tingyu', id, data);
+    } else {
+        await DB.insert('tingyu', data);
+    }
+    closeTingyuForm();
+    await renderTingyu();
+    await refreshDashboard();
+}
+
+async function deleteTingyu(id) {
+    if (!confirm('确定删除？')) return;
+    await DB.delete('tingyu', id);
+    await renderTingyu();
+    await refreshDashboard();
+}
+
+// ============================================================
+// 各西东·语 (CRUD)
+// ============================================================
+async function renderGexi() {
+    var list = await DB.getAll('gexi', { orderBy: 'id' });
+    var tbody = document.getElementById('gexi-list');
+    if (!tbody) return;
+    var html = '';
+    for (var i = 0; i < list.length; i++) {
+        var item = list[i];
+        html += '<tr>';
+        html += '<td>' + (i + 1) + '</td>';
+        html += '<td>' + item.content + '</td>';
+        html += '<td>' + item.date + '</td>';
+        html += '<td class="actions">';
+        html += '<button class="btn" onclick="editGexi(' + item.id + ')">编辑</button>';
+        html += '<button class="btn btn-danger" onclick="deleteGexi(' + item.id + ')">删除</button>';
+        html += '</td>';
+        html += '</tr>';
+    }
+    tbody.innerHTML = html;
+}
+
+function openGexiForm() {
+    document.getElementById('gexi-form').style.display = 'block';
+    document.getElementById('gexi-edit-id').value = '';
+    document.getElementById('gexi-content').value = '';
+    document.getElementById('gexi-date').value = new Date().toISOString().slice(0, 10).replace(/-/g, '/');
+}
+
+function closeGexiForm() {
+    document.getElementById('gexi-form').style.display = 'none';
+}
+
+async function editGexi(id) {
+    var item = await DB.getById('gexi', id);
+    if (!item) return;
+    document.getElementById('gexi-form').style.display = 'block';
+    document.getElementById('gexi-edit-id').value = id;
+    document.getElementById('gexi-content').value = item.content;
+    document.getElementById('gexi-date').value = item.date;
+}
+
+async function saveGexi() {
+    var id = document.getElementById('gexi-edit-id').value;
+    var content = document.getElementById('gexi-content').value.trim();
+    var date = document.getElementById('gexi-date').value.trim();
+    if (!content) { alert('请输入内容'); return; }
+
+    if (id) {
+        await DB.update('gexi', id, { content: content, date: date });
+    } else {
+        await DB.insert('gexi', { content: content, date: date });
+    }
+    closeGexiForm();
+    await renderGexi();
+    await refreshDashboard();
+}
+
+async function deleteGexi(id) {
+    if (!confirm('确定删除？')) return;
+    await DB.delete('gexi', id);
+    await renderGexi();
+    await refreshDashboard();
+}
+
+// ============================================================
+// 山野渔夫 (About)
+// ============================================================
+async function loadAbout() {
+    var list = await DB.getAll('about');
+    var content = list.length > 0 ? list[0].content : '';
+    document.getElementById('about-content').value = content;
+}
+
+async function saveAbout() {
+    var content = document.getElementById('about-content').value;
+    var list = await DB.getAll('about');
+    if (list.length > 0) {
+        await DB.update('about', list[0].id, { content: content });
+    } else {
+        await DB.insert('about', { content: content });
+    }
+    alert('简介已保存！');
+}
+
+// ============================================================
+// 站点设置
+// ============================================================
+async function loadSiteSettings() {
+    var list = await DB.getAll('site_settings');
+    var s = list.length > 0 ? list[0] : {};
+    document.getElementById('site-logo-color').value = s.logo_color || '#b89c84';
+    document.getElementById('site-name').value = s.site_name || '见南山';
+    document.getElementById('site-desc').value = s.site_desc || '春山如黛草如烟';
+
+    var logoImage = s.logo_image || '';
+    var preview = document.getElementById('logo-preview');
+    if (preview) {
+        if (logoImage && logoImage.trim() !== '') {
+            preview.src = logoImage;
+            preview.style.display = 'block';
+        } else {
+            preview.style.display = 'none';
+        }
+    }
+}
+
+var uploadInput = document.getElementById('logo-upload');
+if (uploadInput) {
+    uploadInput.addEventListener('change', function(e) {
+        var file = e.target.files[0];
+        if (!file) return;
+        var reader = new FileReader();
+        reader.onload = function(event) {
+            var base64 = event.target.result;
+            var preview = document.getElementById('logo-preview');
+            if (preview) {
+                preview.src = base64;
+                preview.style.display = 'block';
+            }
+            window._tempLogoImage = base64;
+        };
+        reader.readAsDataURL(file);
+    });
+}
+
+function clearLogoImage() {
+    var preview = document.getElementById('logo-preview');
+    if (preview) {
+        preview.style.display = 'none';
+        preview.src = '';
+    }
+    var upload = document.getElementById('logo-upload');
+    if (upload) upload.value = '';
+    window._tempLogoImage = '';
+}
+
+async function saveSiteSettings() {
+    var logoColor = document.getElementById('site-logo-color').value || '#b89c84';
+    var siteName = document.getElementById('site-name').value || '见南山';
+    var siteDesc = document.getElementById('site-desc').value || '春山如黛草如烟';
+
+    var logoImage = window._tempLogoImage || '';
+    if (!logoImage || logoImage.trim() === '') {
+        var list = await DB.getAll('site_settings');
+        if (list.length > 0) {
+            logoImage = list[0].logo_image || '';
+        }
+    }
+
+    var data = {
+        logo_color: logoColor,
+        logo_image: logoImage,
+        site_name: siteName,
+        site_desc: siteDesc
+    };
+
+    var list = await DB.getAll('site_settings');
+    if (list.length > 0) {
+        await DB.update('site_settings', list[0].id, data);
+    } else {
+        await DB.insert('site_settings', data);
+    }
+    window._tempLogoImage = '';
+    alert('站点设置已保存！');
+}
+
+// ============================================================
+// 总览数据刷新
+// ============================================================
+async function refreshDashboard() {
+    var xingyin = await DB.getAll('xingyin');
+    var shinian = await DB.getAll('shinian');
+    var xueye = await DB.getAll('xueye');
+    var tingyu = await DB.getAll('tingyu');
+    var gexi = await DB.getAll('gexi');
+
+    var countXingyin = document.getElementById('count-xingyin');
+    var countShinian = document.getElementById('count-shinian');
+    var countXueye = document.getElementById('count-xueye');
+    var countTingyu = document.getElementById('count-tingyu');
+    var countGexi = document.getElementById('count-gexi');
+
+    if (countXingyin) countXingyin.textContent = xingyin.length;
+    if (countShinian) countShinian.textContent = shinian.length;
+    if (countXueye) countXueye.textContent = xueye.length;
+    if (countTingyu) countTingyu.textContent = tingyu.length;
+    if (countGexi) countGexi.textContent = gexi.length;
+}
+
+// ============================================================
+// 面板切换
+// ============================================================
+document.querySelectorAll('.admin-sidebar nav a').forEach(function(link) {
+    link.addEventListener('click', function(e) {
+        e.preventDefault();
+        document.querySelectorAll('.admin-sidebar nav a').forEach(function(a) {
+            a.classList.remove('active');
+        });
+        this.classList.add('active');
+        var panelId = this.dataset.panel;
+        document.querySelectorAll('.panel').forEach(function(p) {
+            p.classList.remove('active');
+        });
+        var target = document.getElementById(panelId);
+        if (target) target.classList.add('active');
+        document.getElementById('panelTitle').textContent = this.textContent.trim();
+
+        if (panelId === 'panel-dashboard') refreshDashboard();
+        if (panelId === 'panel-xingyin') renderXingyin();
+        if (panelId === 'panel-shinian') renderShinian();
+        if (panelId === 'panel-xueye') renderXueye();
+        if (panelId === 'panel-tingyu') renderTingyu();
+        if (panelId === 'panel-gexi') renderGexi();
+        if (panelId === 'panel-about') loadAbout();
+        if (panelId === 'panel-site') loadSiteSettings();
+    });
+});
+
+// ============================================================
+// 初始化
+// ============================================================
+async function initAdmin() {
+    await refreshDashboard();
+    await renderXingyin();
+    await renderShinian();
+    await renderXueye();
+    await renderTingyu();
+    await renderGexi();
+    await loadAbout();
+    await loadSiteSettings();
+}
+
+// ============================================================
+// 页面加载时检查登录状态
+// ============================================================
+checkLogin();
+</script>
 </body>
 </html>
