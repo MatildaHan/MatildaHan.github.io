@@ -83,7 +83,7 @@ body {
     margin: 0 auto;
 }
 
-/* ===== 面包屑 - 所有位置统一 ===== */
+/* ===== 面包屑 ===== */
 .breadcrumb {
     font-size: 12px;
     color: #999999;
@@ -121,7 +121,6 @@ body {
     justify-items: center;
 }
 
-/* 左侧列 */
 .home-left {
     text-align: center;
     padding: 0 10px;
@@ -148,7 +147,6 @@ body {
     margin: 10px auto 0;
 }
 
-/* 中间列 */
 .center-image {
     display: flex;
     align-items: center;
@@ -188,7 +186,6 @@ body {
     width: 100%;
 }
 
-/* 第一行：文章标题 - 20px 加粗 主题色 */
 #homeLatest .list-item .item-title {
     font-size: 20px;
     font-weight: bold;
@@ -202,7 +199,6 @@ body {
     opacity: 0.7;
 }
 
-/* 第二行：文章内容 - 14px #666666 不加粗 */
 #homeLatest .list-item .item-desc {
     font-size: 14px;
     color: #666666;
@@ -216,7 +212,6 @@ body {
     font-weight: normal;
 }
 
-/* 第三行：分类标签 + 日期 */
 #homeLatest .list-item .item-footer {
     display: flex;
     align-items: center;
@@ -226,7 +221,6 @@ body {
     margin-top: 2px;
     flex-wrap: wrap;
 }
-
 #homeLatest .list-item .item-footer .tag {
     font-size: 13px;
     display: inline-block;
@@ -234,12 +228,10 @@ body {
     background: none;
     border-radius: 0;
 }
-
 #homeLatest .list-item .item-footer .item-time {
     font-size: 12px;
     color: #b8a898;
 }
-
 #homeLatest .list-item .divider-line {
     display: none !important;
 }
@@ -255,13 +247,10 @@ body {
     border-bottom: 1px solid #f3efe9;
     align-items: flex-start;
 }
-
-/* 日期 - 14px #666666 */
 .article-date {
     font-size: 14px;
     color: #666666;
 }
-/* 内容 - 20px 加粗 主题色 */
 .article-text {
     font-size: 20px;
     font-weight: bold;
@@ -274,7 +263,7 @@ body {
     text-decoration: underline;
 }
 
-/* ===== 十年灯·文 系列卡片 ===== */
+/* ===== 十年灯·文 / 雪夜舟·图 系列卡片 ===== */
 .card-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -285,21 +274,15 @@ body {
     border-radius: 12px;
     padding: 28px 24px;
 }
-
-/* 01 / 系列 - 14px 主题色 */
 .card-index {
     font-size: 14px;
     margin-bottom: 12px;
 }
-
-/* 分类名称/文章名称 - 20px 加粗 主题色 */
 .card-title {
     font-size: 20px;
     font-weight: bold;
     margin-bottom: 10px;
 }
-
-/* 文章内容 - 14px #666666 不加粗 */
 .card-desc {
     font-size: 14px;
     color: #666666;
@@ -307,8 +290,6 @@ body {
     margin-bottom: 18px;
     font-weight: normal;
 }
-
-/* 进入系列 - 14px 主题色 */
 .card-link {
     font-size: 14px;
     text-decoration: none;
@@ -316,24 +297,6 @@ body {
 }
 .card-link:hover {
     opacity: 0.7;
-}
-
-/* ===== 雪夜舟·图 ===== */
-/* 复用十年灯·文的卡片样式 */
-#page-xueye .card-grid .series-card .card-index {
-    font-size: 14px;
-}
-#page-xueye .card-grid .series-card .card-title {
-    font-size: 20px;
-    font-weight: bold;
-}
-#page-xueye .card-grid .series-card .card-desc {
-    font-size: 14px;
-    color: #666666;
-    font-weight: normal;
-}
-#page-xueye .card-grid .series-card .card-link {
-    font-size: 14px;
 }
 
 /* ===== 雪夜舟·图 图集 ===== */
@@ -377,23 +340,17 @@ body {
     justify-content: center;
     padding: 24px;
 }
-
-/* 年份 - 20px 加粗 主题色 */
 .year-num {
     font-size: 20px;
     font-weight: bold;
     margin-bottom: 6px;
 }
-
-/* 共计**本 - 14px #666666 不加粗 */
 .year-desc {
     font-size: 14px;
     color: #666666;
     margin-bottom: auto;
     font-weight: normal;
 }
-
-/* 进入系列 - 14px #666666 不加粗 */
 .year-link {
     margin-top: auto;
     font-size: 14px;
@@ -412,8 +369,6 @@ body {
     grid-template-columns: repeat(4, 1fr);
     gap: 12px 8px;
 }
-
-/* 书本名称 - 20px 加粗 主题色 */
 .book-item {
     font-size: 20px;
     font-weight: bold;
@@ -464,6 +419,8 @@ body {
 .back-btn:hover {
     background-color: #f8f5f1;
 }
+
+/* ===== 侧边栏（三级页面右侧） ===== */
 .sidebar {
     background-color: #fcfafa;
     padding: 24px 20px;
@@ -474,14 +431,39 @@ body {
     font-weight: bold;
     margin-bottom: 16px;
 }
+
+/* ★★★ 关键修改：侧边栏列表样式 ★★★ */
 .sidebar-list a {
     display: block;
     text-decoration: none;
     font-size: 14px;
+    font-weight: bold;
     margin-bottom: 8px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    line-height: 1.4;
+    max-height: 2.8em;
+    word-break: break-all;
+    transition: opacity 0.2s;
 }
 .sidebar-list a:hover {
     opacity: 0.7;
+}
+.sidebar-list a:last-child {
+    margin-bottom: 0;
+}
+.sidebar-year {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 16px;
+}
+.sidebar-year {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 16px;
 }
 
 /* ===== 山野渔夫 ===== */
@@ -540,4 +522,6 @@ body {
     .tilted-card { max-width: 260px; }
     #homeLatest { max-width: 100%; width: 100%; gap: 24px; }
     .header-wrap, .container { padding: 0 16px; }
+    .detail-grid { grid-template-columns: 1fr; gap: 30px; }
+    .sidebar { width: 100%; }
 }
