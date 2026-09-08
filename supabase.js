@@ -6,15 +6,16 @@
 // 本地开发时，请将下面的值替换为你的 Supabase 项目信息
 const SUPABASE_URL = 'https://phvayjkoyphsyavkjcuk.supabase.co';   // ← Data API 中的 API URL
 const SUPABASE_ANON_KEY = 'sb_publishable_uunGD7DLA9YWwtkl5mgEvw_Z95hid4l';     // ← API Keys 中的 Publishable key
+
 // ============================================================
-// 数据库操作封装
+// 数据库操作封装（使用 localStorage 降级）
 // ============================================================
 const DB = {
     // 获取所有数据
     getAll: async function(table, options) {
         options = options || {};
         try {
-            let url = SUPABASE_URL + '/rest/v1/' + table + '?select=*';
+            var url = SUPABASE_URL + '/rest/v1/' + table + '?select=*';
             if (options.orderBy) {
                 url += '&order=' + options.orderBy + '.desc';
             }
@@ -31,8 +32,10 @@ const DB = {
             if (!response.ok) throw new Error('Network error');
             return await response.json();
         } catch (e) {
-            console.warn('Supabase 请求失败:', e);
-            return [];
+            console.warn('Supabase 请求失败，使用 localStorage:', e);
+            // 降级到 localStorage
+            var data = localStorage.getItem('jiananshan_' + table);
+            return data ? JSON.parse(data) : [];
         }
     },
 
@@ -48,7 +51,16 @@ const DB = {
             var data = await response.json();
             return data.length > 0 ? data[0] : null;
         } catch (e) {
-            console.warn('获取单条失败:', e);
+            console.warn('获取单条失败，使用 localStorage:', e);
+            var allData = localStorage.getItem('jiananshan_' + table);
+            if (allData) {
+                var list = JSON.parse(allData);
+                for (var i = 0; i < list.length; i++) {
+                    if (list[i].id === Number(id)) {
+                        return list[i];
+                    }
+                }
+            }
             return null;
         }
     },
@@ -69,8 +81,14 @@ const DB = {
             var result = await response.json();
             return result.length > 0 ? result[0] : null;
         } catch (e) {
-            console.warn('插入失败:', e);
-            return null;
+            console.warn('插入失败，使用 localStorage:', e);
+            // 降级到 localStorage
+            var existing = localStorage.getItem('jiananshan_' + table);
+            var list = existing ? JSON.parse(existing) : [];
+            var newItem = { id: Date.now() + Math.random() * 1000, ...data };
+            list.push(newItem);
+            localStorage.setItem('jiananshan_' + table, JSON.stringify(list));
+            return newItem;
         }
     },
 
@@ -90,7 +108,21 @@ const DB = {
             var result = await response.json();
             return result.length > 0 ? result[0] : null;
         } catch (e) {
-            console.warn('更新失败:', e);
+            console.warn('更新失败，使用 localStorage:', e);
+            // 降级到 localStorage
+            var existing = localStorage.getItem('jiananshan_' + table);
+            if (existing) {
+                var list = JSON.parse(existing);
+                for (var i = 0; i < list.length; i++) {
+                    if (list[i].id === Number(id)) {
+                        for (var key in data) {
+                            list[i][key] = data[key];
+                        }
+                        break;
+                    }
+                }
+                localStorage.setItem('jiananshan_' + table, JSON.stringify(list));
+            }
             return null;
         }
     },
@@ -107,9 +139,36 @@ const DB = {
             });
             return { success: true };
         } catch (e) {
-            console.warn('删除失败:', e);
-            return { success: false };
+            console.warn('删除失败，使用 localStorage:', e);
+            // 降级到 localStorage
+            var existing = localStorage.getItem('jiananshan_' + table);
+            if (existing) {
+                var list = JSON.parse(existing);
+                var newList = [];
+                for (var i = 0; i < list.length; i++) {
+                    if (list[i].id !== Number(id)) {
+                        newList.push(list[i]);
+                    }
+                }
+                localStorage.setItem('jiananshan_' + table, JSON.stringify(newList));
+            }
+            return { success: true };
         }
+    },
+
+    // 获取数据（同步版本，用于 localStorage 降级）
+    get: function(key, def) {
+        try {
+            var data = localStorage.getItem('jiananshan_' + key);
+            return data ? JSON.parse(data) : def;
+        } catch (e) {
+            return def;
+        }
+    },
+
+    // 设置数据（同步版本）
+    set: function(key, val) {
+        localStorage.setItem('jiananshan_' + key, JSON.stringify(val));
     }
 };
 
