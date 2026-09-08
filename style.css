@@ -317,12 +317,23 @@ body {
     grid-template-columns: repeat(6, 1fr);
     gap: 20px;
 }
-.img-placeholder {
-    aspect-ratio: 1 / 0.8;
-    background-color: #b89c84;
-    border-radius: 4px;
-}
 
+/* 首页中间图片（显示雪夜舟·图） */
+.tilted-card {
+    width: 100%;
+    max-width: 260px;
+    aspect-ratio: 1 / 1.8;
+    background-color: #b89c84;
+    transform: rotate(3deg);
+    transition: 0.4s ease;
+    border-radius: 4px;
+    margin: 0 auto;
+    background-size: cover;
+    background-position: center;
+}
+.tilted-card:hover {
+    transform: rotate(0deg);
+}
 /* ===== 听雨眠·记 ===== */
 .year-block {
     display: flex;
