@@ -67,8 +67,8 @@
         }
         if (!DB.get('xueye', null)) {
             DB.set('xueye', [
-                { id: 1, category: '四季有信', categoryDesc: '跟随时令的自然影像——春芽、夏荷、秋叶、冬雪，同一棵树的一年十二个月。', count: 6, date: '2026/08/25' },
-                { id: 2, category: '旧物不言', categoryDesc: '静物与旧物件——一把老椅子，泛黄的书页，窗台的灰尘与光影，沉默里有故事。', count: 6, date: '2026/08/26' }
+                { id: 1, category: '四季有信', categoryDesc: '跟随时令的自然影像——春芽、夏荷、秋叶、冬雪，同一棵树的一年十二个月。', count: 6, date: '2026/08/25', images: [] },
+                { id: 2, category: '旧物不言', categoryDesc: '静物与旧物件——一把老椅子，泛黄的书页，窗台的灰尘与光影，沉默里有故事。', count: 6, date: '2026/08/26', images: [] }
             ]);
         }
         if (!DB.get('tingyu', null)) {
@@ -196,7 +196,7 @@
     }
 
     // ============================================================
-    // 6. 渲染首页
+    // 6. 渲染首页（含雪夜舟·图最新一张）
     // ============================================================
     function renderHome() {
         var site = DB.get('site', {});
@@ -220,9 +220,23 @@
             homeDate.textContent = latestXingyin ? latestXingyin.date : new Date().toISOString().slice(0, 10).replace(/-/g, '/');
         }
         
+        // 中间图片：显示雪夜舟·图最新一张
         var homeImage = document.getElementById('homeImage');
+        var xueyeList = DB.get('xueye', []);
+        var latestXueye = xueyeList.length > 0 ? xueyeList[xueyeList.length - 1] : null;
+        
         if (homeImage) {
-            homeImage.style.backgroundColor = site.logoColor || '#b89c84';
+            if (latestXueye && latestXueye.images && latestXueye.images.length > 0) {
+                homeImage.style.backgroundImage = 'url(' + latestXueye.images[0] + ')';
+                homeImage.style.backgroundSize = 'cover';
+                homeImage.style.backgroundPosition = 'center';
+                homeImage.style.backgroundColor = 'transparent';
+                homeImage.style.transform = 'rotate(3deg)';
+            } else {
+                homeImage.style.backgroundImage = 'none';
+                homeImage.style.backgroundColor = site.logo_color || site.logoColor || '#b89c84';
+                homeImage.style.transform = 'rotate(3deg)';
+            }
         }
 
         var siteNameEl = document.getElementById('siteName');
@@ -230,7 +244,7 @@
         if (siteNameEl) siteNameEl.textContent = site.site_name || site.siteName || '见南山';
         if (siteDescEl) siteDescEl.textContent = site.site_desc || site.siteDesc || '春山如黛草如烟';
 
-        // ===== 从 Supabase 获取数据，而不是 localStorage =====
+        // 十年灯·文 最新3条
         var shinian = DB.get('shinian', []);
         var latest3Shinian = shinian.slice(-3).reverse();
 
@@ -263,13 +277,12 @@
     }
 
     // ============================================================
-    // 7. Logo 更新函数（修复版）
+    // 7. Logo 更新函数
     // ============================================================
     function updateLogo(site) {
         var logoBlock = document.getElementById('logoBlock');
         var logoImage = document.getElementById('logoImage');
         
-        // 检查是否有图片 - 支持多种字段名
         var logoImg = site.logo_image || site.logoImage || '';
         
         if (logoImage && logoImg && logoImg.trim() !== '') {
@@ -333,7 +346,6 @@
             for (var j = 0; j < list.length; j++) {
                 var text = list[j].content;
                 var displayText = text;
-                // 最多显示2行，每行约20字符
                 if (displayText.length > 40) {
                     displayText = displayText.substring(0, 40) + '...';
                 }
@@ -485,29 +497,44 @@
         if (!item) return;
         var container = document.getElementById('xueyeGallery');
         if (!container) return;
-        var count = item.count || 6;
-        var images = '';
-        for (var j = 0; j < count; j++) {
-            images += '<div class="img-placeholder"></div>';
-        }
-        container.innerHTML = '';
-        var group = document.createElement('div');
-        group.className = 'gallery-group';
-        var dateDiv = document.createElement('div');
-        dateDiv.className = 'group-date';
-        dateDiv.textContent = item.date;
-        group.appendChild(dateDiv);
-        var rowDiv = document.createElement('div');
-        rowDiv.className = 'img-row';
-        rowDiv.innerHTML = images;
-        group.appendChild(rowDiv);
-        container.appendChild(group);
         
-        var infoDiv = document.createElement('div');
+        var images = item.images || [];
+        var count = images.length || 0;
         var theme = getThemeConfig();
-        infoDiv.style.cssText = 'text-align:center;padding:20px 0;color:' + theme.color + ';font-size:13px;';
-        infoDiv.textContent = item.category + ' · 共 ' + (item.count || 6) + ' 张图片';
-        container.appendChild(infoDiv);
+        
+        container.innerHTML = '';
+        
+        if (count > 0) {
+            var group = document.createElement('div');
+            group.className = 'gallery-group';
+            
+            var dateDiv = document.createElement('div');
+            dateDiv.className = 'group-date';
+            dateDiv.textContent = item.date;
+            group.appendChild(dateDiv);
+            
+            var rowDiv = document.createElement('div');
+            rowDiv.className = 'img-row';
+            
+            for (var j = 0; j < count; j++) {
+                var imgWrap = document.createElement('div');
+                imgWrap.style.cssText = 'aspect-ratio:1/0.8;border-radius:4px;overflow:hidden;background:#f3efe9;';
+                var img = document.createElement('img');
+                img.src = images[j];
+                img.style.cssText = 'width:100%;height:100%;object-fit:cover;';
+                imgWrap.appendChild(img);
+                rowDiv.appendChild(imgWrap);
+            }
+            group.appendChild(rowDiv);
+            container.appendChild(group);
+            
+            var infoDiv = document.createElement('div');
+            infoDiv.style.cssText = 'text-align:center;padding:20px 0;color:' + theme.color + ';font-size:13px;';
+            infoDiv.textContent = item.category + ' · 共 ' + count + ' 张图片';
+            container.appendChild(infoDiv);
+        } else {
+            container.innerHTML = '<p style="text-align:center;color:#999;padding:40px 0;">暂无图片</p>';
+        }
     }
 
     // ============================================================
@@ -533,7 +560,6 @@
             html += '<div class="year-card">';
             html += '<div class="year-num" style="color:' + theme.color + ';font-size:' + theme.size + 'px;font-weight:bold;">' + year + '</div>';
             html += '<div class="year-desc">共计 ' + items.length + ' 本</div>';
-            html += '<a class="year-link" data-sub="tingyu-detail" data-year="' + year + '" style="font-size:14px;color:#666666;text-decoration:none;font-weight:normal;">进入系列&gt;</a>';
             html += '</div>';
             html += '<div class="book-wrap">';
             for (var k = 0; k < items.length; k++) {
@@ -667,10 +693,18 @@
         if (container) {
             container.style.marginTop = '80px';
         }
-        // 确保 Logo 加载
         var site = DB.get('site', {});
         updateLogo(site);
+        // 加载所有数据
+        renderHome();
+        renderXingyinList();
+        renderShinianCards();
+        renderXueyeCards();
+        renderTingyuYears();
+        renderGexiList();
+        renderAbout();
     });
 
+    // 默认显示首页
     showPage('page-home');
 })();
