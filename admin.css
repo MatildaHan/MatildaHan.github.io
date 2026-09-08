@@ -333,6 +333,170 @@ td {
     display: inline-block;
 }
 
+/* ===== Tab 切换样式 ===== */
+.tab-container {
+    display: flex;
+    gap: 0;
+    margin-bottom: 24px;
+    border-bottom: 2px solid #e0d6cc;
+}
+.tab-btn {
+    padding: 10px 24px;
+    background: none;
+    border: none;
+    border-bottom: 3px solid transparent;
+    cursor: pointer;
+    font-size: 14px;
+    font-family: inherit;
+    color: #8a7a6a;
+    transition: 0.2s;
+    margin-bottom: -2px;
+}
+.tab-btn:hover {
+    color: #5a4a3a;
+}
+.tab-btn.active {
+    color: #5a4a3a;
+    border-bottom-color: #8c7562;
+    font-weight: bold;
+}
+.tab-content {
+    display: none;
+}
+.tab-content.active {
+    display: block;
+}
+
+/* ===== 弹窗样式 ===== */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.4);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+}
+.modal-overlay.show {
+    display: flex;
+}
+.modal-box {
+    background: #fff;
+    border-radius: 12px;
+    padding: 30px;
+    max-width: 500px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+    animation: modalIn 0.25s ease;
+}
+@keyframes modalIn {
+    0% { opacity: 0; transform: translateY(-20px) scale(0.95); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+.modal-box h3 {
+    font-weight: normal;
+    font-size: 20px;
+    color: #4a3a2a;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #f0ebe6;
+}
+.modal-close {
+    float: right;
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #a8917e;
+}
+.modal-close:hover {
+    color: #5a4a3a;
+}
+.modal-box .form-group {
+    margin-bottom: 16px;
+}
+.modal-box .form-group label {
+    display: block;
+    font-size: 13px;
+    color: #6a5a4a;
+    margin-bottom: 4px;
+}
+.modal-box .form-group input,
+.modal-box .form-group textarea,
+.modal-box .form-group select {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #d5c8bc;
+    border-radius: 4px;
+    font-family: inherit;
+    font-size: 13px;
+    background: #fff;
+    color: #3a2a1a;
+}
+.modal-box .form-group textarea {
+    min-height: 80px;
+    resize: vertical;
+}
+.modal-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 20px;
+    justify-content: flex-end;
+}
+.modal-actions .btn {
+    padding: 8px 24px;
+}
+
+/* ===== 颜色选择器联动 ===== */
+.color-input-group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+.color-input-group input[type="color"] {
+    width: 60px;
+    height: 40px;
+    padding: 2px;
+    cursor: pointer;
+    border: 1px solid #d5c8bc;
+    border-radius: 4px;
+}
+.color-input-group input[type="text"] {
+    flex: 1;
+    padding: 8px 12px;
+    border: 1px solid #d5c8bc;
+    border-radius: 4px;
+    font-family: inherit;
+    font-size: 13px;
+}
+.size-input-group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+.size-input-group input[type="number"] {
+    width: 100px;
+    padding: 8px 12px;
+    border: 1px solid #d5c8bc;
+    border-radius: 4px;
+    font-family: inherit;
+    font-size: 13px;
+}
+.size-input-group .size-preview {
+    font-weight: bold;
+    transition: all 0.2s;
+}
+.form-hint {
+    font-size: 12px;
+    color: #999999;
+    margin-top: 4px;
+}
+
 /* ===== 响应式 ===== */
 @media (max-width: 1024px) {
     .admin-sidebar {
@@ -383,5 +547,22 @@ td {
     .login-container {
         margin: 60px 20px;
         padding: 30px 20px;
+    }
+    .modal-box {
+        padding: 20px;
+        width: 95%;
+    }
+    .tab-container {
+        overflow-x: auto;
+        flex-wrap: nowrap;
+    }
+    .tab-btn {
+        padding: 8px 16px;
+        font-size: 13px;
+        white-space: nowrap;
+    }
+    .color-input-group,
+    .size-input-group {
+        flex-wrap: wrap;
     }
 }
