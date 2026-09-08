@@ -1,6 +1,99 @@
 (function() {
     // ============================================================
-    // 页面导航
+    // 1. 数据存储
+    // ============================================================
+    var DB = {
+        get: function(key, def) {
+            try {
+                var data = localStorage.getItem('jiananshan_' + key);
+                return data ? JSON.parse(data) : def;
+            } catch (e) {
+                return def;
+            }
+        },
+        set: function(key, val) {
+            localStorage.setItem('jiananshan_' + key, JSON.stringify(val));
+        }
+    };
+
+    // ============================================================
+    // 2. 默认数据初始化
+    // ============================================================
+    function initDefaultData() {
+        if (!DB.get('site', null)) {
+            DB.set('site', {
+                logoColor: '#b89c84',
+                logoImage: '',
+                siteName: '见南山',
+                siteDesc: '春山如黛草如烟',
+                theme_color: '#b89c84',
+                title_size: '20'
+            });
+        }
+        if (!DB.get('xingyin', null)) {
+            DB.set('xingyin', [
+                { id: 1, content: '我决定，从今天开始不再热爱生活。', date: '2026/08/25' },
+                { id: 2, content: '山间有雾，心里有你。', date: '2026/08/26' },
+                { id: 3, content: '春水初生，春林初盛。', date: '2026/08/27' }
+            ]);
+        }
+        if (!DB.get('shinian', null)) {
+            DB.set('shinian', [
+                { 
+                    id: 1, 
+                    title: '不再热爱生活。', 
+                    category: '闲聊几句', 
+                    categoryDesc: '没什么要紧事，就是灯下坐着，忽然想跟你聊几句。', 
+                    content: '汤之问棘也是已：穷发之北，有冥海者，天池也。有鱼焉，其广数千里，未有知其修者，其名为鲲。有鸟焉，其名为鹏，背若泰山，翼若垂天之云，抟扶摇羊角而上者九万里，绝云气，负青天，然后图南，且适南冥也。', 
+                    date: '2026-08-25 14:30:00' 
+                },
+                { 
+                    id: 2, 
+                    title: '灯火可亲', 
+                    category: '灯火可亲', 
+                    categoryDesc: '家事，食事，灯下琐事。外面风雨再大，推开门就小了。', 
+                    content: '家是港湾，灯火是归途。无论走多远，总有一盏灯为你而亮。', 
+                    date: '2026-08-26 10:15:00' 
+                },
+                { 
+                    id: 3, 
+                    title: '半杯凉茶', 
+                    category: '半杯凉茶', 
+                    categoryDesc: '主打冷静、清醒的观察，聊聊读到的书，遇到的人，像凉茶一样，入口微苦，却有余甘。', 
+                    content: '人生如茶，苦后回甘。有时候需要一杯凉茶，让自己清醒地看世界。', 
+                    date: '2026-08-27 09:00:00' 
+                }
+            ]);
+        }
+        if (!DB.get('xueye', null)) {
+            DB.set('xueye', [
+                { id: 1, category: '四季有信', categoryDesc: '跟随时令的自然影像——春芽、夏荷、秋叶、冬雪，同一棵树的一年十二个月。', count: 6, date: '2026/08/25' },
+                { id: 2, category: '旧物不言', categoryDesc: '静物与旧物件——一把老椅子，泛黄的书页，窗台的灰尘与光影，沉默里有故事。', count: 6, date: '2026/08/26' }
+            ]);
+        }
+        if (!DB.get('tingyu', null)) {
+            DB.set('tingyu', [
+                { id: 1, title: '《百年孤独》', year: '2026' },
+                { id: 2, title: '《活着》', year: '2026' },
+                { id: 3, title: '《局外人》', year: '2025' },
+                { id: 4, title: '《追风筝的人》', year: '2026' },
+                { id: 5, title: '《小王子》', year: '2025' }
+            ]);
+        }
+        if (!DB.get('gexi', null)) {
+            DB.set('gexi', [
+                { id: 1, content: '各西东，语未休。', date: '2026/08/25' },
+                { id: 2, content: '山高水长，江湖再见。', date: '2026/08/26' }
+            ]);
+        }
+        if (!DB.get('about', null)) {
+            DB.set('about', '山野渔夫，居南山之下。\n\n不捕鱼，只打捞日子的碎影——晨雾、夕照、一碗热汤、一盏迟归的灯。\n\n见南山，是我落脚的地方，也是把所见所感细细晾晒的小院。\n\n风来听风，雨来看雨，你来，便一起坐坐。\n\n见字如面，见山如归。');
+        }
+    }
+    initDefaultData();
+
+    // ============================================================
+    // 3. 页面导航
     // ============================================================
     var sections = document.querySelectorAll('.page-section');
     var navLinks = document.querySelectorAll('#globalNav a');
@@ -49,7 +142,7 @@
     }
 
     // ============================================================
-    // 页面跳转
+    // 4. 页面跳转（data-sub / data-back）
     // ============================================================
     document.addEventListener('click', function(e) {
         var target = e.target.closest('[data-sub]');
@@ -84,124 +177,177 @@
         var backBtn = e.target.closest('[data-back]');
         if (backBtn) {
             e.preventDefault();
-            showPage('page-home');
+            var backId = backBtn.dataset.back;
+            if (backId) {
+                showPage('page-home');
+            }
         }
     });
 
     // ============================================================
-    // 渲染首页
+    // 5. 获取主题色和字号（工具函数）
+    // ============================================================
+    function getThemeConfig() {
+        var site = DB.get('site', {});
+        return {
+            color: site.theme_color || site.logoColor || '#b89c84',
+            size: site.title_size || '20'
+        };
+    }
+
+    // ============================================================
+    // 6. 渲染首页
     // ============================================================
     function renderHome() {
-    var site = DB.get('site', {});
-    
-    // 获取主题色
-    var themeColor = site.logo_color || '#b89c84';
-    var titleSize = site.title_size || '20px';
-    
-    updateLogo(site);
-    
-    var xingyinList = DB.get('xingyin', []);
-    var latestXingyin = xingyinList.length > 0 ? xingyinList[xingyinList.length - 1] : null;
-    
-    var homeTitle = document.getElementById('homeTitle');
-    var homeDate = document.getElementById('homeDate');
-    if (homeTitle) {
-        homeTitle.textContent = latestXingyin ? latestXingyin.content : '暂无短句';
-        homeTitle.style.color = themeColor;
-        homeTitle.style.fontSize = titleSize;
-    }
-    if (homeDate) {
-        homeDate.textContent = latestXingyin ? latestXingyin.date : new Date().toISOString().slice(0, 10).replace(/-/g, '/');
-    }
-    
-    var homeImage = document.getElementById('homeImage');
-    if (homeImage) {
-        homeImage.style.backgroundColor = themeColor;
-    }
-
-    var siteNameEl = document.getElementById('siteName');
-    var siteDescEl = document.getElementById('siteDesc');
-    if (siteNameEl) siteNameEl.textContent = site.site_name || '见南山';
-    if (siteDescEl) siteDescEl.textContent = site.site_desc || '春山如黛草如烟';
-
-    var shinian = DB.get('shinian', []);
-    var latest3Shinian = shinian.slice(-3).reverse();
-
-    var html = '';
-    var homeLatest = document.getElementById('homeLatest');
-    
-    if (latest3Shinian.length > 0) {
-        for (var i = 0; i < latest3Shinian.length; i++) {
-            var item = latest3Shinian[i];
-            var summary = item.content ? item.content.substring(0, 80) : '';
-            var displaySummary = summary + (item.content && item.content.length > 80 ? '...' : '');
-            var dateDisplay = item.date || '';
-            
-            html += '<div class="list-item">';
-            html += '<h3 class="item-title" data-sub="shinian-detail" data-id="' + item.id + '" style="color:' + themeColor + ';font-size:' + titleSize + ';">' + item.title + '</h3>';
-            html += '<p class="item-desc">' + displaySummary + '</p>';
-            html += '<div class="item-footer">';
-            html += '<span class="tag" style="color:' + themeColor + ';">#' + (item.category || '未分类') + '</span>';
-            html += '<span class="item-time">' + dateDisplay + '</span>';
-            html += '</div>';
-            html += '</div>';
+        var site = DB.get('site', {});
+        var theme = getThemeConfig();
+        
+        // 更新 Logo
+        updateLogo(site);
+        
+        // 获取"行吟册·絮"最新一条数据
+        var xingyinList = DB.get('xingyin', []);
+        var latestXingyin = xingyinList.length > 0 ? xingyinList[xingyinList.length - 1] : null;
+        
+        var homeTitle = document.getElementById('homeTitle');
+        var homeDate = document.getElementById('homeDate');
+        if (homeTitle) {
+            homeTitle.textContent = latestXingyin ? latestXingyin.content : '暂无短句';
+            homeTitle.style.color = theme.color;
+            homeTitle.style.fontSize = theme.size + 'px';
         }
-    } else {
-        html = '<div class="list-item"><p class="item-desc" style="text-align:center;color:#b8b0a8;">暂无文章，请前往后台添加</p></div>';
+        if (homeDate) {
+            homeDate.textContent = latestXingyin ? latestXingyin.date : new Date().toISOString().slice(0, 10).replace(/-/g, '/');
+        }
+        
+        var homeImage = document.getElementById('homeImage');
+        if (homeImage) {
+            homeImage.style.backgroundColor = site.logoColor || '#b89c84';
+        }
+
+        var siteNameEl = document.getElementById('siteName');
+        var siteDescEl = document.getElementById('siteDesc');
+        if (siteNameEl) siteNameEl.textContent = site.site_name || site.siteName || '见南山';
+        if (siteDescEl) siteDescEl.textContent = site.site_desc || site.siteDesc || '春山如黛草如烟';
+
+        // ===== 从 Supabase 获取数据，而不是 localStorage =====
+        var shinian = DB.get('shinian', []);
+        var latest3Shinian = shinian.slice(-3).reverse();
+
+        var html = '';
+        var homeLatest = document.getElementById('homeLatest');
+        
+        if (latest3Shinian.length > 0) {
+            for (var i = 0; i < latest3Shinian.length; i++) {
+                var item = latest3Shinian[i];
+                var summary = item.content ? item.content.substring(0, 80) : '';
+                var displaySummary = summary + (item.content && item.content.length > 80 ? '...' : '');
+                var dateDisplay = item.date || '';
+                
+                html += '<div class="list-item">';
+                html += '<h3 class="item-title" data-sub="shinian-detail" data-id="' + item.id + '" style="color:' + theme.color + ';font-size:' + theme.size + 'px;font-weight:bold;">' + item.title + '</h3>';
+                html += '<p class="item-desc">' + displaySummary + '</p>';
+                html += '<div class="item-footer">';
+                html += '<span class="tag" style="color:' + theme.color + ';">#' + (item.category || '未分类') + '</span>';
+                html += '<span class="item-time">' + dateDisplay + '</span>';
+                html += '</div>';
+                html += '</div>';
+            }
+        } else {
+            html = '<div class="list-item"><p class="item-desc" style="text-align:center;color:#b8b0a8;">暂无文章，请前往后台添加</p></div>';
+        }
+
+        if (homeLatest) {
+            homeLatest.innerHTML = html;
+        }
     }
 
-    if (homeLatest) {
-        homeLatest.innerHTML = html;
+    // ============================================================
+    // 7. Logo 更新函数（修复版）
+    // ============================================================
+    function updateLogo(site) {
+        var logoBlock = document.getElementById('logoBlock');
+        var logoImage = document.getElementById('logoImage');
+        
+        // 检查是否有图片 - 支持多种字段名
+        var logoImg = site.logo_image || site.logoImage || '';
+        
+        if (logoImage && logoImg && logoImg.trim() !== '') {
+            logoImage.src = logoImg;
+            logoImage.style.display = 'block';
+            if (logoBlock) logoBlock.style.backgroundColor = 'transparent';
+        } else {
+            if (logoImage) logoImage.style.display = 'none';
+            if (logoBlock) logoBlock.style.backgroundColor = site.logo_color || site.logoColor || '#b89c84';
+        }
     }
-}
+
     // ============================================================
-    // 行吟册·絮
+    // 8. 行吟册·絮
     // ============================================================
-    async function renderXingyinList() {
-        var list = await DB.getAll('xingyin', { orderBy: 'id' });
+    function renderXingyinList() {
+        var list = DB.get('xingyin', []);
         var container = document.getElementById('xingyinList');
         if (!container) return;
+        var theme = getThemeConfig();
         var html = '';
         for (var i = 0; i < list.length; i++) {
             var item = list[i];
             html += '<div class="article-item">';
             html += '<div class="article-date">' + item.date + '</div>';
-            html += '<div class="article-text"><a data-sub="xingyin-detail" data-id="' + item.id + '">' + item.content + '</a></div>';
+            html += '<div class="article-text"><a data-sub="xingyin-detail" data-id="' + item.id + '" style="color:' + theme.color + ';font-size:' + theme.size + 'px;font-weight:bold;">' + item.content + '</a></div>';
             html += '</div>';
         }
         container.innerHTML = html;
     }
 
-    async function loadXingyinDetail(id) {
-        var item = await DB.getById('xingyin', id);
+    function loadXingyinDetail(id) {
+        var list = DB.get('xingyin', []);
+        var item = null;
+        for (var i = 0; i < list.length; i++) {
+            if (list[i].id === Number(id)) {
+                item = list[i];
+                break;
+            }
+        }
         if (!item) return;
-
+        
+        var theme = getThemeConfig();
+        
         var titleEl = document.getElementById('xingyinDetailTitle');
         var dateEl = document.getElementById('xingyinDetailDate');
         var contentEl = document.getElementById('xingyinDetailContent');
         var sidebarEl = document.getElementById('xingyinSidebar');
-
-        if (titleEl) titleEl.textContent = item.content;
+        
+        if (titleEl) {
+            titleEl.textContent = item.content;
+            titleEl.style.color = theme.color;
+            titleEl.style.fontSize = theme.size + 'px';
+            titleEl.style.fontWeight = 'bold';
+        }
         if (dateEl) dateEl.textContent = item.date;
         if (contentEl) contentEl.innerHTML = '<p>' + item.content + '</p>';
-
-        var list = await DB.getAll('xingyin', { orderBy: 'id' });
+        
         if (sidebarEl) {
             var html = '';
             for (var j = 0; j < list.length; j++) {
                 var text = list[j].content;
-                var displayText = text.substring(0, 20) + (text.length > 20 ? '...' : '');
-                html += '<a href="#" data-sub="xingyin-detail" data-id="' + list[j].id + '">' + displayText + '</a>';
+                var displayText = text;
+                // 最多显示2行，每行约20字符
+                if (displayText.length > 40) {
+                    displayText = displayText.substring(0, 40) + '...';
+                }
+                html += '<a href="#" data-sub="xingyin-detail" data-id="' + list[j].id + '" style="font-size:14px;font-weight:bold;color:' + theme.color + ';display:block;margin-bottom:6px;text-decoration:none;">' + displayText + '</a>';
             }
             sidebarEl.innerHTML = html;
         }
     }
 
     // ============================================================
-    // 十年灯·文
+    // 9. 十年灯·文
     // ============================================================
-    async function renderShinianCards() {
-        var list = await DB.getAll('shinian', { orderBy: 'id' });
+    function renderShinianCards() {
+        var list = DB.get('shinian', []);
         var categories = [];
         for (var i = 0; i < list.length; i++) {
             if (categories.indexOf(list[i].category) === -1) {
@@ -210,6 +356,7 @@
         }
         var container = document.getElementById('shinianCards');
         if (!container) return;
+        var theme = getThemeConfig();
         var html = '';
         for (var j = 0; j < categories.length; j++) {
             var cat = categories[j];
@@ -219,20 +366,20 @@
                     items.push(list[k]);
                 }
             }
-            var desc = items.length > 0 ? items[0].category_desc || '' : '';
+            var desc = items.length > 0 ? items[0].categoryDesc || '' : '';
             var indexStr = String(j + 1).padStart(2, '0');
             html += '<div class="series-card">';
-            html += '<div class="card-index">' + indexStr + ' / 系列</div>';
-            html += '<h3 class="card-title">' + cat + '</h3>';
+            html += '<div class="card-index" style="color:' + theme.color + ';font-size:14px;">' + indexStr + ' / 系列</div>';
+            html += '<h3 class="card-title" style="color:' + theme.color + ';font-size:' + theme.size + 'px;font-weight:bold;">' + cat + '</h3>';
             html += '<p class="card-desc">' + (desc || '暂无描述') + '</p>';
-            html += '<a class="card-link" data-sub="shinian-list" data-category="' + cat + '">进入系列&gt;</a>';
+            html += '<a class="card-link" data-sub="shinian-list" data-category="' + cat + '" style="color:' + theme.color + ';font-size:14px;text-decoration:none;">进入系列&gt;</a>';
             html += '</div>';
         }
         container.innerHTML = html;
     }
 
-    async function loadShinianList(category) {
-        var list = await DB.getAll('shinian', { orderBy: 'id' });
+    function loadShinianList(category) {
+        var list = DB.get('shinian', []);
         var items = [];
         for (var i = 0; i < list.length; i++) {
             if (list[i].category === category) {
@@ -241,33 +388,50 @@
         }
         var container = document.getElementById('shinianList');
         if (!container) return;
+        var theme = getThemeConfig();
         var html = '';
         for (var j = 0; j < items.length; j++) {
             var item = items[j];
             html += '<div class="article-item">';
             html += '<div class="article-date">' + item.date + '</div>';
-            html += '<div class="article-text"><a data-sub="shinian-detail" data-id="' + item.id + '">' + item.title + '</a></div>';
+            html += '<div class="article-text"><a data-sub="shinian-detail" data-id="' + item.id + '" style="color:' + theme.color + ';font-size:' + theme.size + 'px;font-weight:bold;">' + item.title + '</a></div>';
             html += '</div>';
         }
         container.innerHTML = html;
     }
 
-    async function loadShinianDetail(id) {
-        var item = await DB.getById('shinian', id);
+    function loadShinianDetail(id) {
+        var list = DB.get('shinian', []);
+        var item = null;
+        for (var i = 0; i < list.length; i++) {
+            if (list[i].id === Number(id)) {
+                item = list[i];
+                break;
+            }
+        }
         if (!item) return;
-
+        
+        var theme = getThemeConfig();
+        
         var titleEl = document.getElementById('shinianDetailTitle');
         var dateEl = document.getElementById('shinianDetailDate');
         var contentEl = document.getElementById('shinianDetailContent');
         var sidebarTitleEl = document.getElementById('shinianSidebarTitle');
         var sidebarEl = document.getElementById('shinianSidebar');
-
-        if (titleEl) titleEl.textContent = item.title;
+        
+        if (titleEl) {
+            titleEl.textContent = item.title;
+            titleEl.style.color = theme.color;
+            titleEl.style.fontSize = theme.size + 'px';
+            titleEl.style.fontWeight = 'bold';
+        }
         if (dateEl) dateEl.textContent = item.date;
-        if (contentEl) contentEl.innerHTML = '<p>' + item.content.replace(/\n/g, '</p><p>') + '</p>';
-        if (sidebarTitleEl) sidebarTitleEl.textContent = '系列 / ' + item.category;
-
-        var list = await DB.getAll('shinian', { orderBy: 'id' });
+        if (contentEl) contentEl.innerHTML = '<p>' + (item.content || '').replace(/\n/g, '</p><p>') + '</p>';
+        if (sidebarTitleEl) {
+            sidebarTitleEl.textContent = '系列 / ' + item.category;
+            sidebarTitleEl.style.color = theme.color;
+        }
+        
         if (sidebarEl) {
             var sameCategory = [];
             for (var j = 0; j < list.length; j++) {
@@ -277,35 +441,47 @@
             }
             var html = '';
             for (var k = 0; k < sameCategory.length; k++) {
-                html += '<a href="#" data-sub="shinian-detail" data-id="' + sameCategory[k].id + '">' + sameCategory[k].title + '</a>';
+                var displayTitle = sameCategory[k].title;
+                if (displayTitle.length > 40) {
+                    displayTitle = displayTitle.substring(0, 40) + '...';
+                }
+                html += '<a href="#" data-sub="shinian-detail" data-id="' + sameCategory[k].id + '" style="font-size:14px;font-weight:bold;color:' + theme.color + ';display:block;margin-bottom:6px;text-decoration:none;">' + displayTitle + '</a>';
             }
             sidebarEl.innerHTML = html;
         }
     }
 
     // ============================================================
-    // 雪夜舟·图
+    // 10. 雪夜舟·图
     // ============================================================
-    async function renderXueyeCards() {
-        var list = await DB.getAll('xueye', { orderBy: 'id' });
+    function renderXueyeCards() {
+        var list = DB.get('xueye', []);
         var container = document.getElementById('xueyeCards');
         if (!container) return;
+        var theme = getThemeConfig();
         var html = '';
         for (var i = 0; i < list.length; i++) {
             var item = list[i];
             var indexStr = String(i + 1).padStart(2, '0');
             html += '<div class="series-card">';
-            html += '<div class="card-index">' + indexStr + ' / 系列</div>';
-            html += '<h3 class="card-title">' + item.category + '</h3>';
-            html += '<p class="card-desc">' + (item.category_desc || '暂无描述') + '</p>';
-            html += '<a class="card-link" data-sub="xueye-gallery" data-id="' + item.id + '">进入系列&gt;</a>';
+            html += '<div class="card-index" style="color:' + theme.color + ';font-size:14px;">' + indexStr + ' / 系列</div>';
+            html += '<h3 class="card-title" style="color:' + theme.color + ';font-size:' + theme.size + 'px;font-weight:bold;">' + item.category + '</h3>';
+            html += '<p class="card-desc">' + (item.categoryDesc || '暂无描述') + '</p>';
+            html += '<a class="card-link" data-sub="xueye-gallery" data-id="' + item.id + '" style="color:' + theme.color + ';font-size:14px;text-decoration:none;">进入系列&gt;</a>';
             html += '</div>';
         }
         container.innerHTML = html;
     }
 
-    async function loadXueyeGallery(id) {
-        var item = await DB.getById('xueye', id);
+    function loadXueyeGallery(id) {
+        var list = DB.get('xueye', []);
+        var item = null;
+        for (var i = 0; i < list.length; i++) {
+            if (list[i].id === Number(id)) {
+                item = list[i];
+                break;
+            }
+        }
         if (!item) return;
         var container = document.getElementById('xueyeGallery');
         if (!container) return;
@@ -326,18 +502,19 @@
         rowDiv.innerHTML = images;
         group.appendChild(rowDiv);
         container.appendChild(group);
-
+        
         var infoDiv = document.createElement('div');
-        infoDiv.style.cssText = 'text-align:center;padding:20px 0;color:#9c836e;font-size:13px;';
+        var theme = getThemeConfig();
+        infoDiv.style.cssText = 'text-align:center;padding:20px 0;color:' + theme.color + ';font-size:13px;';
         infoDiv.textContent = item.category + ' · 共 ' + (item.count || 6) + ' 张图片';
         container.appendChild(infoDiv);
     }
 
     // ============================================================
-    // 听雨眠·记
+    // 11. 听雨眠·记
     // ============================================================
-    async function renderTingyuYears() {
-        var list = await DB.getAll('tingyu', { orderBy: 'id' });
+    function renderTingyuYears() {
+        var list = DB.get('tingyu', []);
         var years = {};
         for (var i = 0; i < list.length; i++) {
             var year = list[i].year;
@@ -346,6 +523,7 @@
         }
         var container = document.getElementById('tingyuYears');
         if (!container) return;
+        var theme = getThemeConfig();
         var yearKeys = Object.keys(years).sort(function(a, b) { return b - a; });
         var html = '';
         for (var j = 0; j < yearKeys.length; j++) {
@@ -353,13 +531,13 @@
             var items = years[year];
             html += '<div class="year-block">';
             html += '<div class="year-card">';
-            html += '<div class="year-num">' + year + '</div>';
+            html += '<div class="year-num" style="color:' + theme.color + ';font-size:' + theme.size + 'px;font-weight:bold;">' + year + '</div>';
             html += '<div class="year-desc">共计 ' + items.length + ' 本</div>';
-            html += '<a class="year-link" data-sub="tingyu-detail" data-year="' + year + '">进入系列&gt;</a>';
+            html += '<a class="year-link" data-sub="tingyu-detail" data-year="' + year + '" style="font-size:14px;color:#666666;text-decoration:none;font-weight:normal;">进入系列&gt;</a>';
             html += '</div>';
             html += '<div class="book-wrap">';
             for (var k = 0; k < items.length; k++) {
-                html += '<a class="book-item" data-sub="tingyu-detail" data-year="' + year + '" data-title="' + items[k].title + '">' + items[k].title + '</a>';
+                html += '<a class="book-item" data-sub="tingyu-detail" data-year="' + year + '" data-title="' + items[k].title + '" style="color:' + theme.color + ';font-size:' + theme.size + 'px;font-weight:bold;text-decoration:none;">' + items[k].title + '</a>';
             }
             html += '</div>';
             html += '</div>';
@@ -367,8 +545,8 @@
         container.innerHTML = html;
     }
 
-    async function loadTingyuDetail(year, title) {
-        var list = await DB.getAll('tingyu', { orderBy: 'id' });
+    function loadTingyuDetail(year, title) {
+        var list = DB.get('tingyu', []);
         var items = [];
         for (var i = 0; i < list.length; i++) {
             if (list[i].year === year) {
@@ -386,67 +564,84 @@
         }
         if (!target && items.length > 0) target = items[0];
         if (!target) return;
-
+        
+        var theme = getThemeConfig();
+        
         var titleEl = document.getElementById('tingyuDetailTitle');
         var dateEl = document.getElementById('tingyuDetailDate');
         var contentEl = document.getElementById('tingyuDetailContent');
         var sidebarYearEl = document.getElementById('tingyuSidebarYear');
         var sidebarEl = document.getElementById('tingyuSidebar');
-
-        if (titleEl) titleEl.textContent = target.title;
+        
+        if (titleEl) {
+            titleEl.textContent = target.title;
+            titleEl.style.color = theme.color;
+            titleEl.style.fontSize = theme.size + 'px';
+            titleEl.style.fontWeight = 'bold';
+        }
         if (dateEl) dateEl.textContent = year + '年';
         if (contentEl) contentEl.innerHTML = '<p>《' + target.title + '》</p><p>年份：' + year + '</p><p>这是 ' + year + ' 年阅读的书籍之一。</p>';
-        if (sidebarYearEl) sidebarYearEl.textContent = year;
-
+        if (sidebarYearEl) {
+            sidebarYearEl.textContent = year;
+            sidebarYearEl.style.color = theme.color;
+            sidebarYearEl.style.fontSize = theme.size + 'px';
+            sidebarYearEl.style.fontWeight = 'bold';
+        }
+        
         if (sidebarEl) {
             var html = '';
             for (var k = 0; k < items.length; k++) {
                 var num = String(k + 1).padStart(2, '0');
-                html += '<li>' + num + ' <a href="#" data-sub="tingyu-detail" data-year="' + year + '" data-title="' + items[k].title + '">' + items[k].title + '</a></li>';
+                var displayTitle = items[k].title;
+                if (displayTitle.length > 40) {
+                    displayTitle = displayTitle.substring(0, 40) + '...';
+                }
+                html += '<li style="list-style:none;margin-bottom:6px;"><span style="color:#999;font-size:12px;">' + num + '</span> <a href="#" data-sub="tingyu-detail" data-year="' + year + '" data-title="' + items[k].title + '" style="font-size:14px;font-weight:bold;color:' + theme.color + ';text-decoration:none;">' + displayTitle + '</a></li>';
             }
             sidebarEl.innerHTML = html;
         }
     }
 
     // ============================================================
-    // 各西东·语
+    // 12. 各西东·语
     // ============================================================
-    async function renderGexiList() {
-        var list = await DB.getAll('gexi', { orderBy: 'id' });
+    function renderGexiList() {
+        var list = DB.get('gexi', []);
         var container = document.getElementById('gexiList');
         if (!container) return;
+        var theme = getThemeConfig();
         var html = '';
         for (var i = 0; i < list.length; i++) {
             var item = list[i];
             html += '<div class="article-item">';
             html += '<div class="article-date">' + item.date + '</div>';
-            html += '<div class="article-text">' + item.content + '</div>';
+            html += '<div class="article-text" style="color:' + theme.color + ';font-size:' + theme.size + 'px;font-weight:bold;">' + item.content + '</div>';
             html += '</div>';
         }
         container.innerHTML = html;
     }
 
     // ============================================================
-    // 山野渔夫
+    // 13. 山野渔夫
     // ============================================================
-    async function renderAbout() {
-        var list = await DB.getAll('about');
-        var content = list.length > 0 ? list[0].content : '';
+    function renderAbout() {
+        var content = DB.get('about', '');
         var container = document.getElementById('aboutContent');
         if (!container) return;
+        var theme = getThemeConfig();
         var lines = content.split('\n');
         var html = '';
         for (var i = 0; i < lines.length; i++) {
             var line = lines[i].trim();
             if (line) {
-                html += '<p>' + line + '</p>';
+                html += '<p style="color:' + theme.color + ';font-size:' + theme.size + 'px;font-weight:bold;">' + line + '</p>';
             }
         }
         container.innerHTML = html;
     }
 
     // ============================================================
-    // 数据变化监听
+    // 14. 数据变化监听
     // ============================================================
     window.addEventListener('storage', function(e) {
         if (e.key && e.key.indexOf('jiananshan_') === 0) {
@@ -465,13 +660,16 @@
     });
 
     // ============================================================
-    // 初始化
+    // 15. 初始化
     // ============================================================
     document.addEventListener('DOMContentLoaded', function() {
         var container = document.querySelector('.container');
         if (container) {
             container.style.marginTop = '80px';
         }
+        // 确保 Logo 加载
+        var site = DB.get('site', {});
+        updateLogo(site);
     });
 
     showPage('page-home');
