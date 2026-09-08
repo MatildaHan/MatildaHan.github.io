@@ -605,7 +605,7 @@ async function getAdminPasswordHash() {
     }
 }
 
-// 处理登录
+// 简单密码验证（不含 bcrypt）
 async function handleLogin() {
     var username = document.getElementById('login-username').value.trim();
     var password = document.getElementById('login-password').value.trim();
@@ -617,7 +617,7 @@ async function handleLogin() {
         return;
     }
     
-    // 获取存储的密码哈希
+    // 从 Supabase 获取存储的密码
     var hash = await getAdminPasswordHash();
     if (!hash) {
         errorEl.textContent = '系统错误，请联系管理员';
@@ -625,8 +625,10 @@ async function handleLogin() {
         return;
     }
     
-    // 简单验证（密码为 admin123）
-    if (password === 'admin123') {
+    // ⚠️ 注意：前端无法验证 bcrypt 哈希
+    // 目前只能使用明文密码对比
+    // 这里假设数据库中存储的是明文密码（实际应该存哈希）
+    if (password === hash) {
         localStorage.setItem('admin_logged_in', 'true');
         document.getElementById('loginContainer').style.display = 'none';
         document.getElementById('adminWrapper').className = 'admin-wrapper show';
