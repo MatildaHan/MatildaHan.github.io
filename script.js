@@ -91,77 +91,69 @@
     // ============================================================
     // 渲染首页
     // ============================================================
-    async function renderHome() {
-        var site = await DB.getAll('site_settings');
-        site = site.length > 0 ? site[0] : {};
-
-        // Logo
-        var logoBlock = document.getElementById('logoBlock');
-        var logoImage = document.getElementById('logoImage');
-        if (logoImage && site.logo_image && site.logo_image.trim() !== '') {
-            logoImage.src = site.logo_image;
-            logoImage.style.display = 'block';
-            if (logoBlock) logoBlock.style.backgroundColor = 'transparent';
-        } else {
-            if (logoImage) logoImage.style.display = 'none';
-            if (logoBlock) logoBlock.style.backgroundColor = site.logo_color || '#b89c84';
-        }
-
-        var homeImage = document.getElementById('homeImage');
-        if (homeImage) {
-            homeImage.style.backgroundColor = site.logo_color || '#b89c84';
-        }
-
-        var siteNameEl = document.getElementById('siteName');
-        var siteDescEl = document.getElementById('siteDesc');
-        if (siteNameEl) siteNameEl.textContent = site.site_name || '见南山';
-        if (siteDescEl) siteDescEl.textContent = site.site_desc || '春山如黛草如烟';
-
-        // 行吟册·絮 最新一条
-        var xingyinList = await DB.getAll('xingyin', { orderBy: 'id' });
-        var latestXingyin = xingyinList.length > 0 ? xingyinList[xingyinList.length - 1] : null;
-
-        var homeTitle = document.getElementById('homeTitle');
-        var homeDate = document.getElementById('homeDate');
-        if (homeTitle) {
-            homeTitle.textContent = latestXingyin ? latestXingyin.content : '暂无短句';
-        }
-        if (homeDate) {
-            homeDate.textContent = latestXingyin ? latestXingyin.date : new Date().toISOString().slice(0, 10).replace(/-/g, '/');
-        }
-
-        // 十年灯·文 最新3条
-        var shinian = await DB.getAll('shinian', { orderBy: 'id' });
-        var latest3Shinian = shinian.slice(-3).reverse();
-
-        var html = '';
-        var homeLatest = document.getElementById('homeLatest');
-
-        if (latest3Shinian.length > 0) {
-            for (var i = 0; i < latest3Shinian.length; i++) {
-                var item = latest3Shinian[i];
-                var summary = item.content ? item.content.substring(0, 80) : '';
-                var displaySummary = summary + (item.content && item.content.length > 80 ? '...' : '');
-                var dateDisplay = item.date || '';
-
-                html += '<div class="list-item">';
-                html += '<h3 class="item-title" data-sub="shinian-detail" data-id="' + item.id + '">' + item.title + '</h3>';
-                html += '<p class="item-desc">' + displaySummary + '</p>';
-                html += '<div class="item-footer">';
-                html += '<span class="tag">#' + (item.category || '未分类') + '</span>';
-                html += '<span class="item-time">' + dateDisplay + '</span>';
-                html += '</div>';
-                html += '</div>';
-            }
-        } else {
-            html = '<div class="list-item"><p class="item-desc" style="text-align:center;color:#b8b0a8;">暂无文章，请前往后台添加</p></div>';
-        }
-
-        if (homeLatest) {
-            homeLatest.innerHTML = html;
-        }
+    function renderHome() {
+    var site = DB.get('site', {});
+    
+    // 获取主题色
+    var themeColor = site.logo_color || '#b89c84';
+    var titleSize = site.title_size || '20px';
+    
+    updateLogo(site);
+    
+    var xingyinList = DB.get('xingyin', []);
+    var latestXingyin = xingyinList.length > 0 ? xingyinList[xingyinList.length - 1] : null;
+    
+    var homeTitle = document.getElementById('homeTitle');
+    var homeDate = document.getElementById('homeDate');
+    if (homeTitle) {
+        homeTitle.textContent = latestXingyin ? latestXingyin.content : '暂无短句';
+        homeTitle.style.color = themeColor;
+        homeTitle.style.fontSize = titleSize;
+    }
+    if (homeDate) {
+        homeDate.textContent = latestXingyin ? latestXingyin.date : new Date().toISOString().slice(0, 10).replace(/-/g, '/');
+    }
+    
+    var homeImage = document.getElementById('homeImage');
+    if (homeImage) {
+        homeImage.style.backgroundColor = themeColor;
     }
 
+    var siteNameEl = document.getElementById('siteName');
+    var siteDescEl = document.getElementById('siteDesc');
+    if (siteNameEl) siteNameEl.textContent = site.site_name || '见南山';
+    if (siteDescEl) siteDescEl.textContent = site.site_desc || '春山如黛草如烟';
+
+    var shinian = DB.get('shinian', []);
+    var latest3Shinian = shinian.slice(-3).reverse();
+
+    var html = '';
+    var homeLatest = document.getElementById('homeLatest');
+    
+    if (latest3Shinian.length > 0) {
+        for (var i = 0; i < latest3Shinian.length; i++) {
+            var item = latest3Shinian[i];
+            var summary = item.content ? item.content.substring(0, 80) : '';
+            var displaySummary = summary + (item.content && item.content.length > 80 ? '...' : '');
+            var dateDisplay = item.date || '';
+            
+            html += '<div class="list-item">';
+            html += '<h3 class="item-title" data-sub="shinian-detail" data-id="' + item.id + '" style="color:' + themeColor + ';font-size:' + titleSize + ';">' + item.title + '</h3>';
+            html += '<p class="item-desc">' + displaySummary + '</p>';
+            html += '<div class="item-footer">';
+            html += '<span class="tag" style="color:' + themeColor + ';">#' + (item.category || '未分类') + '</span>';
+            html += '<span class="item-time">' + dateDisplay + '</span>';
+            html += '</div>';
+            html += '</div>';
+        }
+    } else {
+        html = '<div class="list-item"><p class="item-desc" style="text-align:center;color:#b8b0a8;">暂无文章，请前往后台添加</p></div>';
+    }
+
+    if (homeLatest) {
+        homeLatest.innerHTML = html;
+    }
+}
     // ============================================================
     // 行吟册·絮
     // ============================================================
