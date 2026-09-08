@@ -15,13 +15,90 @@ a {
     color: inherit;
 }
 
+/* ===== 登录界面样式 ===== */
+.login-container {
+    max-width: 400px;
+    margin: 120px auto;
+    padding: 50px 40px 40px;
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.06);
+    text-align: center;
+}
+.login-container .login-logo {
+    font-size: 28px;
+    color: #4a3a2a;
+    margin-bottom: 6px;
+    letter-spacing: 4px;
+}
+.login-container .login-sub {
+    font-size: 14px;
+    color: #9a8a7a;
+    margin-bottom: 32px;
+}
+.login-container .form-group {
+    margin-bottom: 18px;
+    text-align: left;
+}
+.login-container .form-group label {
+    display: block;
+    font-size: 13px;
+    color: #6a5a4a;
+    margin-bottom: 4px;
+}
+.login-container .form-group input {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1px solid #d5c8bc;
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: inherit;
+    background: #fcfaf8;
+    transition: border-color 0.2s;
+}
+.login-container .form-group input:focus {
+    outline: none;
+    border-color: #b89c84;
+    background: #ffffff;
+}
+.login-container .btn-login {
+    width: 100%;
+    padding: 12px;
+    background: #8c7562;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 0.2s;
+    margin-top: 8px;
+}
+.login-container .btn-login:hover {
+    background: #7a6451;
+}
+.login-container .btn-login:active {
+    transform: scale(0.98);
+}
+.login-container .error {
+    color: #c0392b;
+    font-size: 13px;
+    margin-top: 12px;
+    display: none;
+}
+.login-container .error.show {
+    display: block;
+}
+
 /* ===== 后台整体布局 - 全屏宽度 ===== */
 .admin-wrapper {
-    display: flex;
-    min-height: 100vh;
+    display: none;
     max-width: 100% !important;
     width: 100% !important;
     margin: 0 !important;
+}
+.admin-wrapper.show {
+    display: flex;
 }
 
 /* ===== 侧边栏 ===== */
@@ -57,6 +134,7 @@ a {
     transition: 0.2s;
     border-left: 3px solid transparent;
     font-size: 14px;
+    text-decoration: none;
 }
 .admin-sidebar nav a:hover {
     background: #3f332b;
@@ -100,6 +178,16 @@ a {
 .admin-header .user {
     color: #8a7a6a;
     font-size: 13px;
+}
+.admin-header .logout-btn {
+    color: #a8917e;
+    font-size: 13px;
+    cursor: pointer;
+    text-decoration: underline;
+    margin-left: 16px;
+}
+.admin-header .logout-btn:hover {
+    color: #6a5a4a;
 }
 
 /* ===== 面板 ===== */
@@ -218,6 +306,8 @@ td {
     min-height: 80px;
     resize: vertical;
 }
+
+/* ===== 卡片 ===== */
 .form-card {
     background: #fff;
     border-radius: 8px;
@@ -289,5 +379,9 @@ td {
     .actions {
         flex-direction: column;
         gap: 4px;
+    }
+    .login-container {
+        margin: 60px 20px;
+        padding: 30px 20px;
     }
 }
