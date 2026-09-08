@@ -253,7 +253,11 @@
                     <h3 id="xueyeItemModalTitle">编辑图片组</h3>
                     <input type="hidden" id="xueye-edit-id">
                     <div class="form-group"><label>分类</label><select id="xueye-category-select"></select></div>
-                    <div class="form-group"><label>图片数量 (占位)</label><input type="number" id="xueye-count" min="1" max="12"></div>
+                    <div class="form-group"><label>图片上传</label>
+                        <input type="file" id="xueye-image-upload" accept="image/*" multiple>
+                        <p style="font-size:12px;color:#999;margin-top:4px;">可多选图片，按实际上传数量统计</p>
+                    </div>
+                    <div id="xueye-image-preview" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;"></div>
                     <div class="form-group"><label>日期</label><input type="text" id="xueye-date"></div>
                     <div class="modal-actions">
                         <button class="btn" onclick="closeXueyeItemForm()">取消</button>
@@ -294,7 +298,9 @@
                     <h3 id="tingyuModalTitle">编辑书籍</h3>
                     <input type="hidden" id="tingyu-edit-id">
                     <div class="form-group"><label>书名</label><input type="text" id="tingyu-title" placeholder="《书名》"></div>
-                    <div class="form-group"><label>年份 (YYYY)</label><input type="text" id="tingyu-year" placeholder="2026"></div>
+                    <div class="form-group"><label>年份</label>
+                        <select id="tingyu-year"></select>
+                    </div>
                     <div class="modal-actions">
                         <button class="btn" onclick="closeTingyuForm()">取消</button>
                         <button class="btn btn-primary" onclick="saveTingyu()">保存</button>
@@ -471,7 +477,11 @@ function updateShinianCategorySelect() {
     var list = getShinianCategories();
     var select = document.getElementById('shinian-category-select');
     if (!select) return;
-    select.innerHTML = list.map(c => '<option value="' + c.name + '">' + c.name + '</option>').join('');
+    var html = '';
+    for (var i = 0; i < list.length; i++) {
+        html += '<option value="' + list[i].name + '">' + list[i].name + '</option>';
+    }
+    select.innerHTML = html;
 }
 
 // ============================================================
@@ -518,7 +528,11 @@ function updateXueyeCategorySelect() {
     var list = getXueyeCategories();
     var select = document.getElementById('xueye-category-select');
     if (!select) return;
-    select.innerHTML = list.map(c => '<option value="' + c.name + '">' + c.name + '</option>').join('');
+    var html = '';
+    for (var i = 0; i < list.length; i++) {
+        html += '<option value="' + list[i].name + '">' + list[i].name + '</option>';
+    }
+    select.innerHTML = html;
 }
 
 // ============================================================
@@ -544,6 +558,21 @@ function switchXueyeTab(tabId) {
         content.classList.remove('active');
         if (content.id === tabId) content.classList.add('active');
     });
+}
+
+// ============================================================
+// 年份选择器（当前年份及前5年）
+// ============================================================
+function generateYearOptions() {
+    var currentYear = new Date().getFullYear();
+    var select = document.getElementById('tingyu-year');
+    if (!select) return;
+    var html = '';
+    for (var i = 0; i < 6; i++) {
+        var year = currentYear - i;
+        html += '<option value="' + year + '">' + year + '年</option>';
+    }
+    select.innerHTML = html;
 }
 
 // ============================================================
@@ -656,10 +685,12 @@ function openShinianArticleEdit(id) {
         document.getElementById('shinianArticleModalTitle').textContent = '编辑文章';
         document.getElementById('shinian-edit-id').value = id;
         document.getElementById('shinian-title').value = item.title;
-        document.getElementById('shinian-category-select').value = item.category || '';
+        // 修复：正确匹配分类值
+        var select = document.getElementById('shinian-category-select');
+        updateShinianCategorySelect();
+        select.value = item.category || '';
         document.getElementById('shinian-content').value = item.content || '';
         document.getElementById('shinian-date').value = item.date;
-        updateShinianCategorySelect();
     });
 }
 
@@ -741,7 +772,7 @@ function saveShinianCategory() {
 }
 
 function deleteShinianCategory(id) {
-    if (!confirm('确定删除该分类吗？（文章分类会被保留）')) return;
+    if (!confirm('确定删除该分类吗？')) return;
     var list = getShinianCategories();
     list = list.filter(c => c.id !== id);
     setShinianCategories(list);
@@ -750,8 +781,102 @@ function deleteShinianCategory(id) {
 }
 
 // ============================================================
-// 雪夜舟·图 (CRUD)
+// 雪夜舟·图 (CRUD) - 图片上传
 // ============================================================
+var xueyeTempImages = [];
+
+function openXueyeItemForm() {
+    document.getElementById('xueyeItemModal').classList.add('show');
+    document.getElementById('xueyeItemModalTitle').textContent = '新增图片组';
+    document.getElementById('xueye-edit-id').value = '';
+    document.getElementById('xueye-category-select').value = '';
+    document.getElementById('xueye-date').value = new Date().toISOString().slice(0, 10).replace(/-/g, '/');
+    document.getElementById('xueye-image-upload').value = '';
+    document.getElementById('xueye-image-preview').innerHTML = '';
+    xueyeTempImages = [];
+    updateXueyeCategorySelect();
+    setupXueyeImageUpload();
+}
+
+function openXueyeItemEdit(id) {
+    DB.getById('xueye', id).then(function(item) {
+        if (!item) return;
+        document.getElementById('xueyeItemModal').classList.add('show');
+        document.getElementById('xueyeItemModalTitle').textContent = '编辑图片组';
+        document.getElementById('xueye-edit-id').value = id;
+        document.getElementById('xueye-category-select').value = item.category || '';
+        document.getElementById('xueye-date').value = item.date;
+        document.getElementById('xueye-image-upload').value = '';
+        document.getElementById('xueye-image-preview').innerHTML = '';
+        xueyeTempImages = [];
+        // 如果有存储的图片，显示预览
+        if (item.images && item.images.length > 0) {
+            var previewContainer = document.getElementById('xueye-image-preview');
+            for (var i = 0; i < item.images.length; i++) {
+                var imgDiv = document.createElement('div');
+                imgDiv.style.cssText = 'width:80px;height:60px;border-radius:4px;overflow:hidden;border:1px solid #e0d6cc;';
+                var img = document.createElement('img');
+                img.src = item.images[i];
+                img.style.cssText = 'width:100%;height:100%;object-fit:cover;';
+                imgDiv.appendChild(img);
+                previewContainer.appendChild(imgDiv);
+                xueyeTempImages.push(item.images[i]);
+            }
+        }
+        updateXueyeCategorySelect();
+        setupXueyeImageUpload();
+    });
+}
+
+function closeXueyeItemForm() {
+    document.getElementById('xueyeItemModal').classList.remove('show');
+}
+
+function setupXueyeImageUpload() {
+    var uploadInput = document.getElementById('xueye-image-upload');
+    if (uploadInput) {
+        uploadInput.removeEventListener('change', handleXueyeImageUpload);
+        uploadInput.addEventListener('change', handleXueyeImageUpload);
+    }
+}
+
+function handleXueyeImageUpload(e) {
+    var files = e.target.files;
+    if (!files || files.length === 0) return;
+    var previewContainer = document.getElementById('xueye-image-preview');
+    
+    for (var i = 0; i < files.length; i++) {
+        var file = files[i];
+        if (!file.type.startsWith('image/')) continue;
+        var reader = new FileReader();
+        reader.onload = function(event) {
+            var base64 = event.target.result;
+            xueyeTempImages.push(base64);
+            var imgDiv = document.createElement('div');
+            imgDiv.style.cssText = 'width:80px;height:60px;border-radius:4px;overflow:hidden;border:1px solid #e0d6cc;position:relative;';
+            var img = document.createElement('img');
+            img.src = base64;
+            img.style.cssText = 'width:100%;height:100%;object-fit:cover;';
+            imgDiv.appendChild(img);
+            var removeBtn = document.createElement('button');
+            removeBtn.textContent = '×';
+            removeBtn.style.cssText = 'position:absolute;top:-6px;right:-6px;width:18px;height:18px;border-radius:50%;border:none;background:#c0392b;color:#fff;font-size:12px;cursor:pointer;line-height:18px;text-align:center;padding:0;';
+            removeBtn.onclick = function() {
+                var idx = xueyeTempImages.indexOf(base64);
+                if (idx > -1) {
+                    xueyeTempImages.splice(idx, 1);
+                }
+                imgDiv.remove();
+            };
+            imgDiv.appendChild(removeBtn);
+            previewContainer.appendChild(imgDiv);
+        };
+        reader.readAsDataURL(file);
+    }
+    // 清空 input 以便重复选择
+    e.target.value = '';
+}
+
 async function renderXueye() {
     var list = await DB.getAll('xueye', { orderBy: 'id' });
     var tbody = document.getElementById('xueye-list');
@@ -759,10 +884,11 @@ async function renderXueye() {
     var html = '';
     for (var i = 0; i < list.length; i++) {
         var item = list[i];
+        var imageCount = (item.images && item.images.length) || 0;
         html += '<tr>';
         html += '<td>' + (i + 1) + '</td>';
         html += '<td>' + item.category + '</td>';
-        html += '<td>' + (item.count || 6) + '</td>';
+        html += '<td>' + imageCount + '</td>';
         html += '<td>' + item.date + '</td>';
         html += '<td class="actions">';
         html += '<button class="btn" onclick="openXueyeItemEdit(' + item.id + ')">编辑</button>';
@@ -773,41 +899,24 @@ async function renderXueye() {
     tbody.innerHTML = html;
 }
 
-function openXueyeItemForm() {
-    document.getElementById('xueyeItemModal').classList.add('show');
-    document.getElementById('xueyeItemModalTitle').textContent = '新增图片组';
-    document.getElementById('xueye-edit-id').value = '';
-    document.getElementById('xueye-category-select').value = '';
-    document.getElementById('xueye-count').value = 6;
-    document.getElementById('xueye-date').value = new Date().toISOString().slice(0, 10).replace(/-/g, '/');
-    updateXueyeCategorySelect();
-}
-
-function openXueyeItemEdit(id) {
-    DB.getById('xueye', id).then(function(item) {
-        if (!item) return;
-        document.getElementById('xueyeItemModal').classList.add('show');
-        document.getElementById('xueyeItemModalTitle').textContent = '编辑图片组';
-        document.getElementById('xueye-edit-id').value = id;
-        document.getElementById('xueye-category-select').value = item.category || '';
-        document.getElementById('xueye-count').value = item.count || 6;
-        document.getElementById('xueye-date').value = item.date;
-        updateXueyeCategorySelect();
-    });
-}
-
-function closeXueyeItemForm() {
-    document.getElementById('xueyeItemModal').classList.remove('show');
-}
-
 async function saveXueyeItem() {
     var id = document.getElementById('xueye-edit-id').value;
     var category = document.getElementById('xueye-category-select').value;
-    var count = parseInt(document.getElementById('xueye-count').value) || 6;
     var date = document.getElementById('xueye-date').value.trim();
     if (!category) { alert('请选择分类'); return; }
 
-    var data = { category: category, category_desc: '', count: count, date: date };
+    // 获取已有的图片（编辑时）
+    var existingImages = [];
+    if (id) {
+        var existing = await DB.getById('xueye', id);
+        if (existing && existing.images) {
+            existingImages = existing.images;
+        }
+    }
+    // 合并已有图片和新上传图片
+    var allImages = existingImages.concat(xueyeTempImages);
+
+    var data = { category: category, category_desc: '', date: date, images: allImages };
 
     if (id) {
         await DB.update('xueye', id, data);
@@ -872,7 +981,7 @@ function saveXueyeCategory() {
 }
 
 function deleteXueyeCategory(id) {
-    if (!confirm('确定删除该分类吗？（图片组分类会被保留）')) return;
+    if (!confirm('确定删除该分类吗？')) return;
     var list = getXueyeCategories();
     list = list.filter(c => c.id !== id);
     setXueyeCategories(list);
@@ -908,6 +1017,7 @@ function openTingyuForm() {
     document.getElementById('tingyuModalTitle').textContent = '新增书籍';
     document.getElementById('tingyu-edit-id').value = '';
     document.getElementById('tingyu-title').value = '';
+    generateYearOptions();
     document.getElementById('tingyu-year').value = new Date().getFullYear();
 }
 
@@ -918,7 +1028,8 @@ function openTingyuEdit(id) {
         document.getElementById('tingyuModalTitle').textContent = '编辑书籍';
         document.getElementById('tingyu-edit-id').value = id;
         document.getElementById('tingyu-title').value = item.title;
-        document.getElementById('tingyu-year').value = item.year;
+        generateYearOptions();
+        document.getElementById('tingyu-year').value = item.year || new Date().getFullYear();
     });
 }
 
@@ -929,9 +1040,9 @@ function closeTingyuForm() {
 async function saveTingyu() {
     var id = document.getElementById('tingyu-edit-id').value;
     var title = document.getElementById('tingyu-title').value.trim();
-    var year = document.getElementById('tingyu-year').value.trim();
+    var year = document.getElementById('tingyu-year').value;
     if (!title) { alert('请输入书名'); return; }
-    if (!year) { alert('请输入年份'); return; }
+    if (!year) { alert('请选择年份'); return; }
     var data = { title: title, year: year };
     if (id) {
         await DB.update('tingyu', id, data);
@@ -1039,7 +1150,7 @@ async function saveAbout() {
 }
 
 // ============================================================
-// 站点设置
+// 站点设置（修复主题色保存和读取）
 // ============================================================
 async function loadSiteSettings() {
     var list = await DB.getAll('site_settings');
@@ -1049,8 +1160,8 @@ async function loadSiteSettings() {
     document.getElementById('site-name').value = s.site_name || '见南山';
     document.getElementById('site-desc').value = s.site_desc || '春山如黛草如烟';
 
-    // 主题色
-    var themeColor = s.theme_color || '#b89c84';
+    // 主题色 - 读取 theme_color 字段
+    var themeColor = s.theme_color || s.logo_color || '#b89c84';
     var titleSize = s.title_size || '20';
     
     document.getElementById('site-theme-color').value = themeColor;
@@ -1072,7 +1183,6 @@ async function loadSiteSettings() {
     }
 }
 
-// ===== 主题色和字号联动 =====
 function updateTitleSizePreview(size, color) {
     var preview = document.getElementById('title-size-preview');
     if (preview) {
@@ -1232,6 +1342,7 @@ async function initAdmin() {
     await renderGexi();
     await loadAbout();
     await loadSiteSettings();
+    generateYearOptions();
 }
 
 checkLogin();
