@@ -61,7 +61,7 @@
         <!-- ===== 面板：总览 ===== -->
         <section id="panel-dashboard" class="panel active">
             <div class="form-card">
-                <h3>数据概览</h3>
+                <h3>📊 数据概览</h3>
                 <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:20px;">
                     <div><strong>行吟册·絮</strong><br><span id="count-xingyin">0</span> 条</div>
                     <div><strong>十年灯·文</strong><br><span id="count-shinian">0</span> 篇</div>
@@ -71,7 +71,7 @@
                 </div>
             </div>
             <div class="form-card">
-                <h3>前端预览</h3>
+                <h3>🔗 前端预览</h3>
                 <p style="color:#8a7a6a;">所有数据修改后，请刷新前端页面查看效果。</p>
                 <p style="margin-top:8px;"><a href="index.html" target="_blank" style="color:#8c7562;text-decoration:underline;">→ 打开前端首页</a></p>
             </div>
@@ -80,7 +80,7 @@
         <!-- ===== 面板：站点设置 ===== -->
         <section id="panel-site" class="panel">
             <div class="form-card">
-                <h3>站点基本设置</h3>
+                <h3>🏠 站点基本设置</h3>
                 <div class="form-group">
                     <label>Logo 图片上传</label>
                     <input type="file" id="logo-upload" accept="image/*" style="padding:8px 0;">
@@ -128,8 +128,25 @@
             </div>
         </section>
 
-        <!-- ===== 面板：十年灯·文 ===== -->
+        <!-- ===== 面板：十年灯·文（含分类管理） ===== -->
         <section id="panel-shinian" class="panel">
+            <!-- 分类管理区域 -->
+            <div class="form-card">
+                <h3>📂 分类管理</h3>
+                <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:16px;">
+                    <input type="text" id="shinian-category-name" placeholder="分类名称" style="padding:6px 12px;border:1px solid #d5c8bc;border-radius:4px;font-family:inherit;">
+                    <input type="text" id="shinian-category-desc-input" placeholder="分类描述" style="padding:6px 12px;border:1px solid #d5c8bc;border-radius:4px;font-family:inherit;flex:1;">
+                    <button class="btn btn-primary" onclick="addShinianCategory()">添加分类</button>
+                </div>
+                <div class="table-wrap">
+                    <table>
+                        <thead><tr><th>分类名称</th><th>分类描述</th><th>操作</th></tr></thead>
+                        <tbody id="shinian-category-list"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 文章管理 -->
             <div class="toolbar">
                 <button class="btn btn-primary" onclick="openShinianForm()">+ 新增文章</button>
             </div>
@@ -143,17 +160,10 @@
                 <h4 style="margin-bottom:12px;">编辑文章</h4>
                 <input type="hidden" id="shinian-edit-id">
                 <div class="form-group"><label>标题</label><input type="text" id="shinian-title"></div>
-                <div class="form-group"><label>分类</label>
-                    <select id="shinian-category">
-                        <option value="闲聊几句">闲聊几句</option>
-                        <option value="灯火可亲">灯火可亲</option>
-                        <option value="半杯凉茶">半杯凉茶</option>
-                        <option value="旧椅子时光">旧椅子时光</option>
-                        <option value="纸上山川">纸上山川</option>
-                        <option value="收音机杂音">收音机杂音</option>
-                    </select>
+                <div class="form-group">
+                    <label>分类</label>
+                    <select id="shinian-category-select"></select>
                 </div>
-                <div class="form-group"><label>分类描述</label><input type="text" id="shinian-category-desc" placeholder="分类描述"></div>
                 <div class="form-group"><label>内容</label><textarea id="shinian-content" rows="6"></textarea></div>
                 <div class="form-group"><label>日期</label><input type="text" id="shinian-date" value="2026/09/07"></div>
                 <div style="display:flex;gap:12px;">
@@ -163,22 +173,41 @@
             </div>
         </section>
 
-        <!-- ===== 面板：雪夜舟·图 ===== -->
+        <!-- ===== 面板：雪夜舟·图（含分类管理） ===== -->
         <section id="panel-xueye" class="panel">
+            <!-- 分类管理区域 -->
+            <div class="form-card">
+                <h3>📂 分类管理</h3>
+                <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:16px;">
+                    <input type="text" id="xueye-category-name" placeholder="分类名称" style="padding:6px 12px;border:1px solid #d5c8bc;border-radius:4px;font-family:inherit;">
+                    <input type="text" id="xueye-category-desc-input" placeholder="分类描述" style="padding:6px 12px;border:1px solid #d5c8bc;border-radius:4px;font-family:inherit;flex:1;">
+                    <button class="btn btn-primary" onclick="addXueyeCategory()">添加分类</button>
+                </div>
+                <div class="table-wrap">
+                    <table>
+                        <thead><tr><th>分类名称</th><th>分类描述</th><th>操作</th></tr></thead>
+                        <tbody id="xueye-category-list"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 图片组管理 -->
             <div class="toolbar">
                 <button class="btn btn-primary" onclick="openXueyeForm()">+ 新增图片组</button>
             </div>
             <div class="table-wrap">
                 <table>
-                    <thead><tr><th>#</th><th>分类</th><th>分类描述</th><th>图片预览</th><th>日期</th><th>操作</th></tr></thead>
+                    <thead><tr><th>#</th><th>分类</th><th>图片数量</th><th>日期</th><th>操作</th></tr></thead>
                     <tbody id="xueye-list"></tbody>
                 </table>
             </div>
             <div id="xueye-form" style="display:none;margin-top:24px;background:#fcfafa;padding:20px;border-radius:8px;border:1px solid #e0d6cc;">
                 <h4 style="margin-bottom:12px;">编辑图片组</h4>
                 <input type="hidden" id="xueye-edit-id">
-                <div class="form-group"><label>分类名称</label><input type="text" id="xueye-category"></div>
-                <div class="form-group"><label>分类描述</label><input type="text" id="xueye-category-desc"></div>
+                <div class="form-group">
+                    <label>分类</label>
+                    <select id="xueye-category-select"></select>
+                </div>
                 <div class="form-group"><label>图片数量 (占位)</label><input type="number" id="xueye-count" value="6" min="1" max="12"></div>
                 <div class="form-group"><label>日期</label><input type="text" id="xueye-date" value="2026/09/07"></div>
                 <div style="display:flex;gap:12px;">
@@ -237,7 +266,7 @@
         <!-- ===== 面板：山野渔夫 ===== -->
         <section id="panel-about" class="panel">
             <div class="form-card">
-                <h3>个人简介</h3>
+                <h3>🧑‍🌾 个人简介</h3>
                 <div class="form-group">
                     <label>简介内容 (支持多行)</label>
                     <textarea id="about-content" rows="8" style="min-height:200px;"></textarea>
@@ -258,7 +287,6 @@
 // 登录验证逻辑
 // ============================================================
 
-// 获取管理员密码哈希
 async function getAdminPasswordHash() {
     try {
         var list = await DB.getAll('admin_users');
@@ -272,7 +300,6 @@ async function getAdminPasswordHash() {
     }
 }
 
-// 简单密码验证（不含 bcrypt）
 async function handleLogin() {
     var username = document.getElementById('login-username').value.trim();
     var password = document.getElementById('login-password').value.trim();
@@ -284,7 +311,6 @@ async function handleLogin() {
         return;
     }
     
-    // 从 Supabase 获取存储的密码
     var hash = await getAdminPasswordHash();
     if (!hash) {
         errorEl.textContent = '系统错误，请联系管理员';
@@ -292,9 +318,6 @@ async function handleLogin() {
         return;
     }
     
-    // ⚠️ 注意：前端无法验证 bcrypt 哈希
-    // 目前只能使用明文密码对比
-    // 这里假设数据库中存储的是明文密码（实际应该存哈希）
     if (password === hash) {
         localStorage.setItem('admin_logged_in', 'true');
         document.getElementById('loginContainer').style.display = 'none';
@@ -306,7 +329,6 @@ async function handleLogin() {
     }
 }
 
-// 退出登录
 function handleLogout() {
     if (confirm('确定要退出登录吗？')) {
         localStorage.removeItem('admin_logged_in');
@@ -318,7 +340,6 @@ function handleLogout() {
     }
 }
 
-// 检查登录状态
 function checkLogin() {
     var loggedIn = localStorage.getItem('admin_logged_in');
     if (loggedIn === 'true') {
@@ -328,22 +349,193 @@ function checkLogin() {
     }
 }
 
-// 回车键触发登录
 document.getElementById('login-password').addEventListener('keydown', function(e) {
-    if (e.key === 'Enter') {
-        handleLogin();
-    }
+    if (e.key === 'Enter') handleLogin();
 });
 document.getElementById('login-username').addEventListener('keydown', function(e) {
-    if (e.key === 'Enter') {
-        handleLogin();
-    }
+    if (e.key === 'Enter') handleLogin();
 });
 
 // ============================================================
 // 工具：生成 ID
 // ============================================================
 function genId() { return Date.now() + Math.random() * 1000; }
+
+// ============================================================
+// 分类管理 - 十年灯·文
+// ============================================================
+// 分类存储（使用 localStorage 作为分类数据源）
+function getShinianCategories() {
+    try {
+        var data = localStorage.getItem('jiananshan_shinian_categories');
+        return data ? JSON.parse(data) : [
+            { id: 1, name: '闲聊几句', desc: '没什么要紧事，就是灯下坐着，忽然想跟你聊几句。' },
+            { id: 2, name: '灯火可亲', desc: '家事，食事，灯下琐事。外面风雨再大，推开门就小了。' },
+            { id: 3, name: '半杯凉茶', desc: '主打冷静、清醒的观察，聊聊读到的书，遇到的人，像凉茶一样，入口微苦，却有余甘。' },
+            { id: 4, name: '旧椅子时光', desc: '主打回忆与故人。就像坐在一把吱呀作响的老椅子上，把从前的事，慢慢摇给你听。' },
+            { id: 5, name: '纸上山川', desc: '读书、观影、看展后的零碎感想，不求深度解读，只记录被触动的那一瞬。' },
+            { id: 6, name: '收音机杂音', desc: '主打夜归、偶遇、街头巷尾的小故事，适合写城市里擦肩而过的人，和那些没说出口的瞬间。' }
+        ];
+    } catch (e) { return []; }
+}
+function setShinianCategories(data) {
+    localStorage.setItem('jiananshan_shinian_categories', JSON.stringify(data));
+}
+
+function renderShinianCategories() {
+    var list = getShinianCategories();
+    var tbody = document.getElementById('shinian-category-list');
+    if (!tbody) return;
+    var html = '';
+    for (var i = 0; i < list.length; i++) {
+        var item = list[i];
+        html += '<tr>';
+        html += '<td><strong>' + item.name + '</strong></td>';
+        html += '<td>' + (item.desc || '') + '</td>';
+        html += '<td class="actions">';
+        html += '<button class="btn" onclick="editShinianCategory(' + item.id + ')">编辑</button>';
+        html += '<button class="btn btn-danger" onclick="deleteShinianCategory(' + item.id + ')">删除</button>';
+        html += '</td>';
+        html += '</tr>';
+    }
+    tbody.innerHTML = html;
+    // 更新下拉列表
+    updateShinianCategorySelect();
+}
+
+function addShinianCategory() {
+    var nameEl = document.getElementById('shinian-category-name');
+    var descEl = document.getElementById('shinian-category-desc-input');
+    var name = nameEl.value.trim();
+    var desc = descEl.value.trim();
+    if (!name) { alert('请输入分类名称'); return; }
+    var list = getShinianCategories();
+    if (list.find(c => c.name === name)) { alert('分类已存在'); return; }
+    list.push({ id: genId(), name: name, desc: desc });
+    setShinianCategories(list);
+    nameEl.value = '';
+    descEl.value = '';
+    renderShinianCategories();
+    renderShinian();
+}
+
+function editShinianCategory(id) {
+    var list = getShinianCategories();
+    var item = list.find(c => c.id === id);
+    if (!item) return;
+    var newName = prompt('修改分类名称：', item.name);
+    if (newName && newName.trim()) {
+        var newDesc = prompt('修改分类描述：', item.desc || '');
+        item.name = newName.trim();
+        item.desc = newDesc || '';
+        setShinianCategories(list);
+        renderShinianCategories();
+        renderShinian();
+    }
+}
+
+function deleteShinianCategory(id) {
+    if (!confirm('确定删除该分类吗？（文章分类会被保留）')) return;
+    var list = getShinianCategories();
+    list = list.filter(c => c.id !== id);
+    setShinianCategories(list);
+    renderShinianCategories();
+    renderShinian();
+}
+
+function updateShinianCategorySelect() {
+    var list = getShinianCategories();
+    var select = document.getElementById('shinian-category-select');
+    if (!select) return;
+    select.innerHTML = list.map(c => '<option value="' + c.name + '">' + c.name + '</option>').join('');
+}
+
+// ============================================================
+// 分类管理 - 雪夜舟·图
+// ============================================================
+function getXueyeCategories() {
+    try {
+        var data = localStorage.getItem('jiananshan_xueye_categories');
+        return data ? JSON.parse(data) : [
+            { id: 1, name: '四季有信', desc: '跟随时令的自然影像——春芽、夏荷、秋叶、冬雪，同一棵树的一年十二个月。' },
+            { id: 2, name: '旧物不言', desc: '静物与旧物件——一把老椅子，泛黄的书页，窗台的灰尘与光影，沉默里有故事。' },
+            { id: 3, name: '光影小事', desc: '纯粹的光影美学——阳光穿过树叶的缝隙，路灯下的影子、蜡烛摇曳的瞬间。' },
+            { id: 4, name: '这页翻过', desc: '旅行或生活场景的快门记录——某条路，某个转角，某次说走就走的念头兑现。' },
+            { id: 5, name: '窗里窗外', desc: '透过窗户看到的世界——雨打玻璃，窗台上的猫，黄昏的光斜斜铺进来。' },
+            { id: 6, name: '随手按的', desc: '没有构图的随手拍——模糊的，晃动的，不完美的，但那一刻就是想记录下来。' }
+        ];
+    } catch (e) { return []; }
+}
+function setXueyeCategories(data) {
+    localStorage.setItem('jiananshan_xueye_categories', JSON.stringify(data));
+}
+
+function renderXueyeCategories() {
+    var list = getXueyeCategories();
+    var tbody = document.getElementById('xueye-category-list');
+    if (!tbody) return;
+    var html = '';
+    for (var i = 0; i < list.length; i++) {
+        var item = list[i];
+        html += '<tr>';
+        html += '<td><strong>' + item.name + '</strong></td>';
+        html += '<td>' + (item.desc || '') + '</td>';
+        html += '<td class="actions">';
+        html += '<button class="btn" onclick="editXueyeCategory(' + item.id + ')">编辑</button>';
+        html += '<button class="btn btn-danger" onclick="deleteXueyeCategory(' + item.id + ')">删除</button>';
+        html += '</td>';
+        html += '</tr>';
+    }
+    tbody.innerHTML = html;
+    updateXueyeCategorySelect();
+}
+
+function addXueyeCategory() {
+    var nameEl = document.getElementById('xueye-category-name');
+    var descEl = document.getElementById('xueye-category-desc-input');
+    var name = nameEl.value.trim();
+    var desc = descEl.value.trim();
+    if (!name) { alert('请输入分类名称'); return; }
+    var list = getXueyeCategories();
+    if (list.find(c => c.name === name)) { alert('分类已存在'); return; }
+    list.push({ id: genId(), name: name, desc: desc });
+    setXueyeCategories(list);
+    nameEl.value = '';
+    descEl.value = '';
+    renderXueyeCategories();
+    renderXueye();
+}
+
+function editXueyeCategory(id) {
+    var list = getXueyeCategories();
+    var item = list.find(c => c.id === id);
+    if (!item) return;
+    var newName = prompt('修改分类名称：', item.name);
+    if (newName && newName.trim()) {
+        var newDesc = prompt('修改分类描述：', item.desc || '');
+        item.name = newName.trim();
+        item.desc = newDesc || '';
+        setXueyeCategories(list);
+        renderXueyeCategories();
+        renderXueye();
+    }
+}
+
+function deleteXueyeCategory(id) {
+    if (!confirm('确定删除该分类吗？（图片组分类会被保留）')) return;
+    var list = getXueyeCategories();
+    list = list.filter(c => c.id !== id);
+    setXueyeCategories(list);
+    renderXueyeCategories();
+    renderXueye();
+}
+
+function updateXueyeCategorySelect() {
+    var list = getXueyeCategories();
+    var select = document.getElementById('xueye-category-select');
+    if (!select) return;
+    select.innerHTML = list.map(c => '<option value="' + c.name + '">' + c.name + '</option>').join('');
+}
 
 // ============================================================
 // 行吟册·絮 (CRUD)
@@ -393,7 +585,6 @@ async function saveXingyin() {
     var content = document.getElementById('xingyin-content').value.trim();
     var date = document.getElementById('xingyin-date').value.trim();
     if (!content) { alert('请输入内容'); return; }
-
     if (id) {
         await DB.update('xingyin', id, { content: content, date: date });
     } else {
@@ -412,7 +603,7 @@ async function deleteXingyin(id) {
 }
 
 // ============================================================
-// 十年灯·文 (CRUD)
+// 十年灯·文 (CRUD) - 只显示分类名称
 // ============================================================
 async function renderShinian() {
     var list = await DB.getAll('shinian', { orderBy: 'id' });
@@ -424,7 +615,7 @@ async function renderShinian() {
         html += '<tr>';
         html += '<td>' + (i + 1) + '</td>';
         html += '<td><strong>' + item.title + '</strong></td>';
-        html += '<td>' + item.category + (item.category_desc ? ' (' + item.category_desc + ')' : '') + '</td>';
+        html += '<td>' + item.category + '</td>';  // 只显示分类名称
         html += '<td>' + item.date + '</td>';
         html += '<td class="actions">';
         html += '<button class="btn" onclick="editShinian(' + item.id + ')">编辑</button>';
@@ -439,10 +630,10 @@ function openShinianForm() {
     document.getElementById('shinian-form').style.display = 'block';
     document.getElementById('shinian-edit-id').value = '';
     document.getElementById('shinian-title').value = '';
-    document.getElementById('shinian-category').value = '闲聊几句';
-    document.getElementById('shinian-category-desc').value = '';
+    document.getElementById('shinian-category-select').value = '';
     document.getElementById('shinian-content').value = '';
     document.getElementById('shinian-date').value = new Date().toISOString().slice(0, 10).replace(/-/g, '/');
+    updateShinianCategorySelect();
 }
 
 function closeShinianForm() {
@@ -455,22 +646,22 @@ async function editShinian(id) {
     document.getElementById('shinian-form').style.display = 'block';
     document.getElementById('shinian-edit-id').value = id;
     document.getElementById('shinian-title').value = item.title;
-    document.getElementById('shinian-category').value = item.category || '闲聊几句';
-    document.getElementById('shinian-category-desc').value = item.category_desc || '';
+    document.getElementById('shinian-category-select').value = item.category || '';
     document.getElementById('shinian-content').value = item.content || '';
     document.getElementById('shinian-date').value = item.date;
+    updateShinianCategorySelect();
 }
 
 async function saveShinian() {
     var id = document.getElementById('shinian-edit-id').value;
     var title = document.getElementById('shinian-title').value.trim();
-    var category = document.getElementById('shinian-category').value;
-    var categoryDesc = document.getElementById('shinian-category-desc').value.trim();
+    var category = document.getElementById('shinian-category-select').value;
     var content = document.getElementById('shinian-content').value.trim();
     var date = document.getElementById('shinian-date').value.trim();
     if (!title) { alert('请输入标题'); return; }
+    if (!category) { alert('请选择分类'); return; }
 
-    var data = { title: title, category: category, category_desc: categoryDesc, content: content, date: date };
+    var data = { title: title, category: category, category_desc: '', content: content, date: date };
 
     if (id) {
         await DB.update('shinian', id, data);
@@ -490,7 +681,7 @@ async function deleteShinian(id) {
 }
 
 // ============================================================
-// 雪夜舟·图 (CRUD)
+// 雪夜舟·图 (CRUD) - 只显示分类名称
 // ============================================================
 async function renderXueye() {
     var list = await DB.getAll('xueye', { orderBy: 'id' });
@@ -501,9 +692,8 @@ async function renderXueye() {
         var item = list[i];
         html += '<tr>';
         html += '<td>' + (i + 1) + '</td>';
-        html += '<td><strong>' + item.category + '</strong></td>';
-        html += '<td>' + (item.category_desc || '-') + '</td>';
-        html += '<td><span class="img-preview"></span> ×' + (item.count || 6) + '</td>';
+        html += '<td>' + item.category + '</td>';  // 只显示分类名称
+        html += '<td>' + (item.count || 6) + '</td>';
         html += '<td>' + item.date + '</td>';
         html += '<td class="actions">';
         html += '<button class="btn" onclick="editXueye(' + item.id + ')">编辑</button>';
@@ -517,10 +707,10 @@ async function renderXueye() {
 function openXueyeForm() {
     document.getElementById('xueye-form').style.display = 'block';
     document.getElementById('xueye-edit-id').value = '';
-    document.getElementById('xueye-category').value = '';
-    document.getElementById('xueye-category-desc').value = '';
+    document.getElementById('xueye-category-select').value = '';
     document.getElementById('xueye-count').value = 6;
     document.getElementById('xueye-date').value = new Date().toISOString().slice(0, 10).replace(/-/g, '/');
+    updateXueyeCategorySelect();
 }
 
 function closeXueyeForm() {
@@ -532,21 +722,20 @@ async function editXueye(id) {
     if (!item) return;
     document.getElementById('xueye-form').style.display = 'block';
     document.getElementById('xueye-edit-id').value = id;
-    document.getElementById('xueye-category').value = item.category;
-    document.getElementById('xueye-category-desc').value = item.category_desc || '';
+    document.getElementById('xueye-category-select').value = item.category || '';
     document.getElementById('xueye-count').value = item.count || 6;
     document.getElementById('xueye-date').value = item.date;
+    updateXueyeCategorySelect();
 }
 
 async function saveXueye() {
     var id = document.getElementById('xueye-edit-id').value;
-    var category = document.getElementById('xueye-category').value.trim();
-    var categoryDesc = document.getElementById('xueye-category-desc').value.trim();
+    var category = document.getElementById('xueye-category-select').value;
     var count = parseInt(document.getElementById('xueye-count').value) || 6;
     var date = document.getElementById('xueye-date').value.trim();
-    if (!category) { alert('请输入分类名称'); return; }
+    if (!category) { alert('请选择分类'); return; }
 
-    var data = { category: category, category_desc: categoryDesc, count: count, date: date };
+    var data = { category: category, category_desc: '', count: count, date: date };
 
     if (id) {
         await DB.update('xueye', id, data);
@@ -614,9 +803,7 @@ async function saveTingyu() {
     var year = document.getElementById('tingyu-year').value.trim();
     if (!title) { alert('请输入书名'); return; }
     if (!year) { alert('请输入年份'); return; }
-
     var data = { title: title, year: year };
-
     if (id) {
         await DB.update('tingyu', id, data);
     } else {
@@ -682,7 +869,6 @@ async function saveGexi() {
     var content = document.getElementById('gexi-content').value.trim();
     var date = document.getElementById('gexi-date').value.trim();
     if (!content) { alert('请输入内容'); return; }
-
     if (id) {
         await DB.update('gexi', id, { content: content, date: date });
     } else {
@@ -729,7 +915,6 @@ async function loadSiteSettings() {
     document.getElementById('site-logo-color').value = s.logo_color || '#b89c84';
     document.getElementById('site-name').value = s.site_name || '见南山';
     document.getElementById('site-desc').value = s.site_desc || '春山如黛草如烟';
-
     var logoImage = s.logo_image || '';
     var preview = document.getElementById('logo-preview');
     if (preview) {
@@ -776,7 +961,6 @@ async function saveSiteSettings() {
     var logoColor = document.getElementById('site-logo-color').value || '#b89c84';
     var siteName = document.getElementById('site-name').value || '见南山';
     var siteDesc = document.getElementById('site-desc').value || '春山如黛草如烟';
-
     var logoImage = window._tempLogoImage || '';
     if (!logoImage || logoImage.trim() === '') {
         var list = await DB.getAll('site_settings');
@@ -784,14 +968,7 @@ async function saveSiteSettings() {
             logoImage = list[0].logo_image || '';
         }
     }
-
-    var data = {
-        logo_color: logoColor,
-        logo_image: logoImage,
-        site_name: siteName,
-        site_desc: siteDesc
-    };
-
+    var data = { logo_color: logoColor, logo_image: logoImage, site_name: siteName, site_desc: siteDesc };
     var list = await DB.getAll('site_settings');
     if (list.length > 0) {
         await DB.update('site_settings', list[0].id, data);
@@ -811,18 +988,11 @@ async function refreshDashboard() {
     var xueye = await DB.getAll('xueye');
     var tingyu = await DB.getAll('tingyu');
     var gexi = await DB.getAll('gexi');
-
-    var countXingyin = document.getElementById('count-xingyin');
-    var countShinian = document.getElementById('count-shinian');
-    var countXueye = document.getElementById('count-xueye');
-    var countTingyu = document.getElementById('count-tingyu');
-    var countGexi = document.getElementById('count-gexi');
-
-    if (countXingyin) countXingyin.textContent = xingyin.length;
-    if (countShinian) countShinian.textContent = shinian.length;
-    if (countXueye) countXueye.textContent = xueye.length;
-    if (countTingyu) countTingyu.textContent = tingyu.length;
-    if (countGexi) countGexi.textContent = gexi.length;
+    document.getElementById('count-xingyin').textContent = xingyin.length;
+    document.getElementById('count-shinian').textContent = shinian.length;
+    document.getElementById('count-xueye').textContent = xueye.length;
+    document.getElementById('count-tingyu').textContent = tingyu.length;
+    document.getElementById('count-gexi').textContent = gexi.length;
 }
 
 // ============================================================
@@ -831,22 +1001,17 @@ async function refreshDashboard() {
 document.querySelectorAll('.admin-sidebar nav a').forEach(function(link) {
     link.addEventListener('click', function(e) {
         e.preventDefault();
-        document.querySelectorAll('.admin-sidebar nav a').forEach(function(a) {
-            a.classList.remove('active');
-        });
+        document.querySelectorAll('.admin-sidebar nav a').forEach(function(a) { a.classList.remove('active'); });
         this.classList.add('active');
         var panelId = this.dataset.panel;
-        document.querySelectorAll('.panel').forEach(function(p) {
-            p.classList.remove('active');
-        });
+        document.querySelectorAll('.panel').forEach(function(p) { p.classList.remove('active'); });
         var target = document.getElementById(panelId);
         if (target) target.classList.add('active');
         document.getElementById('panelTitle').textContent = this.textContent.trim();
-
         if (panelId === 'panel-dashboard') refreshDashboard();
         if (panelId === 'panel-xingyin') renderXingyin();
-        if (panelId === 'panel-shinian') renderShinian();
-        if (panelId === 'panel-xueye') renderXueye();
+        if (panelId === 'panel-shinian') { renderShinian(); renderShinianCategories(); }
+        if (panelId === 'panel-xueye') { renderXueye(); renderXueyeCategories(); }
         if (panelId === 'panel-tingyu') renderTingyu();
         if (panelId === 'panel-gexi') renderGexi();
         if (panelId === 'panel-about') loadAbout();
@@ -861,16 +1026,15 @@ async function initAdmin() {
     await refreshDashboard();
     await renderXingyin();
     await renderShinian();
+    await renderShinianCategories();
     await renderXueye();
+    await renderXueyeCategories();
     await renderTingyu();
     await renderGexi();
     await loadAbout();
     await loadSiteSettings();
 }
 
-// ============================================================
-// 页面加载时检查登录状态
-// ============================================================
 checkLogin();
 </script>
 </body>
