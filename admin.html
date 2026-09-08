@@ -61,7 +61,7 @@
         <!-- ===== 面板：总览 ===== -->
         <section id="panel-dashboard" class="panel active">
             <div class="form-card">
-                <h3>📊 数据概览</h3>
+                <h3>数据概览</h3>
                 <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:20px;">
                     <div><strong>行吟册·絮</strong><br><span id="count-xingyin">0</span> 条</div>
                     <div><strong>十年灯·文</strong><br><span id="count-shinian">0</span> 篇</div>
@@ -71,7 +71,7 @@
                 </div>
             </div>
             <div class="form-card">
-                <h3>🔗 前端预览</h3>
+                <h3>前端预览</h3>
                 <p style="color:#8a7a6a;">所有数据修改后，请刷新前端页面查看效果。</p>
                 <p style="margin-top:8px;"><a href="index.html" target="_blank" style="color:#8c7562;text-decoration:underline;">→ 打开前端首页</a></p>
             </div>
@@ -80,7 +80,7 @@
         <!-- ===== 面板：站点设置 ===== -->
         <section id="panel-site" class="panel">
             <div class="form-card">
-                <h3>🏠 站点基本设置</h3>
+                <h3>站点基本设置</h3>
                 
                 <div class="form-group">
                     <label>Logo 图片上传</label>
@@ -103,9 +103,9 @@
                     <input type="text" id="site-desc" value="春山如黛草如烟" placeholder="春山如黛草如烟">
                 </div>
 
-                <!-- ===== 主题色设置 ===== -->
+                <!-- 主题色设置 -->
                 <div class="form-group">
-                    <label>🎨 主题色</label>
+                    <label>主题色</label>
                     <div class="color-input-group">
                         <input type="color" id="site-theme-color" value="#b89c84">
                         <input type="text" id="site-theme-color-text" value="#b89c84" placeholder="#b89c84">
@@ -113,9 +113,9 @@
                     <p class="form-hint">用于标题、链接、按钮等主要颜色</p>
                 </div>
 
-                <!-- ===== 标题字号设置 ===== -->
+                <!-- 标题字号设置 -->
                 <div class="form-group">
-                    <label>📏 标题字号 (px)</label>
+                    <label>标题字号 (px)</label>
                     <div class="size-input-group">
                         <input type="number" id="site-title-size" value="20" min="14" max="36">
                         <span style="color:#999;font-size:13px;">px</span>
@@ -157,8 +157,8 @@
         <!-- ===== 面板：十年灯·文 ===== -->
         <section id="panel-shinian" class="panel">
             <div class="tab-container">
-                <button class="tab-btn active" data-tab="shinian-articles" onclick="switchShinianTab('shinian-articles')">📝 文章列表</button>
-                <button class="tab-btn" data-tab="shinian-categories" onclick="switchShinianTab('shinian-categories')">📂 分类管理</button>
+                <button class="tab-btn active" data-tab="shinian-articles" onclick="switchShinianTab('shinian-articles')">文章列表</button>
+                <button class="tab-btn" data-tab="shinian-categories" onclick="switchShinianTab('shinian-categories')">分类管理</button>
             </div>
 
             <div class="tab-content active" id="shinian-articles">
@@ -219,8 +219,8 @@
         <!-- ===== 面板：雪夜舟·图 ===== -->
         <section id="panel-xueye" class="panel">
             <div class="tab-container">
-                <button class="tab-btn active" data-tab="xueye-items" onclick="switchXueyeTab('xueye-items')">🖼️ 图片列表</button>
-                <button class="tab-btn" data-tab="xueye-categories" onclick="switchXueyeTab('xueye-categories')">📂 分类管理</button>
+                <button class="tab-btn active" data-tab="xueye-items" onclick="switchXueyeTab('xueye-items')">图片列表</button>
+                <button class="tab-btn" data-tab="xueye-categories" onclick="switchXueyeTab('xueye-categories')">分类管理</button>
             </div>
 
             <div class="tab-content active" id="xueye-items">
@@ -332,7 +332,7 @@
         <!-- ===== 面板：山野渔夫 ===== -->
         <section id="panel-about" class="panel">
             <div class="form-card">
-                <h3>🧑‍🌾 个人简介</h3>
+                <h3>个人简介</h3>
                 <div class="form-group">
                     <label>简介内容 (支持多行)</label>
                     <textarea id="about-content" rows="8" style="min-height:200px;"></textarea>
