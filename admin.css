@@ -14,13 +14,17 @@ a {
     text-decoration: none;
     color: inherit;
 }
+
+/* ===== 后台整体布局 - 全屏宽度 ===== */
 .admin-wrapper {
     display: flex;
     min-height: 100vh;
-    max-width: none;
-    margin: 0 auto;
+    max-width: none;          /* 不限制宽度 */
+    width: 100%;              /* 占满全屏 */
+    margin: 0;
 }
 
+/* ===== 侧边栏 ===== */
 .admin-sidebar {
     width: 220px;
     background: #2c241e;
@@ -71,11 +75,15 @@ a {
     margin-top: 30px;
 }
 
+/* ===== 主内容区 - 全屏宽度 ===== */
 .admin-main {
     flex: 1;
     padding: 30px 40px 60px;
-    max-width: none;
+    max-width: none;          /* 不限制宽度 */
+    width: 100%;
 }
+
+/* ===== 顶部标题栏 ===== */
 .admin-header {
     display: flex;
     justify-content: space-between;
@@ -94,6 +102,7 @@ a {
     font-size: 13px;
 }
 
+/* ===== 面板 ===== */
 .panel {
     display: none;
     animation: fade 0.25s ease;
@@ -106,12 +115,15 @@ a {
     100% { opacity: 1; transform: translateY(0); }
 }
 
+/* ===== 工具栏 ===== */
 .toolbar {
     display: flex;
     gap: 12px;
     flex-wrap: wrap;
     margin-bottom: 24px;
 }
+
+/* ===== 按钮 ===== */
 .btn {
     padding: 6px 18px;
     border: 1px solid #c9b39f;
@@ -144,6 +156,7 @@ a {
     color: #fff;
 }
 
+/* ===== 表格 ===== */
 .table-wrap {
     background: #fff;
     border-radius: 8px;
@@ -179,6 +192,7 @@ td {
     font-size: 12px;
 }
 
+/* ===== 表单 ===== */
 .form-group {
     margin-bottom: 16px;
 }
@@ -220,6 +234,7 @@ td {
     border-bottom: 1px solid #f0ebe6;
 }
 
+/* ===== 图片预览 ===== */
 .img-preview {
     width: 80px;
     height: 60px;
@@ -228,22 +243,52 @@ td {
     display: inline-block;
 }
 
-@media (max-width: 1220px) {
-    .admin-wrapper { max-width: 100%; padding: 0 20px; }
-    .admin-main { max-width: 100%; }
-}
+/* ===== 响应式：平板 ===== */
 @media (max-width: 1024px) {
-    .admin-sidebar { width: 180px; }
-    .admin-main { padding: 20px 24px; }
-    .admin-wrapper { padding: 0 16px; }
+    .admin-sidebar {
+        width: 180px;
+    }
+    .admin-main {
+        padding: 20px 24px;
+        max-width: none;
+    }
+    .admin-wrapper {
+        max-width: none;
+    }
 }
+
+/* ===== 响应式：手机 ===== */
 @media (max-width: 768px) {
-    .admin-wrapper { flex-direction: column; padding: 0; }
-    .admin-sidebar { width: 100%; height: auto; position: relative; padding: 16px 0; }
-    .admin-sidebar .logo { padding: 0 20px 16px; }
-    .admin-sidebar nav a { padding: 10px 20px; }
-    .admin-main { max-width: 100%; padding: 16px; }
-    .admin-header { flex-direction: column; align-items: flex-start; gap: 8px; }
-    .table-wrap { padding: 12px; }
-    .actions { flex-direction: column; gap: 4px; }
+    .admin-wrapper {
+        flex-direction: column;
+        max-width: none;
+    }
+    .admin-sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+        padding: 16px 0;
+    }
+    .admin-sidebar .logo {
+        padding: 0 20px 16px;
+    }
+    .admin-sidebar nav a {
+        padding: 10px 20px;
+    }
+    .admin-main {
+        max-width: none;
+        padding: 16px;
+    }
+    .admin-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+    .table-wrap {
+        padding: 12px;
+    }
+    .actions {
+        flex-direction: column;
+        gap: 4px;
+    }
 }
