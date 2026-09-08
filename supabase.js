@@ -4,8 +4,8 @@
 
 // ⚠️ 重要：部署到 Vercel 时，这些值会从环境变量读取
 // 本地开发时，请将下面的值替换为你的 Supabase 项目信息
-const SUPABASE_URL = 'https://abcdefg.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFiY2RlZmciLCJyb2xlIjoiYW5vbiIsImlhdCI6MTY5MDAwMDAwMCwiZXhwIjoxNzAwMDAwMDAwfQ.xxxxxxxxxxxx';
+const SUPABASE_URL = 'https://phvayjkoyphsyavkjcuk.supabase.co/rest/v1/';   // ← Data API 中的 API URL
+const SUPABASE_ANON_KEY = 'sb_publishable_uunGD7DLA9YWwtkl5mgEvw_Z95hid4l';     // ← API Keys 中的 Publishable key
 // ============================================================
 // 数据库操作封装
 // ============================================================
