@@ -331,14 +331,14 @@ body {
     margin-bottom: 48px;
 }
 .year-card {
-    width: 220px;
-    height: 300px;
+    width: 150px;
+    height: 180px;
     border: 1px solid #c9b39f;
     border-radius: 16px;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    padding: 24px;
+    padding: 20px;
 }
 .year-num {
     font-size: 20px;
@@ -351,32 +351,9 @@ body {
     margin-bottom: auto;
     font-weight: normal;
 }
+/* 隐藏"进入系列"链接 */
 .year-link {
-    margin-top: auto;
-    font-size: 14px;
-    color: #666666;
-    text-decoration: none;
-    cursor: pointer;
-    font-weight: normal;
-}
-.year-link:hover {
-    opacity: 0.7;
-}
-
-.book-wrap {
-    flex: 1;
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 12px 8px;
-}
-.book-item {
-    font-size: 20px;
-    font-weight: bold;
-    text-decoration: none;
-    cursor: pointer;
-}
-.book-item:hover {
-    opacity: 0.7;
+    display: none !important;
 }
 
 /* ===== 文章详情 ===== */
