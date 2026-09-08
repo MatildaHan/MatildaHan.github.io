@@ -5,126 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>见南山 · 后台管理</title>
     <link rel="stylesheet" href="admin.css">
-    <style>
-        /* ===== Tab 切换样式 ===== */
-        .tab-container {
-            display: flex;
-            gap: 0;
-            margin-bottom: 24px;
-            border-bottom: 2px solid #e0d6cc;
-        }
-        .tab-btn {
-            padding: 10px 24px;
-            background: none;
-            border: none;
-            border-bottom: 3px solid transparent;
-            cursor: pointer;
-            font-size: 14px;
-            font-family: inherit;
-            color: #8a7a6a;
-            transition: 0.2s;
-            margin-bottom: -2px;
-        }
-        .tab-btn:hover {
-            color: #5a4a3a;
-        }
-        .tab-btn.active {
-            color: #5a4a3a;
-            border-bottom-color: #8c7562;
-            font-weight: bold;
-        }
-        .tab-content {
-            display: none;
-        }
-        .tab-content.active {
-            display: block;
-        }
-
-        /* ===== 弹窗样式 ===== */
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.4);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-        }
-        .modal-overlay.show {
-            display: flex;
-        }
-        .modal-box {
-            background: #fff;
-            border-radius: 12px;
-            padding: 30px;
-            max-width: 500px;
-            width: 90%;
-            max-height: 80vh;
-            overflow-y: auto;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
-            animation: modalIn 0.25s ease;
-        }
-        @keyframes modalIn {
-            0% { opacity: 0; transform: translateY(-20px) scale(0.95); }
-            100% { opacity: 1; transform: translateY(0) scale(1); }
-        }
-        .modal-box h3 {
-            font-weight: normal;
-            font-size: 20px;
-            color: #4a3a2a;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid #f0ebe6;
-        }
-        .modal-close {
-            float: right;
-            background: none;
-            border: none;
-            font-size: 24px;
-            cursor: pointer;
-            color: #a8917e;
-        }
-        .modal-close:hover {
-            color: #5a4a3a;
-        }
-        .modal-box .form-group {
-            margin-bottom: 16px;
-        }
-        .modal-box .form-group label {
-            display: block;
-            font-size: 13px;
-            color: #6a5a4a;
-            margin-bottom: 4px;
-        }
-        .modal-box .form-group input,
-        .modal-box .form-group textarea,
-        .modal-box .form-group select {
-            width: 100%;
-            padding: 8px 12px;
-            border: 1px solid #d5c8bc;
-            border-radius: 4px;
-            font-family: inherit;
-            font-size: 13px;
-            background: #fff;
-            color: #3a2a1a;
-        }
-        .modal-box .form-group textarea {
-            min-height: 80px;
-            resize: vertical;
-        }
-        .modal-actions {
-            display: flex;
-            gap: 12px;
-            margin-top: 20px;
-            justify-content: flex-end;
-        }
-        .modal-actions .btn {
-            padding: 8px 24px;
-        }
-    </style>
 </head>
 <body>
 
@@ -201,6 +81,7 @@
         <section id="panel-site" class="panel">
             <div class="form-card">
                 <h3>🏠 站点基本设置</h3>
+                
                 <div class="form-group">
                     <label>Logo 图片上传</label>
                     <input type="file" id="logo-upload" accept="image/*" style="padding:8px 0;">
@@ -221,6 +102,28 @@
                     <label>网站描述 (副标题)</label>
                     <input type="text" id="site-desc" value="春山如黛草如烟" placeholder="春山如黛草如烟">
                 </div>
+
+                <!-- ===== 主题色设置 ===== -->
+                <div class="form-group">
+                    <label>🎨 主题色</label>
+                    <div class="color-input-group">
+                        <input type="color" id="site-theme-color" value="#b89c84">
+                        <input type="text" id="site-theme-color-text" value="#b89c84" placeholder="#b89c84">
+                    </div>
+                    <p class="form-hint">用于标题、链接、按钮等主要颜色</p>
+                </div>
+
+                <!-- ===== 标题字号设置 ===== -->
+                <div class="form-group">
+                    <label>📏 标题字号 (px)</label>
+                    <div class="size-input-group">
+                        <input type="number" id="site-title-size" value="20" min="14" max="36">
+                        <span style="color:#999;font-size:13px;">px</span>
+                        <span class="size-preview" id="title-size-preview" style="font-size:20px;font-weight:bold;color:#b89c84;">预览</span>
+                    </div>
+                    <p class="form-hint">首页标题、文章标题、分类名称等使用此字号（14-36px）</p>
+                </div>
+
                 <button class="btn btn-primary" onclick="saveSiteSettings()">保存站点设置</button>
             </div>
         </section>
@@ -236,7 +139,6 @@
                     <tbody id="xingyin-list"></tbody>
                 </table>
             </div>
-            <!-- 短句编辑弹窗 -->
             <div class="modal-overlay" id="xingyinModal">
                 <div class="modal-box">
                     <button class="modal-close" onclick="closeXingyinForm()">×</button>
@@ -252,15 +154,13 @@
             </div>
         </section>
 
-        <!-- ===== 面板：十年灯·文（Tab切换） ===== -->
+        <!-- ===== 面板：十年灯·文 ===== -->
         <section id="panel-shinian" class="panel">
-            <!-- Tab 切换 -->
             <div class="tab-container">
                 <button class="tab-btn active" data-tab="shinian-articles" onclick="switchShinianTab('shinian-articles')">📝 文章列表</button>
                 <button class="tab-btn" data-tab="shinian-categories" onclick="switchShinianTab('shinian-categories')">📂 分类管理</button>
             </div>
 
-            <!-- Tab 内容：文章列表 -->
             <div class="tab-content active" id="shinian-articles">
                 <div class="toolbar">
                     <button class="btn btn-primary" onclick="openShinianArticleForm()">+ 新增文章</button>
@@ -273,7 +173,6 @@
                 </div>
             </div>
 
-            <!-- Tab 内容：分类管理 -->
             <div class="tab-content" id="shinian-categories">
                 <div class="toolbar">
                     <button class="btn btn-primary" onclick="openShinianCategoryForm()">+ 添加分类</button>
@@ -286,7 +185,6 @@
                 </div>
             </div>
 
-            <!-- 文章编辑弹窗 -->
             <div class="modal-overlay" id="shinianArticleModal">
                 <div class="modal-box">
                     <button class="modal-close" onclick="closeShinianArticleForm()">×</button>
@@ -303,7 +201,6 @@
                 </div>
             </div>
 
-            <!-- 分类编辑弹窗 -->
             <div class="modal-overlay" id="shinianCategoryModal">
                 <div class="modal-box">
                     <button class="modal-close" onclick="closeShinianCategoryForm()">×</button>
@@ -319,15 +216,13 @@
             </div>
         </section>
 
-        <!-- ===== 面板：雪夜舟·图（Tab切换） ===== -->
+        <!-- ===== 面板：雪夜舟·图 ===== -->
         <section id="panel-xueye" class="panel">
-            <!-- Tab 切换 -->
             <div class="tab-container">
                 <button class="tab-btn active" data-tab="xueye-items" onclick="switchXueyeTab('xueye-items')">🖼️ 图片列表</button>
                 <button class="tab-btn" data-tab="xueye-categories" onclick="switchXueyeTab('xueye-categories')">📂 分类管理</button>
             </div>
 
-            <!-- Tab 内容：图片列表 -->
             <div class="tab-content active" id="xueye-items">
                 <div class="toolbar">
                     <button class="btn btn-primary" onclick="openXueyeItemForm()">+ 新增图片组</button>
@@ -340,7 +235,6 @@
                 </div>
             </div>
 
-            <!-- Tab 内容：分类管理 -->
             <div class="tab-content" id="xueye-categories">
                 <div class="toolbar">
                     <button class="btn btn-primary" onclick="openXueyeCategoryForm()">+ 添加分类</button>
@@ -353,7 +247,6 @@
                 </div>
             </div>
 
-            <!-- 图片组编辑弹窗 -->
             <div class="modal-overlay" id="xueyeItemModal">
                 <div class="modal-box">
                     <button class="modal-close" onclick="closeXueyeItemForm()">×</button>
@@ -369,7 +262,6 @@
                 </div>
             </div>
 
-            <!-- 分类编辑弹窗 -->
             <div class="modal-overlay" id="xueyeCategoryModal">
                 <div class="modal-box">
                     <button class="modal-close" onclick="closeXueyeCategoryForm()">×</button>
@@ -630,24 +522,19 @@ function updateXueyeCategorySelect() {
 }
 
 // ============================================================
-// Tab 切换 - 十年灯·文
+// Tab 切换
 // ============================================================
 function switchShinianTab(tabId) {
-    // 切换 Tab 按钮
     document.querySelectorAll('#panel-shinian .tab-btn').forEach(function(btn) {
         btn.classList.remove('active');
         if (btn.dataset.tab === tabId) btn.classList.add('active');
     });
-    // 切换内容
     document.querySelectorAll('#panel-shinian .tab-content').forEach(function(content) {
         content.classList.remove('active');
         if (content.id === tabId) content.classList.add('active');
     });
 }
 
-// ============================================================
-// Tab 切换 - 雪夜舟·图
-// ============================================================
 function switchXueyeTab(tabId) {
     document.querySelectorAll('#panel-xueye .tab-btn').forEach(function(btn) {
         btn.classList.remove('active');
@@ -809,7 +696,7 @@ async function deleteShinianArticle(id) {
 }
 
 // ============================================================
-// 十年灯·文 分类管理 (弹窗)
+// 十年灯·文 分类管理
 // ============================================================
 function openShinianCategoryForm() {
     document.getElementById('shinianCategoryModal').classList.add('show');
@@ -940,7 +827,7 @@ async function deleteXueyeItem(id) {
 }
 
 // ============================================================
-// 雪夜舟·图 分类管理 (弹窗)
+// 雪夜舟·图 分类管理
 // ============================================================
 function openXueyeCategoryForm() {
     document.getElementById('xueyeCategoryModal').classList.add('show');
@@ -1157,9 +1044,22 @@ async function saveAbout() {
 async function loadSiteSettings() {
     var list = await DB.getAll('site_settings');
     var s = list.length > 0 ? list[0] : {};
+    
     document.getElementById('site-logo-color').value = s.logo_color || '#b89c84';
     document.getElementById('site-name').value = s.site_name || '见南山';
     document.getElementById('site-desc').value = s.site_desc || '春山如黛草如烟';
+
+    // 主题色
+    var themeColor = s.theme_color || '#b89c84';
+    var titleSize = s.title_size || '20';
+    
+    document.getElementById('site-theme-color').value = themeColor;
+    document.getElementById('site-theme-color-text').value = themeColor;
+    document.getElementById('site-title-size').value = titleSize;
+    
+    updateTitleSizePreview(titleSize, themeColor);
+
+    // Logo 预览
     var logoImage = s.logo_image || '';
     var preview = document.getElementById('logo-preview');
     if (preview) {
@@ -1172,6 +1072,46 @@ async function loadSiteSettings() {
     }
 }
 
+// ===== 主题色和字号联动 =====
+function updateTitleSizePreview(size, color) {
+    var preview = document.getElementById('title-size-preview');
+    if (preview) {
+        preview.style.fontSize = size + 'px';
+        preview.style.color = color || '#b89c84';
+    }
+}
+
+// 监听主题色变化
+document.addEventListener('DOMContentLoaded', function() {
+    var colorInput = document.getElementById('site-theme-color');
+    var colorText = document.getElementById('site-theme-color-text');
+    var sizeInput = document.getElementById('site-title-size');
+    var preview = document.getElementById('title-size-preview');
+    
+    if (colorInput && colorText) {
+        colorInput.addEventListener('input', function() {
+            colorText.value = this.value;
+            if (preview) preview.style.color = this.value;
+        });
+        colorText.addEventListener('input', function() {
+            if (this.value.match(/^#[0-9a-fA-F]{6}$/)) {
+                colorInput.value = this.value;
+                if (preview) preview.style.color = this.value;
+            }
+        });
+    }
+    
+    if (sizeInput && preview) {
+        sizeInput.addEventListener('input', function() {
+            var size = parseInt(this.value) || 20;
+            if (size < 14) size = 14;
+            if (size > 36) size = 36;
+            preview.style.fontSize = size + 'px';
+        });
+    }
+});
+
+// Logo 上传
 var uploadInput = document.getElementById('logo-upload');
 if (uploadInput) {
     uploadInput.addEventListener('change', function(e) {
@@ -1206,6 +1146,11 @@ async function saveSiteSettings() {
     var logoColor = document.getElementById('site-logo-color').value || '#b89c84';
     var siteName = document.getElementById('site-name').value || '见南山';
     var siteDesc = document.getElementById('site-desc').value || '春山如黛草如烟';
+    
+    // 读取主题色和字号
+    var themeColor = document.getElementById('site-theme-color').value || '#b89c84';
+    var titleSize = document.getElementById('site-title-size').value || '20';
+
     var logoImage = window._tempLogoImage || '';
     if (!logoImage || logoImage.trim() === '') {
         var list = await DB.getAll('site_settings');
@@ -1213,7 +1158,16 @@ async function saveSiteSettings() {
             logoImage = list[0].logo_image || '';
         }
     }
-    var data = { logo_color: logoColor, logo_image: logoImage, site_name: siteName, site_desc: siteDesc };
+
+    var data = {
+        logo_color: logoColor,
+        logo_image: logoImage,
+        site_name: siteName,
+        site_desc: siteDesc,
+        theme_color: themeColor,
+        title_size: titleSize
+    };
+
     var list = await DB.getAll('site_settings');
     if (list.length > 0) {
         await DB.update('site_settings', list[0].id, data);
