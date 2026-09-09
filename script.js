@@ -7,7 +7,7 @@
     // ============================================================
 
     // ============================================================
-    // 2. 主题配置（颜色 / 字号）
+    // 2. 主题配置（颜色 / 字号）    
     // ============================================================
     function getThemeConfig(site) {
         return {
@@ -437,67 +437,74 @@
     // ============================================================
     // 10. 听雨眠·记
     // ============================================================
-    async function renderTingyuYears() {
-        var list = await DB.getAll('tingyu', { orderBy: 'id' });
-        var years = {};
-        for (var i = 0; i < list.length; i++) {
-            var year = list[i].year;
-            if (!years[year]) years[year] = [];
-            years[year].push(list[i]);
-        }
-        var container = document.getElementById('tingyuYears');
-        if (!container) return;
-        var site = await getSite();
-        var theme = getThemeConfig(site);
-        var yearKeys = Object.keys(years).sort(function(a, b) { return b - a; });
-        var html = '';
-        for (var j = 0; j < yearKeys.length; j++) {
-            var year = yearKeys[j];
-            var items = years[year];
-            html += '<div class="year-block">';
-            html += '<div class="year-card">';
-            html += '<div class="year-num" style="color:' + theme.color + ';font-size:' + theme.size + 'px;font-weight:bold;">' + year + '</div>';
-            html += '<div class="year-desc">共计 ' + items.length + ' 本</div>';
-            html += '</div>';
-            html += '<div class="book-wrap">';
-            for (var k = 0; k < items.length; k++) {
-                html += '<a class="book-item" data-sub="tingyu-detail" data-year="' + year + '" data-title="' + items[k].title + '" style="color:' + theme.color + ';font-size:' + theme.size + 'px;font-weight:bold;text-decoration:none;">' + items[k].title + '</a>';
-            }
-            html += '</div>';
-            html += '</div>';
-        }
-        container.innerHTML = html || '<p style="text-align:center;color:#999;padding:40px 0;">暂无内容</p>';
+ // renderTingyuYears() 中
+async function renderTingyuYears() {
+    var list = await DB.getAll('tingyu', { orderBy: 'id' });
+    var years = {};
+    for (var i = 0; i < list.length; i++) {
+        var year = list[i].year;
+        if (!years[year]) years[year] = [];
+        years[year].push(list[i]);
     }
-
-    async function loadTingyuDetail(year, title) {
-        var list = await DB.getAll('tingyu', { orderBy: 'id' });
-        var items = list.filter(function(x) { return String(x.year) === String(year); });
-        var target = null;
-        if (title) {
-            for (var j = 0; j < items.length; j++) {
-                if (items[j].title === title) { target = items[j]; break; }
-            }
+    var container = document.getElementById('tingyuYears');
+    if (!container) return;
+    var site = await getSite();
+    var theme = getThemeConfig(site);
+    var yearKeys = Object.keys(years).sort(function(a, b) { return b - a; });
+    var html = '';
+    for (var j = 0; j < yearKeys.length; j++) {
+        var year = yearKeys[j];
+        var items = years[year];
+        html += '<div class="year-block">';
+        html += '<div class="year-card">';
+        html += '<div class="year-num" style="color:' + theme.color + ';font-size:' + theme.size + 'px;font-weight:bold;">' + year + '</div>';
+        html += '<div class="year-desc">共计 ' + items.length + ' 本</div>';
+        html += '</div>';
+        html += '<div class="book-wrap">';
+        for (var k = 0; k < items.length; k++) {
+            // 书名已经带书名号，直接显示
+            html += '<a class="book-item" data-sub="tingyu-detail" data-year="' + year + '" data-title="' + items[k].title + '" style="color:' + theme.color + ';font-size:' + theme.size + 'px;font-weight:bold;text-decoration:none;">' + items[k].title + '</a>';
         }
-        if (!target && items.length > 0) target = items[0];
-        if (!target) return;
+        html += '</div>';
+        html += '</div>';
+    }
+    container.innerHTML = html;
+}
 
-        var site = await getSite();
-        var theme = getThemeConfig(site);
-
-        var titleEl = document.getElementById('tingyuDetailTitle');
-        var dateEl = document.getElementById('tingyuDetailDate');
-        var contentEl = document.getElementById('tingyuDetailContent');
-        var sidebarYearEl = document.getElementById('tingyuSidebarYear');
-        var sidebarEl = document.getElementById('tingyuSidebar');
-
-        if (titleEl) {
-            titleEl.textContent = target.title;
-            titleEl.style.color = theme.color;
-            titleEl.style.fontSize = theme.size + 'px';
-            titleEl.style.fontWeight = 'bold';
+// loadTingyuDetail() 中
+async function loadTingyuDetail(year, title) {
+    var list = await DB.getAll('tingyu', { orderBy: 'id' });
+    var items = list.filter(function(x) { return String(x.year) === String(year); });
+    var target = null;
+    if (title) {
+        for (var j = 0; j < items.length; j++) {
+            if (items[j].title === title) { target = items[j]; break; }
         }
-        if (dateEl) dateEl.textContent = year + '年';
-        if (contentEl) contentEl.innerHTML = '<p>《' + target.title + '》</p><p>年份：' + year + '</p><p>这是 ' + year + ' 年阅读的书籍之一。</p>';
+    }
+    if (!target && items.length > 0) target = items[0];
+    if (!target) return;
+
+    var site = await getSite();
+    var theme = getThemeConfig(site);
+
+    var titleEl = document.getElementById('tingyuDetailTitle');
+    var dateEl = document.getElementById('tingyuDetailDate');
+    var contentEl = document.getElementById('tingyuDetailContent');
+    var sidebarYearEl = document.getElementById('tingyuSidebarYear');
+    var sidebarEl = document.getElementById('tingyuSidebar');
+
+    if (titleEl) {
+        titleEl.textContent = target.title;  // 已带书名号
+        titleEl.style.color = theme.color;
+        titleEl.style.fontSize = theme.size + 'px';
+        titleEl.style.fontWeight = 'bold';
+    }
+    if (dateEl) dateEl.textContent = year + '年';
+    if (contentEl) {
+        // 显示书籍内容
+        var content = target.content || '暂无内容介绍';
+        contentEl.innerHTML = '<p>《' + target.title.replace(/《|》/g, '') + '》</p><p>年份：' + year + '</p><p>' + content.replace(/\n/g, '</p><p>') + '</p>';
+    }
         if (sidebarYearEl) {
             sidebarYearEl.textContent = year;
             sidebarYearEl.style.color = theme.color;
