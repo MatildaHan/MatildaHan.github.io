@@ -255,25 +255,20 @@ const DB = {
 };
 
 // ============================================================
-// ★★★ Storage 操作封装（修复版） ★★★
+// Storage 操作封装（修复 URL 截断问题）
 // ============================================================
 const STORAGE = {
     BUCKET: 'jiananshan-images',
 
-    // 上传图片到 Storage
     upload: async function(file, path) {
         try {
             var token = AUTH.getAccessToken() || SUPABASE_ANON_KEY;
             var formData = new FormData();
             formData.append('file', file);
 
-            // ★★★ 修复：路径中不要重复包含存储桶名称 ★★★
-            // 正确：/storage/v1/object/桶名/路径
-            // 错误：/storage/v1/object/桶名/桶名/路径
             var url = SUPABASE_URL + '/storage/v1/object/' + this.BUCKET + '/' + path;
-            
-            console.log('上传 URL:', url);
-            
+            console.log('📤 上传 URL:', url);
+
             var response = await fetch(url, {
                 method: 'POST',
                 headers: {
@@ -289,9 +284,18 @@ const STORAGE = {
             }
 
             var data = await response.json();
-            // ★★★ 修复：正确构造公开 URL ★★★
-            var publicUrl = SUPABASE_URL + '/storage/v1/object/public/' + this.BUCKET + '/' + data.Key;
-            console.log('图片上传成功:', publicUrl);
+            
+            // ★★★ 关键：确保 Key 完整 ★★★
+            var fullKey = data.Key;
+            console.log('📁 文件 Key:', fullKey);
+            
+            // ★★★ 构造完整的公开 URL ★★★
+            var publicUrl = SUPABASE_URL + '/storage/v1/object/public/' + this.BUCKET + '/' + fullKey;
+            
+            // ★★★ 验证 URL 完整性 ★★★
+            console.log('✅ 图片 URL 长度:', publicUrl.length);
+            console.log('✅ 完整图片 URL:', publicUrl);
+            
             return publicUrl;
         } catch (e) {
             console.error('上传图片失败:', e);
@@ -299,101 +303,6 @@ const STORAGE = {
         }
     },
 
-    // 批量上传图片
-    uploadMultiple: async function(files, folder) {
-        var results = [];
-        for (var i = 0; i < files.length; i++) {
-            var file = files[i];
-            var timestamp = Date.now();
-            var ext = file.name.split('.').pop() || 'jpg';
-            // ★★★ 修复：路径中不要包含存储桶名称 ★★★
-            var path = folder + '/' + timestamp + '-' + i + '.' + ext;
-            var url = await this.upload(file, path);
-            results.push(url);
-        }
-        return results;
-    },
-
-    // ★★★ 修复：检查存储桶是否存在（简化版） ★★★
-    ensureBucket: async function() {
-        try {
-            var token = AUTH.getAccessToken() || SUPABASE_ANON_KEY;
-            
-            // 直接尝试上传一个测试文件来验证桶是否存在
-            // 如果桶不存在，会返回 404，我们创建它
-            var testUrl = SUPABASE_URL + '/storage/v1/object/' + this.BUCKET + '/.test';
-            var response = await fetch(testUrl, {
-                method: 'HEAD',
-                headers: {
-                    'apikey': SUPABASE_ANON_KEY,
-                    'Authorization': 'Bearer ' + token
-                }
-            });
-            
-            if (response.status === 404) {
-                // 桶不存在，创建它
-                console.log('存储桶不存在，正在创建...');
-                var createRes = await fetch(SUPABASE_URL + '/storage/v1/bucket', {
-                    method: 'POST',
-                    headers: {
-                        'apikey': SUPABASE_ANON_KEY,
-                        'Authorization': 'Bearer ' + token,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        id: this.BUCKET,
-                        name: this.BUCKET,
-                        public: true
-                    })
-                });
-                
-                if (!createRes.ok) {
-                    var errorText = await createRes.text();
-                    console.warn('创建存储桶失败:', errorText);
-                    // 如果已存在，忽略错误
-                    if (createRes.status !== 409) {
-                        throw new Error('创建存储桶失败: ' + errorText);
-                    }
-                }
-                console.log('存储桶创建成功');
-            }
-            return true;
-        } catch (e) {
-            console.warn('ensureBucket 警告:', e);
-            // 不抛出错误，让后续操作尝试
-            return true;
-        }
-    },
-
-    // 从 URL 中提取路径
-    extractPath: function(url) {
-        var prefix = '/storage/v1/object/public/' + this.BUCKET + '/';
-        var idx = url.indexOf(prefix);
-        if (idx !== -1) {
-            return url.substring(idx + prefix.length);
-        }
-        return null;
-    },
-
-    // 删除图片
-    delete: async function(path) {
-        try {
-            var token = AUTH.getAccessToken() || SUPABASE_ANON_KEY;
-            var url = SUPABASE_URL + '/storage/v1/object/' + this.BUCKET + '/' + path;
-            var response = await fetch(url, {
-                method: 'DELETE',
-                headers: {
-                    'apikey': SUPABASE_ANON_KEY,
-                    'Authorization': 'Bearer ' + token
-                }
-            });
-            return response.ok;
-        } catch (e) {
-            console.error('删除图片失败:', e);
-            return false;
-        }
-    }
-};
 
 // 暴露到全局
 window.DB = DB;
