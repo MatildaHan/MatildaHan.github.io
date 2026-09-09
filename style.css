@@ -111,10 +111,10 @@ body {
     100% { opacity: 1; transform: translateY(0); }
 }
 
-/* ===== 首页样式 ===== */
+/* ===== 首页样式 - 三列等宽 ===== */
 .home-row {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;  /* 三列等宽 */
+    grid-template-columns: 1fr 1fr 1fr;
     align-items: center;
     gap: 40px;
     max-width: 1200px;
@@ -166,6 +166,7 @@ body {
     margin: 0 auto;
     background-size: cover;
     background-position: center;
+    background-repeat: no-repeat;
 }
 .tilted-card:hover {
     transform: rotate(0deg);
