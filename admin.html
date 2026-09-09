@@ -247,7 +247,6 @@
                 </div>
             </div>
 
-            <!-- 图片组编辑弹窗（使用 Storage） -->
             <div class="modal-overlay" id="xueyeItemModal">
                 <div class="modal-box">
                     <button class="modal-close" onclick="closeXueyeItemForm()">×</button>
@@ -282,7 +281,7 @@
             </div>
         </section>
 
-        <!-- ===== 面板：听雨眠·记 ===== -->
+        <!-- ===== 面板：听雨眠·记（新增 content 字段） ===== -->
         <section id="panel-tingyu" class="panel">
             <div class="toolbar">
                 <button class="btn btn-primary" onclick="openTingyuForm()">+ 新增书籍</button>
@@ -298,7 +297,13 @@
                     <button class="modal-close" onclick="closeTingyuForm()">×</button>
                     <h3 id="tingyuModalTitle">编辑书籍</h3>
                     <input type="hidden" id="tingyu-edit-id">
-                    <div class="form-group"><label>书名</label><input type="text" id="tingyu-title" placeholder="《书名》"></div>
+                    <div class="form-group"><label>书名</label>
+                        <input type="text" id="tingyu-title" placeholder="请输入书名（自动添加书名号）">
+                        <p style="font-size:12px;color:#999;margin-top:2px;">无需手动输入《》，系统会自动添加</p>
+                    </div>
+                    <div class="form-group"><label>内容（读后感/简介）</label>
+                        <textarea id="tingyu-content" rows="6" placeholder="请输入书籍内容、读后感或简介..."></textarea>
+                    </div>
                     <div class="form-group"><label>年份</label>
                         <select id="tingyu-year"></select>
                     </div>
@@ -360,10 +365,6 @@
 // 登录验证逻辑
 // ============================================================
 
-// 登录校验现在完全交给 Supabase Auth（/auth/v1/token）完成，
-// 前端不再从数据表读取密码、也不再用一个可被伪造的 localStorage
-// 标记位来判断"是否已登录"——AUTH.isLoggedIn() 会向 Supabase
-// 请求校验当前 access_token 是否真实有效。
 async function handleLogin() {
     var email = document.getElementById('login-username').value.trim();
     var password = document.getElementById('login-password').value.trim();
@@ -739,7 +740,7 @@ async function deleteShinianCategory(id) {
 }
 
 // ============================================================
-// 雪夜舟·图 (CRUD) - 使用 Storage 存储图片
+// 雪夜舟·图 (CRUD)
 // ============================================================
 var xueyeTempFiles = [];
 var xueyeTempUrls = [];
@@ -981,7 +982,7 @@ async function deleteXueyeCategory(id) {
 }
 
 // ============================================================
-// 听雨眠·记 (CRUD)
+// ★★★ 听雨眠·记 (CRUD) - 自动添加书名号 ★★★
 // ============================================================
 async function renderTingyu() {
     var list = await DB.getAll('tingyu', { orderBy: 'id' });
@@ -992,7 +993,12 @@ async function renderTingyu() {
         var item = list[i];
         html += '<tr>';
         html += '<td>' + (i + 1) + '</td>';
-        html += '<td>' + item.title + '</td>';
+        // 显示时自动添加书名号
+        var displayTitle = item.title || '';
+        if (displayTitle && !displayTitle.startsWith('《') && !displayTitle.startsWith('"')) {
+            displayTitle = '《' + displayTitle + '》';
+        }
+        html += '<td>' + displayTitle + '</td>';
         html += '<td>' + item.year + '</td>';
         html += '<td class="actions">';
         html += '<button class="btn" onclick="openTingyuEdit(' + item.id + ')">编辑</button>';
@@ -1008,6 +1014,7 @@ function openTingyuForm() {
     document.getElementById('tingyuModalTitle').textContent = '新增书籍';
     document.getElementById('tingyu-edit-id').value = '';
     document.getElementById('tingyu-title').value = '';
+    document.getElementById('tingyu-content').value = '';
     generateYearOptions();
     document.getElementById('tingyu-year').value = new Date().getFullYear();
 }
@@ -1018,7 +1025,14 @@ function openTingyuEdit(id) {
         document.getElementById('tingyuModal').classList.add('show');
         document.getElementById('tingyuModalTitle').textContent = '编辑书籍';
         document.getElementById('tingyu-edit-id').value = id;
-        document.getElementById('tingyu-title').value = item.title;
+        // 编辑时显示原始书名（不带书名号）
+        var rawTitle = item.title || '';
+        // 如果已带书名号，去掉显示
+        if (rawTitle.startsWith('《') && rawTitle.endsWith('》')) {
+            rawTitle = rawTitle.substring(1, rawTitle.length - 1);
+        }
+        document.getElementById('tingyu-title').value = rawTitle;
+        document.getElementById('tingyu-content').value = item.content || '';
         generateYearOptions();
         document.getElementById('tingyu-year').value = item.year || new Date().getFullYear();
     });
@@ -1030,11 +1044,25 @@ function closeTingyuForm() {
 
 async function saveTingyu() {
     var id = document.getElementById('tingyu-edit-id').value;
-    var title = document.getElementById('tingyu-title').value.trim();
+    var rawTitle = document.getElementById('tingyu-title').value.trim();
+    var content = document.getElementById('tingyu-content').value.trim();
     var year = document.getElementById('tingyu-year').value;
-    if (!title) { alert('请输入书名'); return; }
+    
+    if (!rawTitle) { alert('请输入书名'); return; }
     if (!year) { alert('请选择年份'); return; }
-    var data = { title: title, year: year };
+    
+    // ★★★ 自动添加书名号 ★★★
+    var title = rawTitle;
+    if (!title.startsWith('《') && !title.startsWith('"') && !title.startsWith('「')) {
+        title = '《' + title + '》';
+    }
+    
+    var data = { 
+        title: title, 
+        content: content, 
+        year: year 
+    };
+    
     if (id) {
         await DB.update('tingyu', id, data);
     } else {
