@@ -65,45 +65,45 @@
         });
     }
 
-    // ============================================================
-    // 4. 页面跳转（data-sub / data-back）
-    // ============================================================
-    document.addEventListener('click', function(e) {
-        var target = e.target.closest('[data-sub]');
-        if (target) {
-            e.preventDefault();
-            var sub = target.dataset.sub;
-            if (sub) {
-                var section = document.getElementById(sub);
-                if (section) {
-                    for (var i = 0; i < sections.length; i++) {
-                        sections[i].classList.remove('active');
-                    }
-                    section.classList.add('active');
-
-                    var container = document.querySelector('.container');
-                    if (container) {
-                        container.style.marginTop = '30px';
-                    }
-
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                    if (sub === 'shinian-list') loadShinianList(target.dataset.category);
-                    if (sub === 'shinian-detail') loadShinianDetail(target.dataset.id);
+   // ============================================================
+// 4. 页面跳转（data-sub / data-back）
+// ============================================================
+document.addEventListener('click', function(e) {
+    var target = e.target.closest('[data-sub]');
+    if (target) {
+        e.preventDefault();
+        var sub = target.dataset.sub;
+        if (sub) {
+            var section = document.getElementById(sub);
+            if (section) {
+                for (var i = 0; i < sections.length; i++) {
+                    sections[i].classList.remove('active');
                 }
-            }
-            return;
-        }
+                section.classList.add('active');
 
-        var backBtn = e.target.closest('[data-back]');
-        if (backBtn) {
-            e.preventDefault();
-            var backId = backBtn.dataset.back;
-            if (backId) {
-                showPage('page-home');
+                var container = document.querySelector('.container');
+                if (container) {
+                    container.style.marginTop = '30px';
+                }
+
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                if (sub === 'shinian-list') loadShinianList(target.dataset.category);
+                if (sub === 'shinian-detail') loadShinianDetail(target.dataset.id);
             }
         }
-    });
+        return;
+    }
 
+    var backBtn = e.target.closest('[data-back]');
+    if (backBtn) {
+        e.preventDefault();
+        var backId = backBtn.dataset.back;
+        if (backId) {
+            // ★★★ 使用 showPage 跳转到指定页面 ★★★
+            showPage(backId);
+        }
+    }
+});
     // ============================================================
     // 5. Logo 更新
     // ============================================================
