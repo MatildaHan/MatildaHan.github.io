@@ -143,13 +143,6 @@ body {
     color: #999999;
     font-family: "Noto Serif SC", "Songti SC", "SimSun", serif;
 }
-.divider-line {
-    display: block;
-    width: 32px;
-    height: 1px;
-    background: #b89c84;
-    margin: 10px auto 0;
-}
 
 /* 中间列 - 图片居中 */
 .center-image {
