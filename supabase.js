@@ -254,14 +254,13 @@ const DB = {
     }
 };
 
+    // 上传图片到 Storage
 // ============================================================
 // ★★★ Storage 操作封装 ★★★
 // ============================================================
 const STORAGE = {
-    // 存储桶名称
     BUCKET: 'jiananshan-images',
 
-    // 上传图片到 Storage
     upload: async function(file, path) {
         try {
             var token = AUTH.getAccessToken() || SUPABASE_ANON_KEY;
@@ -284,15 +283,16 @@ const STORAGE = {
             }
 
             var data = await response.json();
-            // 返回公开访问 URL
-            return SUPABASE_URL + '/storage/v1/object/public/' + this.BUCKET + '/' + data.Key;
+            // ★★★ 返回公开访问 URL ★★★
+            var publicUrl = SUPABASE_URL + '/storage/v1/object/public/' + this.BUCKET + '/' + data.Key;
+            console.log('图片上传成功:', publicUrl);
+            return publicUrl;
         } catch (e) {
             console.error('上传图片失败:', e);
             throw e;
         }
     },
 
-    // 批量上传图片
     uploadMultiple: async function(files, folder) {
         var results = [];
         for (var i = 0; i < files.length; i++) {
@@ -305,6 +305,8 @@ const STORAGE = {
         }
         return results;
     },
+
+
 
     // 删除图片
     delete: async function(path) {
