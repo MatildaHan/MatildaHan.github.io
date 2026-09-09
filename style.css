@@ -272,15 +272,10 @@ body {
 }
 
 /* ===== 十年灯·文 系列卡片 ===== */
-.card-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 24px;
-}
 .series-card {
     border: 1px solid #c9b39f;
     padding: 24px 20px;
-    height: 180px;
+    height: 220px;
     display: flex;
     flex-direction: column;
 }
