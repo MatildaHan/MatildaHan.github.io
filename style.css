@@ -15,7 +15,7 @@ body {
     padding: 30px 0;
 }
 .header-wrap {
-    width: 1200px;
+    width: 1000px;
     margin: 0 auto;
     display: flex;
     justify-content: space-between;
@@ -81,9 +81,9 @@ body {
     background: #f3efe9;
 }
 
-/* ===== 所有前端页面版心 1200px ===== */
+/* ===== 所有前端页面版心 1000px ===== */
 .container {
-    width: 1200px;
+    width: 1000px;
     margin: 0 auto;
 }
 
@@ -118,10 +118,10 @@ body {
 /* ===== 首页样式 - 三列不等宽 ===== */
 .home-row {
     display: grid;
-    grid-template-columns: 240px 1fr 360px;
+    grid-template-columns: 200px 1fr 320px;
     align-items: center;
-    gap: 40px;
-    max-width: 1200px;
+    gap: 32px;
+    max-width: 1000px;
     margin: 0 auto;
 }
 
@@ -163,7 +163,7 @@ body {
 }
 .tilted-card {
     width: 100%;
-    max-width: 220px;
+    max-width: 200px;
     aspect-ratio: 1 / 1.8;
     background-color: #b89c84;
     transform: rotate(3deg);
@@ -173,7 +173,7 @@ body {
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    min-height: 180px;
+    min-height: 160px;
     display: block;
 }
 .tilted-card:hover {
@@ -187,7 +187,7 @@ body {
 #homeLatest {
     display: flex;
     flex-direction: column;
-    gap: 28px;
+    gap: 24px;
     width: 100%;
     margin: 0 auto;
 }
@@ -203,7 +203,7 @@ body {
 
 /* 第一行：文章标题 - 20px 加粗 主题色 */
 #homeLatest .list-item .item-title {
-    font-size: 20px;
+    font-size: 18px;
     font-weight: 700;
     font-family: "Noto Serif SC", "Songti SC", "SimSun", serif;
     cursor: pointer;
@@ -218,7 +218,7 @@ body {
 
 /* 第二行：文章内容 - 14px #666666 不加粗 */
 #homeLatest .list-item .item-desc {
-    font-size: 14px;
+    font-size: 13px;
     color: #666666;
     line-height: 1.5;
     margin: 0;
@@ -235,22 +235,22 @@ body {
 #homeLatest .list-item .item-footer {
     display: flex;
     align-items: center;
-    gap: 20px;
-    font-size: 13px;
+    gap: 16px;
+    font-size: 12px;
     color: #a8917e;
     margin-top: 2px;
     flex-wrap: wrap;
     font-family: "Noto Serif SC", "Songti SC", "SimSun", serif;
 }
 #homeLatest .list-item .item-footer .tag {
-    font-size: 13px;
+    font-size: 12px;
     display: inline-block;
     padding: 0;
     background: none;
     border-radius: 0;
 }
 #homeLatest .list-item .item-footer .item-time {
-    font-size: 12px;
+    font-size: 11px;
     color: #b8a898;
 }
 #homeLatest .list-item .divider-line {
@@ -263,8 +263,8 @@ body {
 /* ===== 通用列表（行吟册·絮 / 各西东·语） ===== */
 .article-item {
     display: grid;
-    grid-template-columns: 120px 1fr;
-    padding: 20px 0;
+    grid-template-columns: 100px 1fr;
+    padding: 16px 0;
     border-bottom: 1px solid #f3efe9;
     align-items: flex-start;
 }
@@ -290,12 +290,12 @@ body {
 .card-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 30px;
+    gap: 24px;
 }
 .series-card {
     border: 1px solid #c9b39f;
     border-radius: 12px;
-    padding: 28px 24px;
+    padding: 24px 20px;
 }
 .card-index {
     font-size: 14px;
@@ -312,7 +312,7 @@ body {
     font-size: 14px;
     color: #666666;
     line-height: 1.6;
-    margin-bottom: 18px;
+    margin-bottom: 16px;
     font-weight: 400;
     font-family: "Noto Serif SC", "Songti SC", "SimSun", serif;
 }
@@ -329,8 +329,8 @@ body {
 /* ===== 雪夜舟·图 图集 ===== */
 .gallery-group {
     display: grid;
-    grid-template-columns: 130px 1fr;
-    padding: 24px 0;
+    grid-template-columns: 110px 1fr;
+    padding: 20px 0;
     border-bottom: 1px solid #f3efe9;
     align-items: start;
 }
@@ -343,7 +343,7 @@ body {
 .img-row {
     display: grid;
     grid-template-columns: repeat(6, 1fr);
-    gap: 20px;
+    gap: 16px;
 }
 .img-row .img-wrap {
     aspect-ratio: 1 / 0.8;
@@ -361,18 +361,18 @@ body {
 .year-block {
     display: flex;
     align-items: flex-start;
-    gap: 48px;
-    margin-bottom: 48px;
+    gap: 40px;
+    margin-bottom: 40px;
 }
 .year-card {
-    width: 150px;
-    height: 180px;
+    width: 130px;
+    height: 160px;
     border: 1px solid #c9b39f;
     border-radius: 16px;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    padding: 20px;
+    padding: 16px;
 }
 .year-num {
     font-size: 20px;
@@ -395,10 +395,10 @@ body {
     flex: 1;
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 12px 8px;
+    gap: 10px 6px;
 }
 .book-item {
-    font-size: 20px;
+    font-size: 18px;
     font-weight: 700;
     font-family: "Noto Serif SC", "Songti SC", "SimSun", serif;
     text-decoration: none;
@@ -411,8 +411,8 @@ body {
 /* ===== 文章详情 ===== */
 .detail-grid {
     display: grid;
-    grid-template-columns: 1fr 220px;
-    gap: 60px;
+    grid-template-columns: 1fr 200px;
+    gap: 48px;
 }
 .detail-grid .breadcrumb {
     grid-column: 1 / -1;
@@ -455,14 +455,14 @@ body {
 /* ===== 侧边栏 ===== */
 .sidebar {
     background-color: #fcfafa;
-    padding: 24px 20px;
+    padding: 20px 18px;
     align-self: start;
 }
 .sidebar-title {
     font-size: 17px;
     font-weight: 700;
     font-family: "Noto Serif SC", "Songti SC", "SimSun", serif;
-    margin-bottom: 16px;
+    margin-bottom: 14px;
 }
 .sidebar-list a {
     display: block;
@@ -470,7 +470,7 @@ body {
     font-size: 14px;
     font-weight: 400;
     font-family: "Noto Serif SC", "Songti SC", "SimSun", serif;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
     overflow: hidden;
     text-overflow: ellipsis;
     display: -webkit-box;
@@ -491,7 +491,7 @@ body {
     font-size: 20px;
     font-weight: 700;
     font-family: "Noto Serif SC", "Songti SC", "SimSun", serif;
-    margin-bottom: 16px;
+    margin-bottom: 14px;
 }
 
 /* ===== 山野渔夫 ===== */
@@ -509,11 +509,11 @@ body {
 }
 
 /* ===== 响应式 ===== */
-@media (max-width: 1220px) {
+@media (max-width: 1020px) {
     .header-wrap,
     .container {
         width: 100%;
-        max-width: 1200px;
+        max-width: 1000px;
         padding: 0 20px;
         box-sizing: border-box;
     }
@@ -523,13 +523,16 @@ body {
     .home-row {
         grid-template-columns: 1fr;
         gap: 40px;
-        max-width: 600px;
+        max-width: 500px;
         margin: 0 auto;
     }
     .home-left { width: 100%; }
     .center-image { width: 100%; display: flex; justify-content: center; }
-    .tilted-card { max-width: 260px; min-height: 200px; }
+    .tilted-card { max-width: 240px; min-height: 180px; }
     #homeLatest { max-width: 100%; width: 100%; }
+    #homeLatest .list-item .item-title { font-size: 18px; }
+    #homeLatest .list-item .item-desc { font-size: 13px; }
+    #homeLatest .list-item .item-footer { font-size: 12px; gap: 14px; }
     .card-grid { grid-template-columns: repeat(2, 1fr); }
     .img-row { grid-template-columns: repeat(3, 1fr); }
     .book-wrap { grid-template-columns: repeat(2, 1fr); }
@@ -541,16 +544,21 @@ body {
 @media (max-width: 768px) {
     .header-wrap { flex-direction: column; align-items: flex-start; }
     .nav-list { width: 100%; justify-content: flex-start; gap: 8px; }
-    .article-item { grid-template-columns: 1fr; gap: 8px; }
+    .article-item { grid-template-columns: 1fr; gap: 6px; }
     .card-grid, .book-wrap, .img-row { grid-template-columns: 1fr; }
-    .year-block { flex-direction: column; gap: 24px; }
-    .year-card { width: 100%; height: auto; padding: 20px; }
-    .home-row { gap: 30px; max-width: 100%; margin: 0 auto; }
+    .year-block { flex-direction: column; gap: 20px; }
+    .year-card { width: 100%; height: auto; padding: 16px; }
+    .home-row { gap: 30px; max-width: 100%; }
     .home-left { width: 100%; padding: 0; }
     .center-image { width: 100%; display: flex; justify-content: center; }
-    .tilted-card { max-width: 200px; min-height: 160px; }
-    #homeLatest { max-width: 100%; width: 100%; gap: 24px; }
+    .tilted-card { max-width: 180px; min-height: 140px; }
+    #homeLatest { max-width: 100%; width: 100%; gap: 20px; }
+    #homeLatest .list-item .item-title { font-size: 17px; }
+    #homeLatest .list-item .item-desc { font-size: 13px; }
+    #homeLatest .list-item .item-footer { font-size: 11px; gap: 12px; flex-wrap: wrap; }
+    #homeLatest .list-item .item-footer .tag { font-size: 11px; padding: 0; }
+    #homeLatest .list-item .item-footer .item-time { font-size: 11px; }
     .header-wrap, .container { padding: 0 16px; }
-    .detail-grid { grid-template-columns: 1fr; gap: 30px; }
+    .detail-grid { grid-template-columns: 1fr; gap: 24px; }
     .sidebar { width: 100%; }
 }
