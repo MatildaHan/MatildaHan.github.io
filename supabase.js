@@ -2,7 +2,7 @@
 // Supabase 连接配置
 // ============================================================
 
-const SUPABASE_URL = 'https://phvayjkoyphsyavkjcuk.supabase.co';
+const SUPABASE_URL = 'https://phvayjkoephsyavkjcuk.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_uunGD7DLA9YWwtkl5mgEvw_Z95hid4l';
 
 // ============================================================
@@ -26,7 +26,7 @@ const AUTH = {
         localStorage.removeItem(SESSION_KEY);
     },
     getAccessToken: function() {
-        var s = AUTH.getSession();
+        var s = this.getSession();
         return s && s.access_token ? s.access_token : null;
     },
     signIn: async function(email, password) {
@@ -40,10 +40,10 @@ const AUTH = {
         });
         var data = await res.json();
         if (!res.ok) {
-            var msg = (data && (data.error_description || data.msg || data.error)) || '登录失败，请检查邮箱和密码';
+            var msg = (data && (data.error_description || data.msg || data.error)) || '登录失败';
             throw new Error(msg);
         }
-        AUTH.setSession({
+        this.setSession({
             access_token: data.access_token,
             refresh_token: data.refresh_token,
             user: data.user,
@@ -52,7 +52,7 @@ const AUTH = {
         return data;
     },
     signOut: async function() {
-        var session = AUTH.getSession();
+        var session = this.getSession();
         if (session && session.access_token) {
             try {
                 await fetch(SUPABASE_URL + '/auth/v1/logout', {
@@ -64,10 +64,10 @@ const AUTH = {
                 });
             } catch (e) {}
         }
-        AUTH.clearSession();
+        this.clearSession();
     },
     refresh: async function() {
-        var session = AUTH.getSession();
+        var session = this.getSession();
         if (!session || !session.refresh_token) return false;
         try {
             var res = await fetch(SUPABASE_URL + '/auth/v1/token?grant_type=refresh_token', {
@@ -80,7 +80,7 @@ const AUTH = {
             });
             var data = await res.json();
             if (!res.ok) return false;
-            AUTH.setSession({
+            this.setSession({
                 access_token: data.access_token,
                 refresh_token: data.refresh_token,
                 user: data.user,
@@ -92,15 +92,15 @@ const AUTH = {
         }
     },
     isLoggedIn: async function() {
-        var session = AUTH.getSession();
+        var session = this.getSession();
         if (!session || !session.access_token) return false;
         if (session.expires_at && Date.now() > session.expires_at) {
-            var ok = await AUTH.refresh();
+            var ok = await this.refresh();
             if (!ok) {
-                AUTH.clearSession();
+                this.clearSession();
                 return false;
             }
-            session = AUTH.getSession();
+            session = this.getSession();
         }
         try {
             var res = await fetch(SUPABASE_URL + '/auth/v1/user', {
@@ -110,14 +110,14 @@ const AUTH = {
                 }
             });
             if (res.ok) return true;
-            AUTH.clearSession();
+            this.clearSession();
             return false;
         } catch (e) {
             return true;
         }
     },
     getUserEmail: function() {
-        var s = AUTH.getSession();
+        var s = this.getSession();
         return s && s.user ? s.user.email : '';
     }
 };
@@ -161,16 +161,7 @@ const DB = {
             var data = await response.json();
             return data.length > 0 ? data[0] : null;
         } catch (e) {
-            console.warn('获取单条失败，使用 localStorage:', e);
-            var allData = localStorage.getItem('jiananshan_' + table);
-            if (allData) {
-                var list = JSON.parse(allData);
-                for (var i = 0; i < list.length; i++) {
-                    if (list[i].id === Number(id)) {
-                        return list[i];
-                    }
-                }
-            }
+            console.warn('获取单条失败:', e);
             return null;
         }
     },
@@ -188,13 +179,8 @@ const DB = {
             var result = await response.json();
             return result.length > 0 ? result[0] : null;
         } catch (e) {
-            console.warn('插入失败，使用 localStorage:', e);
-            var existing = localStorage.getItem('jiananshan_' + table);
-            var list = existing ? JSON.parse(existing) : [];
-            var newItem = Object.assign({ id: Date.now() + Math.random() * 1000 }, data);
-            list.push(newItem);
-            localStorage.setItem('jiananshan_' + table, JSON.stringify(list));
-            return newItem;
+            console.warn('插入失败:', e);
+            return null;
         }
     },
     update: async function(table, id, data) {
@@ -211,20 +197,7 @@ const DB = {
             var result = await response.json();
             return result.length > 0 ? result[0] : null;
         } catch (e) {
-            console.warn('更新失败，使用 localStorage:', e);
-            var existing = localStorage.getItem('jiananshan_' + table);
-            if (existing) {
-                var list = JSON.parse(existing);
-                for (var i = 0; i < list.length; i++) {
-                    if (list[i].id === Number(id)) {
-                        for (var key in data) {
-                            list[i][key] = data[key];
-                        }
-                        break;
-                    }
-                }
-                localStorage.setItem('jiananshan_' + table, JSON.stringify(list));
-            }
+            console.warn('更新失败:', e);
             return null;
         }
     },
@@ -237,25 +210,25 @@ const DB = {
             if (!response.ok) throw new Error('delete failed: ' + response.status);
             return { success: true };
         } catch (e) {
-            console.warn('删除失败，使用 localStorage:', e);
-            var existing = localStorage.getItem('jiananshan_' + table);
-            if (existing) {
-                var list = JSON.parse(existing);
-                var newList = [];
-                for (var i = 0; i < list.length; i++) {
-                    if (list[i].id !== Number(id)) {
-                        newList.push(list[i]);
-                    }
-                }
-                localStorage.setItem('jiananshan_' + table, JSON.stringify(newList));
-            }
-            return { success: true };
+            console.warn('删除失败:', e);
+            return { success: false };
         }
+    },
+    get: function(key, def) {
+        try {
+            var data = localStorage.getItem('jiananshan_' + key);
+            return data ? JSON.parse(data) : def;
+        } catch (e) {
+            return def;
+        }
+    },
+    set: function(key, val) {
+        localStorage.setItem('jiananshan_' + key, JSON.stringify(val));
     }
 };
 
 // ============================================================
-// Storage 操作封装（修复 URL 截断问题）
+// Storage 操作封装
 // ============================================================
 const STORAGE = {
     BUCKET: 'jiananshan-images',
@@ -267,8 +240,6 @@ const STORAGE = {
             formData.append('file', file);
 
             var url = SUPABASE_URL + '/storage/v1/object/' + this.BUCKET + '/' + path;
-            console.log('📤 上传 URL:', url);
-
             var response = await fetch(url, {
                 method: 'POST',
                 headers: {
@@ -280,22 +251,11 @@ const STORAGE = {
 
             if (!response.ok) {
                 var errorText = await response.text();
-                throw new Error('上传失败: ' + response.status + ' ' + errorText);
+                throw new Error('上传失败: ' + response.status);
             }
 
             var data = await response.json();
-            
-            // ★★★ 关键：确保 Key 完整 ★★★
-            var fullKey = data.Key;
-            console.log('📁 文件 Key:', fullKey);
-            
-            // ★★★ 构造完整的公开 URL ★★★
-            var publicUrl = SUPABASE_URL + '/storage/v1/object/public/' + this.BUCKET + '/' + fullKey;
-            
-            // ★★★ 验证 URL 完整性 ★★★
-            console.log('✅ 图片 URL 长度:', publicUrl.length);
-            console.log('✅ 完整图片 URL:', publicUrl);
-            
+            var publicUrl = SUPABASE_URL + '/storage/v1/object/public/' + this.BUCKET + '/' + data.Key;
             return publicUrl;
         } catch (e) {
             console.error('上传图片失败:', e);
@@ -303,9 +263,55 @@ const STORAGE = {
         }
     },
 
+    uploadMultiple: async function(files, folder) {
+        var results = [];
+        for (var i = 0; i < files.length; i++) {
+            var file = files[i];
+            var timestamp = Date.now();
+            var ext = file.name.split('.').pop() || 'jpg';
+            var path = folder + '/' + timestamp + '-' + i + '.' + ext;
+            var url = await this.upload(file, path);
+            results.push(url);
+        }
+        return results;
+    },
 
+    ensureBucket: async function() {
+        try {
+            var token = AUTH.getAccessToken() || SUPABASE_ANON_KEY;
+            var checkRes = await fetch(SUPABASE_URL + '/storage/v1/bucket/' + this.BUCKET, {
+                headers: {
+                    'apikey': SUPABASE_ANON_KEY,
+                    'Authorization': 'Bearer ' + token
+                }
+            });
+            if (checkRes.ok) return true;
+            var createRes = await fetch(SUPABASE_URL + '/storage/v1/bucket', {
+                method: 'POST',
+                headers: {
+                    'apikey': SUPABASE_ANON_KEY,
+                    'Authorization': 'Bearer ' + token,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    id: this.BUCKET,
+                    name: this.BUCKET,
+                    public: true
+                })
+            });
+            return true;
+        } catch (e) {
+            return true;
+        }
+    }
+};
+
+// ============================================================
 // 暴露到全局
+// ============================================================
 window.DB = DB;
 window.AUTH = AUTH;
 window.STORAGE = STORAGE;
 window.SUPABASE_URL = SUPABASE_URL;
+
+console.log('✅ Supabase 已加载');
