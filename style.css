@@ -77,16 +77,12 @@ body {
     text-align: center;
     display: inline-block;
 }
-
-/* 默认：只显示图标 */
 .nav-list a .nav-text {
     display: none;
 }
 .nav-list a .nav-icon {
     display: inline;
 }
-
-/* 悬停：底色 #2A2A28，文字 #ffffff */
 .nav-list a:hover {
     background: #2A2A28;
     color: #ffffff;
@@ -98,8 +94,6 @@ body {
 .nav-list a:hover .nav-icon {
     display: none;
 }
-
-/* 选中：图标 + 下划线，无圆角 */
 .nav-list a.active {
     color: #2A2A28;
     background: transparent;
@@ -167,7 +161,7 @@ body {
     width: 100%;
 }
 .home-left .post-title {
-    font-size: 17px;
+    font-size: 17px !important;
     font-weight: 700;
     font-family: "Noto Serif SC", "Songti SC", "SimSun", serif;
     margin-bottom: 24px;
@@ -234,7 +228,7 @@ body {
 
 /* 第一行：文章标题 - 17px 加粗 */
 #homeLatest .list-item .item-title {
-    font-size: 17px;
+    font-size: 17px !important;
     font-weight: 700;
     font-family: "Noto Serif SC", "Songti SC", "SimSun", serif;
     cursor: pointer;
@@ -311,7 +305,7 @@ body {
     min-width: 100px;
 }
 .article-text {
-    font-size: 17px;
+    font-size: 17px !important;
     font-weight: 700;
     font-family: "Noto Serif SC", "Songti SC", "SimSun", serif;
     text-align: left;
@@ -349,7 +343,7 @@ body {
     color: #2A2A28;
 }
 .card-title {
-    font-size: 17px;
+    font-size: 17px !important;
     font-weight: 700;
     font-family: "Noto Serif SC", "Songti SC", "SimSun", serif;
     margin-bottom: 10px;
@@ -462,7 +456,7 @@ body {
     margin-bottom: 0;
 }
 .sidebar-year {
-    font-size: 17px;
+    font-size: 17px !important;
     font-weight: 700;
     font-family: "Noto Serif SC", "Songti SC", "SimSun", serif;
     margin-bottom: 14px;
@@ -471,7 +465,7 @@ body {
 
 /* ===== 山野渔夫 ===== */
 .about-text p {
-    font-size: 17px;
+    font-size: 17px !important;
     font-weight: 700;
     font-family: "Noto Serif SC", "Songti SC", "SimSun", serif;
     margin-bottom: 8px;
@@ -506,7 +500,7 @@ body {
     .center-image { width: 100%; display: flex; justify-content: center; }
     .tilted-card { max-width: 240px; min-height: 180px; }
     #homeLatest { max-width: 100%; width: 100%; }
-    #homeLatest .list-item .item-title { font-size: 17px; }
+    #homeLatest .list-item .item-title { font-size: 17px !important; }
     #homeLatest .list-item .item-desc { font-size: 13px; }
     #homeLatest .list-item .item-footer { font-size: 12px; gap: 14px; }
     .card-grid { grid-template-columns: repeat(2, 1fr); }
@@ -535,7 +529,7 @@ body {
     .center-image { width: 100%; display: flex; justify-content: center; }
     .tilted-card { max-width: 180px; min-height: 140px; }
     #homeLatest { max-width: 100%; width: 100%; gap: 28px; }
-    #homeLatest .list-item .item-title { font-size: 16px; }
+    #homeLatest .list-item .item-title { font-size: 16px !important; }
     #homeLatest .list-item .item-desc { font-size: 13px; }
     #homeLatest .list-item .item-footer { font-size: 11px; gap: 12px; flex-wrap: wrap; }
     #homeLatest .list-item .item-footer .tag { font-size: 11px; padding: 0; }
