@@ -220,22 +220,29 @@
             homeDate.textContent = latestXingyin ? latestXingyin.date : new Date().toISOString().slice(0, 10).replace(/-/g, '/');
         }
         
-        // 中间图片：显示雪夜舟·图最新一张
+        // ★★★ 中间图片：显示雪夜舟·图最新一张 ★★★
         var homeImage = document.getElementById('homeImage');
         var xueyeList = DB.get('xueye', []);
         var latestXueye = xueyeList.length > 0 ? xueyeList[xueyeList.length - 1] : null;
         
         if (homeImage) {
+            // 重置样式
+            homeImage.style.backgroundImage = 'none';
+            homeImage.style.backgroundColor = site.logo_color || site.logoColor || '#b89c84';
+            homeImage.className = 'tilted-card';
+            homeImage.style.transform = 'rotate(3deg)';
+            
             if (latestXueye && latestXueye.images && latestXueye.images.length > 0) {
+                // 有图片：显示图片
                 homeImage.style.backgroundImage = 'url(' + latestXueye.images[0] + ')';
                 homeImage.style.backgroundSize = 'cover';
                 homeImage.style.backgroundPosition = 'center';
+                homeImage.style.backgroundRepeat = 'no-repeat';
                 homeImage.style.backgroundColor = 'transparent';
-                homeImage.style.transform = 'rotate(3deg)';
             } else {
+                // 没有图片：显示主题色
                 homeImage.style.backgroundImage = 'none';
                 homeImage.style.backgroundColor = site.logo_color || site.logoColor || '#b89c84';
-                homeImage.style.transform = 'rotate(3deg)';
             }
         }
 
@@ -518,10 +525,9 @@
             
             for (var j = 0; j < count; j++) {
                 var imgWrap = document.createElement('div');
-                imgWrap.style.cssText = 'aspect-ratio:1/0.8;border-radius:4px;overflow:hidden;background:#f3efe9;';
+                imgWrap.className = 'img-wrap';
                 var img = document.createElement('img');
                 img.src = images[j];
-                img.style.cssText = 'width:100%;height:100%;object-fit:cover;';
                 imgWrap.appendChild(img);
                 rowDiv.appendChild(imgWrap);
             }
@@ -695,7 +701,6 @@
         }
         var site = DB.get('site', {});
         updateLogo(site);
-        // 加载所有数据
         renderHome();
         renderXingyinList();
         renderShinianCards();
