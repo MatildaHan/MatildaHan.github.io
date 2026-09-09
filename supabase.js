@@ -2,35 +2,15 @@
 // Supabase 连接配置
 // ============================================================
 
-// ⚠️ 重要：部署到 Vercel 时，这些值会从环境变量读取
-// 本地开发时，请将下面的值替换为你的 Supabase 项目信息
-const SUPABASE_URL = 'https://phvayjkoyphsyavkjcuk.supabase.co';   // ← Data API 中的 API URL
-const SUPABASE_ANON_KEY = 'sb_publishable_uunGD7DLA9YWwtkl5mgEvw_Z95hid4l';     // ← API Keys 中的 Publishable key
+const SUPABASE_URL = 'https://phvayjkoyphsyavkjcuk.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_uunGD7DLA9YWwtkl5mgEvw_Z95hid4l';
 
 // ============================================================
 // 鉴权模块（AUTH）
-// ------------------------------------------------------------
-// 说明：后台登录不再使用"从数据表里读密码、前端明文比较"的方式，
-// 改为调用 Supabase 内置的 Auth 服务（/auth/v1/token）。
-// 密码校验在 Supabase 服务端完成，前端始终拿不到密码本身，
-// 也无法通过在控制台里手动写 localStorage 来伪造登录状态——
-// 因为后续所有写操作都会带上这里签发的 access_token，
-// 只要 Supabase 表配置了「仅 authenticated 角色可写」的 RLS 策略，
-// 伪造的 localStorage 标记位就不再具备任何实际权限。
-//
-// 需要你在 Supabase 后台完成一次性配置（前端代码无法代为完成）：
-// 1. Authentication → Users 中新增一个管理员账号（邮箱 + 密码）。
-// 2. 各内容表（xingyin / shinian / shinian_categories / xueye /
-//    xueye_categories / tingyu / gexi / about / site_settings）：
-//      - SELECT 策略：允许 anon 角色（前台展示需要匿名可读）。
-//      - INSERT / UPDATE / DELETE 策略：仅允许 authenticated 角色。
-// 3. 旧的 admin_users 表已不再被本文件使用，可以保留作为管理员
-//    资料展示用，或直接删除。
 // ============================================================
 const SESSION_KEY = 'jns_session';
 
 const AUTH = {
-    // 从本地读取会话（access_token 等）
     getSession: function() {
         try {
             var raw = localStorage.getItem(SESSION_KEY);
@@ -39,22 +19,16 @@ const AUTH = {
             return null;
         }
     },
-
     setSession: function(session) {
         localStorage.setItem(SESSION_KEY, JSON.stringify(session));
     },
-
     clearSession: function() {
         localStorage.removeItem(SESSION_KEY);
     },
-
-    // 当前可用的访问令牌；未登录时返回 null
     getAccessToken: function() {
         var s = AUTH.getSession();
         return s && s.access_token ? s.access_token : null;
     },
-
-    // 登录：email + password，成功后保存 access_token / refresh_token
     signIn: async function(email, password) {
         var res = await fetch(SUPABASE_URL + '/auth/v1/token?grant_type=password', {
             method: 'POST',
@@ -77,8 +51,6 @@ const AUTH = {
         });
         return data;
     },
-
-    // 退出登录：通知 Supabase 失效当前 token，并清空本地会话
     signOut: async function() {
         var session = AUTH.getSession();
         if (session && session.access_token) {
@@ -90,14 +62,10 @@ const AUTH = {
                         'Authorization': 'Bearer ' + session.access_token
                     }
                 });
-            } catch (e) {
-                // 网络失败也没关系，本地会话依然会被清空
-            }
+            } catch (e) {}
         }
         AUTH.clearSession();
     },
-
-    // 尝试用 refresh_token 换取新的 access_token（过期时使用）
     refresh: async function() {
         var session = AUTH.getSession();
         if (!session || !session.refresh_token) return false;
@@ -123,13 +91,9 @@ const AUTH = {
             return false;
         }
     },
-
-    // 校验当前会话是否仍然有效（向 Supabase 请求当前用户信息）
     isLoggedIn: async function() {
         var session = AUTH.getSession();
         if (!session || !session.access_token) return false;
-
-        // 本地已过期，先尝试刷新
         if (session.expires_at && Date.now() > session.expires_at) {
             var ok = await AUTH.refresh();
             if (!ok) {
@@ -138,7 +102,6 @@ const AUTH = {
             }
             session = AUTH.getSession();
         }
-
         try {
             var res = await fetch(SUPABASE_URL + '/auth/v1/user', {
                 headers: {
@@ -150,11 +113,9 @@ const AUTH = {
             AUTH.clearSession();
             return false;
         } catch (e) {
-            // 网络异常时，不强制登出，避免断网就被踢出后台
             return true;
         }
     },
-
     getUserEmail: function() {
         var s = AUTH.getSession();
         return s && s.user ? s.user.email : '';
@@ -163,11 +124,6 @@ const AUTH = {
 
 // ============================================================
 // 数据库操作封装
-// ------------------------------------------------------------
-// 读请求（getAll / getById）使用 anon key 即可（前台匿名访问）。
-// 写请求（insert / update / delete）优先携带登录用户的 access_token，
-// 未登录时回退到 anon key（此时若 RLS 配置正确，会被服务端拒绝）。
-// 网络请求失败时，统一降级为 localStorage，保证离线/预览也能演示。
 // ============================================================
 function authHeaders(forWrite) {
     var token = (forWrite && AUTH.getAccessToken()) || SUPABASE_ANON_KEY;
@@ -178,7 +134,6 @@ function authHeaders(forWrite) {
 }
 
 const DB = {
-    // 获取所有数据
     getAll: async function(table, options) {
         options = options || {};
         try {
@@ -189,7 +144,6 @@ const DB = {
             if (options.limit) {
                 url += '&limit=' + options.limit;
             }
-
             var response = await fetch(url, { headers: authHeaders(false) });
             if (!response.ok) throw new Error('Network error');
             return await response.json();
@@ -199,8 +153,6 @@ const DB = {
             return data ? JSON.parse(data) : [];
         }
     },
-
-    // 获取单条数据
     getById: async function(table, id) {
         try {
             var response = await fetch(SUPABASE_URL + '/rest/v1/' + table + '?id=eq.' + id, {
@@ -222,8 +174,6 @@ const DB = {
             return null;
         }
     },
-
-    // 新增数据（写操作，需登录态 token）
     insert: async function(table, data) {
         try {
             var headers = authHeaders(true);
@@ -247,8 +197,6 @@ const DB = {
             return newItem;
         }
     },
-
-    // 更新数据（写操作，需登录态 token）
     update: async function(table, id, data) {
         try {
             var headers = authHeaders(true);
@@ -280,8 +228,6 @@ const DB = {
             return null;
         }
     },
-
-    // 删除数据（写操作，需登录态 token）
     delete: async function(table, id) {
         try {
             var response = await fetch(SUPABASE_URL + '/rest/v1/' + table + '?id=eq.' + id, {
@@ -308,7 +254,124 @@ const DB = {
     }
 };
 
+// ============================================================
+// ★★★ Storage 操作封装 ★★★
+// ============================================================
+const STORAGE = {
+    // 存储桶名称
+    BUCKET: 'jiananshan-images',
+
+    // 上传图片到 Storage
+    upload: async function(file, path) {
+        try {
+            var token = AUTH.getAccessToken() || SUPABASE_ANON_KEY;
+            var formData = new FormData();
+            formData.append('file', file);
+
+            var url = SUPABASE_URL + '/storage/v1/object/' + this.BUCKET + '/' + path;
+            var response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'apikey': SUPABASE_ANON_KEY,
+                    'Authorization': 'Bearer ' + token
+                },
+                body: formData
+            });
+
+            if (!response.ok) {
+                var errorText = await response.text();
+                throw new Error('上传失败: ' + errorText);
+            }
+
+            var data = await response.json();
+            // 返回公开访问 URL
+            return SUPABASE_URL + '/storage/v1/object/public/' + this.BUCKET + '/' + data.Key;
+        } catch (e) {
+            console.error('上传图片失败:', e);
+            throw e;
+        }
+    },
+
+    // 批量上传图片
+    uploadMultiple: async function(files, folder) {
+        var results = [];
+        for (var i = 0; i < files.length; i++) {
+            var file = files[i];
+            var timestamp = Date.now();
+            var ext = file.name.split('.').pop() || 'jpg';
+            var path = folder + '/' + timestamp + '-' + i + '.' + ext;
+            var url = await this.upload(file, path);
+            results.push(url);
+        }
+        return results;
+    },
+
+    // 删除图片
+    delete: async function(path) {
+        try {
+            var token = AUTH.getAccessToken() || SUPABASE_ANON_KEY;
+            var url = SUPABASE_URL + '/storage/v1/object/' + this.BUCKET + '/' + path;
+            var response = await fetch(url, {
+                method: 'DELETE',
+                headers: {
+                    'apikey': SUPABASE_ANON_KEY,
+                    'Authorization': 'Bearer ' + token
+                }
+            });
+            return response.ok;
+        } catch (e) {
+            console.error('删除图片失败:', e);
+            return false;
+        }
+    },
+
+    // 从 URL 中提取路径
+    extractPath: function(url) {
+        var prefix = '/storage/v1/object/public/' + this.BUCKET + '/';
+        var idx = url.indexOf(prefix);
+        if (idx !== -1) {
+            return url.substring(idx + prefix.length);
+        }
+        return null;
+    },
+
+    // 检查存储桶是否存在，不存在则创建
+    ensureBucket: async function() {
+        try {
+            var token = AUTH.getAccessToken() || SUPABASE_ANON_KEY;
+            // 检查桶是否存在
+            var response = await fetch(SUPABASE_URL + '/storage/v1/bucket/' + this.BUCKET, {
+                headers: {
+                    'apikey': SUPABASE_ANON_KEY,
+                    'Authorization': 'Bearer ' + token
+                }
+            });
+            if (response.ok) return true;
+
+            // 创建桶（公开）
+            var createRes = await fetch(SUPABASE_URL + '/storage/v1/bucket', {
+                method: 'POST',
+                headers: {
+                    'apikey': SUPABASE_ANON_KEY,
+                    'Authorization': 'Bearer ' + token,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    id: this.BUCKET,
+                    name: this.BUCKET,
+                    public: true
+                })
+            });
+            return createRes.ok;
+        } catch (e) {
+            console.warn('创建存储桶失败:', e);
+            return false;
+        }
+    }
+};
+
 // 暴露到全局
 window.DB = DB;
 window.AUTH = AUTH;
+window.STORAGE = STORAGE;
 window.SUPABASE_URL = SUPABASE_URL;
