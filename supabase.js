@@ -2,7 +2,7 @@
 // Supabase 连接配置
 // ============================================================
 
-const SUPABASE_URL = 'https://phvayjkoephsyavkjcuk.supabase.co';
+const SUPABASE_URL = 'https://phvayjkoyphsyavkjcuk.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_eLqmBExr2Z2GFx9FFnOjww_i3B5t_tf';
 
 // ============================================================
