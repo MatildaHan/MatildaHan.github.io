@@ -197,7 +197,7 @@ body {
     width: 100%;
     max-width: 200px;
     aspect-ratio: 1 / 1.8;
-    background-color: #2A2A28;
+    background-color: #999999;
     transform: rotate(3deg);
     transition: transform 0.4s ease;
     margin: 0 auto;
@@ -213,7 +213,6 @@ body {
 .tilted-card.has-image {
     background-color: transparent !important;
 }
-
 /* 右侧列 */
 #homeLatest {
     display: flex;
