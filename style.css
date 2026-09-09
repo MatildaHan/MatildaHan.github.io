@@ -148,7 +148,7 @@ body {
     margin: 10px auto 0;
 }
 
-/* 中间列 - 图片居中 */
+/* ===== 中间列 - 图片居中 ===== */
 .center-image {
     display: flex;
     align-items: center;
@@ -161,17 +161,23 @@ body {
     aspect-ratio: 1 / 1.8;
     background-color: #b89c84;
     transform: rotate(3deg);
-    transition: 0.4s ease;
+    transition: transform 0.4s ease, opacity 0.3s ease;
     border-radius: 4px;
     margin: 0 auto;
+    /* ★★★ 图片铺满 ★★★ */
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
     min-height: 180px;
     display: block;
+    cursor: pointer;
 }
 .tilted-card:hover {
     transform: rotate(0deg);
+}
+/* 当有图片时，背景色透明 */
+.tilted-card.has-image {
+    background-color: transparent;
 }
 
 /* 右侧列 - 与左侧等宽 */
@@ -336,6 +342,7 @@ body {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    display: block;
 }
 
 /* ===== 听雨眠·记 ===== */
