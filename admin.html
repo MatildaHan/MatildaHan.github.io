@@ -883,6 +883,13 @@ async function saveXueyeItem() {
     var date = document.getElementById('xueye-date').value.trim();
     if (!category) { alert('请选择分类'); return; }
 
+    // ★★★ 检查登录状态 ★★★
+    var isLoggedIn = await AUTH.isLoggedIn();
+    if (!isLoggedIn) {
+        alert('请先登录后再上传图片');
+        return;
+    }
+
     // 获取已有的图片 URL
     var existingImages = [];
     if (id) {
@@ -892,7 +899,7 @@ async function saveXueyeItem() {
         }
     }
 
-    // ★★★ 上传新图片到 Storage ★★★
+    // ★★★ 上传新图片 ★★★
     var uploadedUrls = [];
     if (xueyeTempFiles.length > 0) {
         try {
@@ -901,48 +908,50 @@ async function saveXueyeItem() {
             uploadedUrls = await STORAGE.uploadMultiple(xueyeTempFiles, folder);
             console.log('上传完成，图片 URLs:', uploadedUrls);
         } catch (e) {
+            console.error('上传失败:', e);
             alert('图片上传失败: ' + e.message);
             return;
         }
     }
 
-    // ★★★ 合并所有图片 URL，过滤无效值 ★★★
+    // 合并并过滤图片
     var allImages = existingImages.concat(uploadedUrls);
     allImages = allImages.filter(function(url) {
         return url && typeof url === 'string' && url.trim() !== '' && url.startsWith('http');
     });
 
-    // ★★★ 去重 ★★★
-    var uniqueImages = [];
-    for (var i = 0; i < allImages.length; i++) {
-        if (uniqueImages.indexOf(allImages[i]) === -1) {
-            uniqueImages.push(allImages[i]);
-        }
-    }
-
     var data = {
         category: category,
         date: date,
-        images: uniqueImages,
-        count: uniqueImages.length
+        images: allImages,
+        count: allImages.length
     };
 
-    if (id) {
-        await DB.update('xueye', id, data);
-    } else {
-        await DB.insert('xueye', data);
+    try {
+        if (id) {
+            await DB.update('xueye', id, data);
+        } else {
+            await DB.insert('xueye', data);
+        }
+        console.log('数据保存成功:', data);
+    } catch (e) {
+        console.error('保存失败:', e);
+        alert('保存失败: ' + e.message);
+        return;
     }
     
-    // 清空临时数据
     xueyeTempFiles = [];
     xueyeTempUrls = [];
     closeXueyeItemForm();
     await renderXueye();
     await refreshDashboard();
-    // ★★★ 刷新首页 ★★★
-    renderHome();
+    
+    // ★★★ 修复：调用前台的 renderHome ★★★
+    // 由于 admin.html 没有加载 script.js，需要直接刷新
+    alert('保存成功！共 ' + allImages.length + ' 张图片');
+    // 或者打开新窗口查看
+    window.open('index.html', '_blank');
 }
-
 async function deleteXueyeItem(id) {
     if (!confirm('确定删除？')) return;
     await DB.delete('xueye', id);
