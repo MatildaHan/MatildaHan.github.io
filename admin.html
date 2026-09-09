@@ -8,9 +8,7 @@
 </head>
 <body>
 
-<!-- ============================================================
-     登录界面
-     ============================================================ -->
+<!-- ===== 登录界面 ===== -->
 <div class="login-container" id="loginContainer">
     <div class="login-logo">见南山</div>
     <div class="login-sub">后台管理登录</div>
@@ -26,13 +24,8 @@
     <div class="error" id="loginError">邮箱或密码错误</div>
 </div>
 
-
-<!-- ============================================================
-     后台管理界面（登录后显示）
-     ============================================================ -->
+<!-- ===== 后台管理界面 ===== -->
 <div class="admin-wrapper" id="adminWrapper">
-
-    <!-- 侧边栏 -->
     <aside class="admin-sidebar">
         <div class="logo">见南山 <span>后台管理</span></div>
         <nav>
@@ -40,15 +33,11 @@
             <a href="#" data-panel="panel-site">站点设置</a>
             <a href="#" data-panel="panel-xingyin">行吟册·絮</a>
             <a href="#" data-panel="panel-shinian">十年灯·文</a>
-            <a href="#" data-panel="panel-xueye">雪夜舟·图</a>
-            <a href="#" data-panel="panel-tingyu">听雨眠·记</a>
-            <a href="#" data-panel="panel-gexi">各西东·语</a>
             <a href="#" data-panel="panel-about">山野渔夫</a>
         </nav>
         <div class="footer">© 2026 见南山 · v1.0</div>
     </aside>
 
-    <!-- 主内容 -->
     <main class="admin-main">
         <div class="admin-header">
             <h2 id="panelTitle">总览</h2>
@@ -58,16 +47,13 @@
             </div>
         </div>
 
-        <!-- ===== 面板：总览 ===== -->
+        <!-- ===== 总览 ===== -->
         <section id="panel-dashboard" class="panel active">
             <div class="form-card">
                 <h3>数据概览</h3>
                 <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:20px;">
                     <div><strong>行吟册·絮</strong><br><span id="count-xingyin">0</span> 条</div>
                     <div><strong>十年灯·文</strong><br><span id="count-shinian">0</span> 篇</div>
-                    <div><strong>雪夜舟·图</strong><br><span id="count-xueye">0</span> 组</div>
-                    <div><strong>听雨眠·记</strong><br><span id="count-tingyu">0</span> 本</div>
-                    <div><strong>各西东·语</strong><br><span id="count-gexi">0</span> 条</div>
                 </div>
             </div>
             <div class="form-card">
@@ -77,21 +63,20 @@
             </div>
         </section>
 
-        <!-- ===== 面板：站点设置 ===== -->
+        <!-- ===== 站点设置 ===== -->
         <section id="panel-site" class="panel">
             <div class="form-card">
                 <h3>站点基本设置</h3>
-                
                 <div class="form-group">
                     <label>Logo 图片上传</label>
                     <input type="file" id="logo-upload" accept="image/*" style="padding:8px 0;">
                     <div style="margin-top:10px;">
-                        <img id="logo-preview" src="" alt="Logo预览" style="max-width:120px;max-height:120px;border-radius:4px;border:1px solid #e0d6cc;display:none;">
+                        <img id="logo-preview" src="" alt="Logo预览" style="max-width:120px;max-height:120px;border:1px solid #e0d6cc;display:none;">
                     </div>
                     <button class="btn" onclick="clearLogoImage()" style="margin-top:8px;">清除 Logo 图片</button>
                 </div>
                 <div class="form-group">
-                    <label>Logo 标识色 (当没有图片时使用)</label>
+                    <label>Logo 标识色</label>
                     <input type="text" id="site-logo-color" value="#b89c84" placeholder="#b89c84">
                 </div>
                 <div class="form-group">
@@ -99,21 +84,17 @@
                     <input type="text" id="site-name" value="见南山" placeholder="见南山">
                 </div>
                 <div class="form-group">
-                    <label>网站描述 (副标题)</label>
+                    <label>网站描述</label>
                     <input type="text" id="site-desc" value="春山如黛草如烟" placeholder="春山如黛草如烟">
                 </div>
-
-                <!-- 主题色设置 -->
                 <div class="form-group">
                     <label>主题色</label>
                     <div class="color-input-group">
                         <input type="color" id="site-theme-color" value="#b89c84">
                         <input type="text" id="site-theme-color-text" value="#b89c84" placeholder="#b89c84">
                     </div>
-                    <p class="form-hint">用于标题、链接、按钮等主要颜色</p>
+                    <p class="form-hint">用于标题、链接等主要颜色</p>
                 </div>
-
-                <!-- 标题字号设置 -->
                 <div class="form-group">
                     <label>标题字号 (px)</label>
                     <div class="size-input-group">
@@ -121,14 +102,13 @@
                         <span style="color:#999;font-size:13px;">px</span>
                         <span class="size-preview" id="title-size-preview" style="font-size:20px;font-weight:bold;color:#b89c84;">预览</span>
                     </div>
-                    <p class="form-hint">首页标题、文章标题、分类名称等使用此字号（14-36px）</p>
+                    <p class="form-hint">首页标题、文章标题等使用此字号</p>
                 </div>
-
                 <button class="btn btn-primary" onclick="saveSiteSettings()">保存站点设置</button>
             </div>
         </section>
 
-        <!-- ===== 面板：行吟册·絮 ===== -->
+        <!-- ===== 行吟册·絮 ===== -->
         <section id="panel-xingyin" class="panel">
             <div class="toolbar">
                 <button class="btn btn-primary" onclick="openXingyinForm()">+ 新增短句</button>
@@ -145,7 +125,7 @@
                     <h3 id="xingyinModalTitle">编辑短句</h3>
                     <input type="hidden" id="xingyin-edit-id">
                     <div class="form-group"><label>短句内容</label><textarea id="xingyin-content" rows="2"></textarea></div>
-                    <div class="form-group"><label>日期 (YYYY/MM/DD)</label><input type="text" id="xingyin-date"></div>
+                    <div class="form-group"><label>日期</label><input type="text" id="xingyin-date"></div>
                     <div class="modal-actions">
                         <button class="btn" onclick="closeXingyinForm()">取消</button>
                         <button class="btn btn-primary" onclick="saveXingyin()">保存</button>
@@ -154,7 +134,7 @@
             </div>
         </section>
 
-        <!-- ===== 面板：十年灯·文 ===== -->
+        <!-- ===== 十年灯·文 ===== -->
         <section id="panel-shinian" class="panel">
             <div class="tab-container">
                 <button class="tab-btn active" data-tab="shinian-articles" onclick="switchShinianTab('shinian-articles')">文章列表</button>
@@ -216,155 +196,25 @@
             </div>
         </section>
 
-        <!-- ===== 面板：雪夜舟·图 ===== -->
-        <section id="panel-xueye" class="panel">
-            <div class="tab-container">
-                <button class="tab-btn active" data-tab="xueye-items" onclick="switchXueyeTab('xueye-items')">图片列表</button>
-                <button class="tab-btn" data-tab="xueye-categories" onclick="switchXueyeTab('xueye-categories')">分类管理</button>
-            </div>
-
-            <div class="tab-content active" id="xueye-items">
-                <div class="toolbar">
-                    <button class="btn btn-primary" onclick="openXueyeItemForm()">+ 新增图片组</button>
-                </div>
-                <div class="table-wrap">
-                    <table>
-                        <thead><tr><th>#</th><th>分类</th><th>图片数量</th><th>日期</th><th>操作</th></tr></thead>
-                        <tbody id="xueye-list"></tbody>
-                    </table>
-                </div>
-            </div>
-
-            <div class="tab-content" id="xueye-categories">
-                <div class="toolbar">
-                    <button class="btn btn-primary" onclick="openXueyeCategoryForm()">+ 添加分类</button>
-                </div>
-                <div class="table-wrap">
-                    <table>
-                        <thead><tr><th>分类名称</th><th>分类描述</th><th>操作</th></tr></thead>
-                        <tbody id="xueye-category-list"></tbody>
-                    </table>
-                </div>
-            </div>
-
-            <div class="modal-overlay" id="xueyeItemModal">
-                <div class="modal-box">
-                    <button class="modal-close" onclick="closeXueyeItemForm()">×</button>
-                    <h3 id="xueyeItemModalTitle">编辑图片组</h3>
-                    <input type="hidden" id="xueye-edit-id">
-                    <div class="form-group"><label>分类</label><select id="xueye-category-select"></select></div>
-                    <div class="form-group"><label>图片上传</label>
-                        <input type="file" id="xueye-image-upload" accept="image/*" multiple>
-                        <p style="font-size:12px;color:#999;margin-top:4px;">可多选图片，上传后自动存储到 Supabase Storage</p>
-                    </div>
-                    <div id="xueye-image-preview" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;"></div>
-                    <div class="form-group"><label>日期</label><input type="text" id="xueye-date"></div>
-                    <div class="modal-actions">
-                        <button class="btn" onclick="closeXueyeItemForm()">取消</button>
-                        <button class="btn btn-primary" onclick="saveXueyeItem()">保存</button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="modal-overlay" id="xueyeCategoryModal">
-                <div class="modal-box">
-                    <button class="modal-close" onclick="closeXueyeCategoryForm()">×</button>
-                    <h3 id="xueyeCategoryModalTitle">编辑分类</h3>
-                    <input type="hidden" id="xueye-category-edit-id">
-                    <div class="form-group"><label>分类名称</label><input type="text" id="xueye-category-name"></div>
-                    <div class="form-group"><label>分类描述</label><textarea id="xueye-category-desc-input" rows="2"></textarea></div>
-                    <div class="modal-actions">
-                        <button class="btn" onclick="closeXueyeCategoryForm()">取消</button>
-                        <button class="btn btn-primary" onclick="saveXueyeCategory()">保存</button>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- ===== 面板：听雨眠·记（新增 content 字段） ===== -->
-        <section id="panel-tingyu" class="panel">
-            <div class="toolbar">
-                <button class="btn btn-primary" onclick="openTingyuForm()">+ 新增书籍</button>
-            </div>
-            <div class="table-wrap">
-                <table>
-                    <thead><tr><th>#</th><th>书名</th><th>年份</th><th>操作</th></tr></thead>
-                    <tbody id="tingyu-list"></tbody>
-                </table>
-            </div>
-            <div class="modal-overlay" id="tingyuModal">
-                <div class="modal-box">
-                    <button class="modal-close" onclick="closeTingyuForm()">×</button>
-                    <h3 id="tingyuModalTitle">编辑书籍</h3>
-                    <input type="hidden" id="tingyu-edit-id">
-                    <div class="form-group"><label>书名</label>
-                        <input type="text" id="tingyu-title" placeholder="请输入书名（自动添加书名号）">
-                        <p style="font-size:12px;color:#999;margin-top:2px;">无需手动输入《》，系统会自动添加</p>
-                    </div>
-                    <div class="form-group"><label>内容（读后感/简介）</label>
-                        <textarea id="tingyu-content" rows="6" placeholder="请输入书籍内容、读后感或简介..."></textarea>
-                    </div>
-                    <div class="form-group"><label>年份</label>
-                        <select id="tingyu-year"></select>
-                    </div>
-                    <div class="modal-actions">
-                        <button class="btn" onclick="closeTingyuForm()">取消</button>
-                        <button class="btn btn-primary" onclick="saveTingyu()">保存</button>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- ===== 面板：各西东·语 ===== -->
-        <section id="panel-gexi" class="panel">
-            <div class="toolbar">
-                <button class="btn btn-primary" onclick="openGexiForm()">+ 新增短句</button>
-            </div>
-            <div class="table-wrap">
-                <table>
-                    <thead><tr><th>#</th><th>短句内容</th><th>日期</th><th>操作</th></tr></thead>
-                    <tbody id="gexi-list"></tbody>
-                </table>
-            </div>
-            <div class="modal-overlay" id="gexiModal">
-                <div class="modal-box">
-                    <button class="modal-close" onclick="closeGexiForm()">×</button>
-                    <h3 id="gexiModalTitle">编辑短句</h3>
-                    <input type="hidden" id="gexi-edit-id">
-                    <div class="form-group"><label>短句内容</label><textarea id="gexi-content" rows="2"></textarea></div>
-                    <div class="form-group"><label>日期</label><input type="text" id="gexi-date"></div>
-                    <div class="modal-actions">
-                        <button class="btn" onclick="closeGexiForm()">取消</button>
-                        <button class="btn btn-primary" onclick="saveGexi()">保存</button>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- ===== 面板：山野渔夫 ===== -->
+        <!-- ===== 山野渔夫 ===== -->
         <section id="panel-about" class="panel">
             <div class="form-card">
                 <h3>个人简介</h3>
                 <div class="form-group">
-                    <label>简介内容 (支持多行)</label>
+                    <label>简介内容</label>
                     <textarea id="about-content" rows="8" style="min-height:200px;"></textarea>
                 </div>
                 <button class="btn btn-primary" onclick="saveAbout()">保存简介</button>
             </div>
         </section>
-
     </main>
 </div>
 
-<!-- ============================================================
-     引入 Supabase 和脚本
-     ============================================================ -->
 <script src="supabase.js"></script>
 <script>
 // ============================================================
 // 登录验证逻辑
 // ============================================================
-
 async function handleLogin() {
     var email = document.getElementById('login-username').value.trim();
     var password = document.getElementById('login-password').value.trim();
@@ -420,6 +270,19 @@ document.getElementById('login-username').addEventListener('keydown', function(e
 });
 
 // ============================================================
+// 工具函数
+// ============================================================
+function genId() { return Date.now() + Math.random() * 1000; }
+
+function getThemeConfig() {
+    var site = DB.get('site', {});
+    return {
+        color: site.theme_color || site.logo_color || '#b89c84',
+        size: site.title_size || '20'
+    };
+}
+
+// ============================================================
 // 分类管理 - 十年灯·文
 // ============================================================
 var _shinianCategoriesCache = [];
@@ -461,47 +324,6 @@ function updateShinianCategorySelect() {
 }
 
 // ============================================================
-// 分类管理 - 雪夜舟·图
-// ============================================================
-var _xueyeCategoriesCache = [];
-
-async function getXueyeCategories() {
-    _xueyeCategoriesCache = await DB.getAll('xueye_categories', { orderBy: 'id' });
-    return _xueyeCategoriesCache;
-}
-
-async function renderXueyeCategories() {
-    var list = await getXueyeCategories();
-    var tbody = document.getElementById('xueye-category-list');
-    if (!tbody) return;
-    var html = '';
-    for (var i = 0; i < list.length; i++) {
-        var item = list[i];
-        html += '<tr>';
-        html += '<td><strong>' + item.name + '</strong></td>';
-        html += '<td>' + (item.description || '') + '</td>';
-        html += '<td class="actions">';
-        html += '<button class="btn" onclick="openXueyeCategoryEdit(' + item.id + ')">编辑</button>';
-        html += '<button class="btn btn-danger" onclick="deleteXueyeCategory(' + item.id + ')">删除</button>';
-        html += '</td>';
-        html += '</tr>';
-    }
-    tbody.innerHTML = html || '';
-    updateXueyeCategorySelect();
-}
-
-function updateXueyeCategorySelect() {
-    var list = _xueyeCategoriesCache;
-    var select = document.getElementById('xueye-category-select');
-    if (!select) return;
-    var html = '';
-    for (var i = 0; i < list.length; i++) {
-        html += '<option value="' + list[i].name + '">' + list[i].name + '</option>';
-    }
-    select.innerHTML = html;
-}
-
-// ============================================================
 // Tab 切换
 // ============================================================
 function switchShinianTab(tabId) {
@@ -513,32 +335,6 @@ function switchShinianTab(tabId) {
         content.classList.remove('active');
         if (content.id === tabId) content.classList.add('active');
     });
-}
-
-function switchXueyeTab(tabId) {
-    document.querySelectorAll('#panel-xueye .tab-btn').forEach(function(btn) {
-        btn.classList.remove('active');
-        if (btn.dataset.tab === tabId) btn.classList.add('active');
-    });
-    document.querySelectorAll('#panel-xueye .tab-content').forEach(function(content) {
-        content.classList.remove('active');
-        if (content.id === tabId) content.classList.add('active');
-    });
-}
-
-// ============================================================
-// 年份选择器（当前年份及前5年）
-// ============================================================
-function generateYearOptions() {
-    var currentYear = new Date().getFullYear();
-    var select = document.getElementById('tingyu-year');
-    if (!select) return;
-    var html = '';
-    for (var i = 0; i < 6; i++) {
-        var year = currentYear - i;
-        html += '<option value="' + year + '">' + year + '年</option>';
-    }
-    select.innerHTML = html;
 }
 
 // ============================================================
@@ -670,9 +466,7 @@ async function saveShinianArticle() {
     var date = document.getElementById('shinian-date').value.trim();
     if (!title) { alert('请输入标题'); return; }
     if (!category) { alert('请选择分类'); return; }
-
     var data = { title: title, category: category, content: content, date: date };
-
     if (id) {
         await DB.update('shinian', id, data);
     } else {
@@ -720,7 +514,6 @@ async function saveShinianCategory() {
     var name = document.getElementById('shinian-category-name').value.trim();
     var desc = document.getElementById('shinian-category-desc-input').value.trim();
     if (!name) { alert('请输入分类名称'); return; }
-
     if (!id) {
         if (_shinianCategoriesCache.find(c => c.name === name)) { alert('分类已存在'); return; }
         await DB.insert('shinian_categories', { name: name, description: desc });
@@ -737,442 +530,6 @@ async function deleteShinianCategory(id) {
     await DB.delete('shinian_categories', id);
     await renderShinianCategories();
     await renderShinian();
-}
-
-// ============================================================
-// 雪夜舟·图 (CRUD)
-// ============================================================
-var xueyeTempFiles = [];
-var xueyeTempUrls = [];
-
-function openXueyeItemForm() {
-    document.getElementById('xueyeItemModal').classList.add('show');
-    document.getElementById('xueyeItemModalTitle').textContent = '新增图片组';
-    document.getElementById('xueye-edit-id').value = '';
-    document.getElementById('xueye-category-select').value = '';
-    document.getElementById('xueye-date').value = new Date().toISOString().slice(0, 10).replace(/-/g, '/');
-    document.getElementById('xueye-image-upload').value = '';
-    document.getElementById('xueye-image-preview').innerHTML = '';
-    xueyeTempFiles = [];
-    xueyeTempUrls = [];
-    updateXueyeCategorySelect();
-    setupXueyeImageUpload();
-}
-
-function openXueyeItemEdit(id) {
-    DB.getById('xueye', id).then(function(item) {
-        if (!item) return;
-        document.getElementById('xueyeItemModal').classList.add('show');
-        document.getElementById('xueyeItemModalTitle').textContent = '编辑图片组';
-        document.getElementById('xueye-edit-id').value = id;
-        document.getElementById('xueye-category-select').value = item.category || '';
-        document.getElementById('xueye-date').value = item.date;
-        document.getElementById('xueye-image-upload').value = '';
-        document.getElementById('xueye-image-preview').innerHTML = '';
-        xueyeTempFiles = [];
-        xueyeTempUrls = [];
-        
-        if (item.images && item.images.length > 0) {
-            var previewContainer = document.getElementById('xueye-image-preview');
-            for (var i = 0; i < item.images.length; i++) {
-                var imgUrl = item.images[i];
-                var imgDiv = document.createElement('div');
-                imgDiv.style.cssText = 'width:80px;height:60px;border-radius:4px;overflow:hidden;border:1px solid #e0d6cc;position:relative;';
-                var img = document.createElement('img');
-                img.src = imgUrl;
-                img.style.cssText = 'width:100%;height:100%;object-fit:cover;';
-                imgDiv.appendChild(img);
-                
-                var removeBtn = document.createElement('button');
-                removeBtn.textContent = '×';
-                removeBtn.style.cssText = 'position:absolute;top:-6px;right:-6px;width:18px;height:18px;border-radius:50%;border:none;background:#c0392b;color:#fff;font-size:12px;cursor:pointer;line-height:18px;text-align:center;padding:0;';
-                removeBtn.onclick = function() {
-                    var idx = xueyeTempUrls.indexOf(imgUrl);
-                    if (idx > -1) {
-                        xueyeTempUrls.splice(idx, 1);
-                    }
-                    imgDiv.remove();
-                };
-                imgDiv.appendChild(removeBtn);
-                previewContainer.appendChild(imgDiv);
-                xueyeTempUrls.push(imgUrl);
-            }
-        }
-        updateXueyeCategorySelect();
-        setupXueyeImageUpload();
-    });
-}
-
-function closeXueyeItemForm() {
-    document.getElementById('xueyeItemModal').classList.remove('show');
-}
-
-function setupXueyeImageUpload() {
-    var uploadInput = document.getElementById('xueye-image-upload');
-    if (uploadInput) {
-        uploadInput.removeEventListener('change', handleXueyeImageUpload);
-        uploadInput.addEventListener('change', handleXueyeImageUpload);
-    }
-}
-
-function handleXueyeImageUpload(e) {
-    var files = e.target.files;
-    if (!files || files.length === 0) return;
-    var previewContainer = document.getElementById('xueye-image-preview');
-    
-    for (var i = 0; i < files.length; i++) {
-        var file = files[i];
-        if (!file.type.startsWith('image/')) continue;
-        
-        xueyeTempFiles.push(file);
-        
-        var objectUrl = URL.createObjectURL(file);
-        xueyeTempUrls.push(objectUrl);
-        
-        var imgDiv = document.createElement('div');
-        imgDiv.style.cssText = 'width:80px;height:60px;border-radius:4px;overflow:hidden;border:1px solid #e0d6cc;position:relative;';
-        var img = document.createElement('img');
-        img.src = objectUrl;
-        img.style.cssText = 'width:100%;height:100%;object-fit:cover;';
-        imgDiv.appendChild(img);
-        
-        var removeBtn = document.createElement('button');
-        removeBtn.textContent = '×';
-        removeBtn.style.cssText = 'position:absolute;top:-6px;right:-6px;width:18px;height:18px;border-radius:50%;border:none;background:#c0392b;color:#fff;font-size:12px;cursor:pointer;line-height:18px;text-align:center;padding:0;';
-        removeBtn.onclick = function() {
-            var idx = xueyeTempUrls.indexOf(objectUrl);
-            if (idx > -1) {
-                xueyeTempUrls.splice(idx, 1);
-                if (idx < xueyeTempFiles.length) {
-                    xueyeTempFiles.splice(idx, 1);
-                }
-            }
-            imgDiv.remove();
-        };
-        imgDiv.appendChild(removeBtn);
-        previewContainer.appendChild(imgDiv);
-    }
-    e.target.value = '';
-}
-
-async function renderXueye() {
-    var list = await DB.getAll('xueye', { orderBy: 'id' });
-    var tbody = document.getElementById('xueye-list');
-    if (!tbody) return;
-    var html = '';
-    for (var i = 0; i < list.length; i++) {
-        var item = list[i];
-        var imageCount = (item.images && item.images.length) || 0;
-        html += '<tr>';
-        html += '<td>' + (i + 1) + '</td>';
-        html += '<td>' + item.category + '</td>';
-        html += '<td>' + imageCount + '</td>';
-        html += '<td>' + item.date + '</td>';
-        html += '<td class="actions">';
-        html += '<button class="btn" onclick="openXueyeItemEdit(' + item.id + ')">编辑</button>';
-        html += '<button class="btn btn-danger" onclick="deleteXueyeItem(' + item.id + ')">删除</button>';
-        html += '</td>';
-        html += '</tr>';
-    }
-    tbody.innerHTML = html;
-}
-
-async function saveXueyeItem() {
-    var id = document.getElementById('xueye-edit-id').value;
-    var category = document.getElementById('xueye-category-select').value;
-    var date = document.getElementById('xueye-date').value.trim();
-    if (!category) { alert('请选择分类'); return; }
-
-    // ★★★ 检查登录状态 ★★★
-    var isLoggedIn = await AUTH.isLoggedIn();
-    if (!isLoggedIn) {
-        alert('请先登录后再上传图片');
-        return;
-    }
-
-    // 获取已有的图片 URL
-    var existingImages = [];
-    if (id) {
-        var existing = await DB.getById('xueye', id);
-        if (existing && existing.images) {
-            existingImages = existing.images;
-        }
-    }
-
-    // ★★★ 上传新图片 ★★★
-    var uploadedUrls = [];
-    if (xueyeTempFiles.length > 0) {
-        try {
-            await STORAGE.ensureBucket();
-            var folder = 'xueye/' + (id || Date.now());
-            uploadedUrls = await STORAGE.uploadMultiple(xueyeTempFiles, folder);
-            console.log('上传完成，图片 URLs:', uploadedUrls);
-        } catch (e) {
-            console.error('上传失败:', e);
-            alert('图片上传失败: ' + e.message);
-            return;
-        }
-    }
-
-    // 合并并过滤图片
-    var allImages = existingImages.concat(uploadedUrls);
-    allImages = allImages.filter(function(url) {
-        return url && typeof url === 'string' && url.trim() !== '' && url.startsWith('http');
-    });
-
-    var data = {
-        category: category,
-        date: date,
-        images: allImages,
-        count: allImages.length
-    };
-
-    try {
-        if (id) {
-            await DB.update('xueye', id, data);
-        } else {
-            await DB.insert('xueye', data);
-        }
-        console.log('数据保存成功:', data);
-    } catch (e) {
-        console.error('保存失败:', e);
-        alert('保存失败: ' + e.message);
-        return;
-    }
-    
-    xueyeTempFiles = [];
-    xueyeTempUrls = [];
-    closeXueyeItemForm();
-    await renderXueye();
-    await refreshDashboard();
-    
-    // ★★★ 修复：调用前台的 renderHome ★★★
-    // 由于 admin.html 没有加载 script.js，需要直接刷新
-    alert('保存成功！共 ' + allImages.length + ' 张图片');
-    // 或者打开新窗口查看
-    window.open('index.html', '_blank');
-}
-async function deleteXueyeItem(id) {
-    if (!confirm('确定删除？')) return;
-    await DB.delete('xueye', id);
-    await renderXueye();
-    await refreshDashboard();
-}
-
-// ============================================================
-// 雪夜舟·图 分类管理
-// ============================================================
-function openXueyeCategoryForm() {
-    document.getElementById('xueyeCategoryModal').classList.add('show');
-    document.getElementById('xueyeCategoryModalTitle').textContent = '添加分类';
-    document.getElementById('xueye-category-edit-id').value = '';
-    document.getElementById('xueye-category-name').value = '';
-    document.getElementById('xueye-category-desc-input').value = '';
-}
-
-function openXueyeCategoryEdit(id) {
-    var item = _xueyeCategoriesCache.find(c => c.id === id);
-    if (!item) return;
-    document.getElementById('xueyeCategoryModal').classList.add('show');
-    document.getElementById('xueyeCategoryModalTitle').textContent = '编辑分类';
-    document.getElementById('xueye-category-edit-id').value = id;
-    document.getElementById('xueye-category-name').value = item.name;
-    document.getElementById('xueye-category-desc-input').value = item.description || '';
-}
-
-function closeXueyeCategoryForm() {
-    document.getElementById('xueyeCategoryModal').classList.remove('show');
-}
-
-async function saveXueyeCategory() {
-    var id = document.getElementById('xueye-category-edit-id').value;
-    var name = document.getElementById('xueye-category-name').value.trim();
-    var desc = document.getElementById('xueye-category-desc-input').value.trim();
-    if (!name) { alert('请输入分类名称'); return; }
-
-    if (!id) {
-        if (_xueyeCategoriesCache.find(c => c.name === name)) { alert('分类已存在'); return; }
-        await DB.insert('xueye_categories', { name: name, description: desc });
-    } else {
-        await DB.update('xueye_categories', id, { name: name, description: desc });
-    }
-    closeXueyeCategoryForm();
-    await renderXueyeCategories();
-    await renderXueye();
-}
-
-async function deleteXueyeCategory(id) {
-    if (!confirm('确定删除该分类吗？')) return;
-    await DB.delete('xueye_categories', id);
-    await renderXueyeCategories();
-    await renderXueye();
-}
-
-// ============================================================
-// ★★★ 听雨眠·记 (CRUD) - 自动添加书名号 ★★★
-// ============================================================
-async function renderTingyu() {
-    var list = await DB.getAll('tingyu', { orderBy: 'id' });
-    var tbody = document.getElementById('tingyu-list');
-    if (!tbody) return;
-    var html = '';
-    for (var i = 0; i < list.length; i++) {
-        var item = list[i];
-        html += '<tr>';
-        html += '<td>' + (i + 1) + '</td>';
-        // 显示时自动添加书名号
-        var displayTitle = item.title || '';
-        if (displayTitle && !displayTitle.startsWith('《') && !displayTitle.startsWith('"')) {
-            displayTitle = '《' + displayTitle + '》';
-        }
-        html += '<td>' + displayTitle + '</td>';
-        html += '<td>' + item.year + '</td>';
-        html += '<td class="actions">';
-        html += '<button class="btn" onclick="openTingyuEdit(' + item.id + ')">编辑</button>';
-        html += '<button class="btn btn-danger" onclick="deleteTingyu(' + item.id + ')">删除</button>';
-        html += '</td>';
-        html += '</tr>';
-    }
-    tbody.innerHTML = html;
-}
-
-function openTingyuForm() {
-    document.getElementById('tingyuModal').classList.add('show');
-    document.getElementById('tingyuModalTitle').textContent = '新增书籍';
-    document.getElementById('tingyu-edit-id').value = '';
-    document.getElementById('tingyu-title').value = '';
-    document.getElementById('tingyu-content').value = '';
-    generateYearOptions();
-    document.getElementById('tingyu-year').value = new Date().getFullYear();
-}
-
-function openTingyuEdit(id) {
-    DB.getById('tingyu', id).then(function(item) {
-        if (!item) return;
-        document.getElementById('tingyuModal').classList.add('show');
-        document.getElementById('tingyuModalTitle').textContent = '编辑书籍';
-        document.getElementById('tingyu-edit-id').value = id;
-        // 编辑时显示原始书名（不带书名号）
-        var rawTitle = item.title || '';
-        // 如果已带书名号，去掉显示
-        if (rawTitle.startsWith('《') && rawTitle.endsWith('》')) {
-            rawTitle = rawTitle.substring(1, rawTitle.length - 1);
-        }
-        document.getElementById('tingyu-title').value = rawTitle;
-        document.getElementById('tingyu-content').value = item.content || '';
-        generateYearOptions();
-        document.getElementById('tingyu-year').value = item.year || new Date().getFullYear();
-    });
-}
-
-function closeTingyuForm() {
-    document.getElementById('tingyuModal').classList.remove('show');
-}
-
-async function saveTingyu() {
-    var id = document.getElementById('tingyu-edit-id').value;
-    var rawTitle = document.getElementById('tingyu-title').value.trim();
-    var content = document.getElementById('tingyu-content').value.trim();
-    var year = document.getElementById('tingyu-year').value;
-    
-    if (!rawTitle) { alert('请输入书名'); return; }
-    if (!year) { alert('请选择年份'); return; }
-    
-    // ★★★ 自动添加书名号 ★★★
-    var title = rawTitle;
-    if (!title.startsWith('《') && !title.startsWith('"') && !title.startsWith('「')) {
-        title = '《' + title + '》';
-    }
-    
-    var data = { 
-        title: title, 
-        content: content, 
-        year: year 
-    };
-    
-    if (id) {
-        await DB.update('tingyu', id, data);
-    } else {
-        await DB.insert('tingyu', data);
-    }
-    closeTingyuForm();
-    await renderTingyu();
-    await refreshDashboard();
-}
-
-async function deleteTingyu(id) {
-    if (!confirm('确定删除？')) return;
-    await DB.delete('tingyu', id);
-    await renderTingyu();
-    await refreshDashboard();
-}
-
-// ============================================================
-// 各西东·语 (CRUD)
-// ============================================================
-async function renderGexi() {
-    var list = await DB.getAll('gexi', { orderBy: 'id' });
-    var tbody = document.getElementById('gexi-list');
-    if (!tbody) return;
-    var html = '';
-    for (var i = 0; i < list.length; i++) {
-        var item = list[i];
-        html += '<tr>';
-        html += '<td>' + (i + 1) + '</td>';
-        html += '<td>' + item.content + '</td>';
-        html += '<td>' + item.date + '</td>';
-        html += '<td class="actions">';
-        html += '<button class="btn" onclick="openGexiEdit(' + item.id + ')">编辑</button>';
-        html += '<button class="btn btn-danger" onclick="deleteGexi(' + item.id + ')">删除</button>';
-        html += '</td>';
-        html += '</tr>';
-    }
-    tbody.innerHTML = html;
-}
-
-function openGexiForm() {
-    document.getElementById('gexiModal').classList.add('show');
-    document.getElementById('gexiModalTitle').textContent = '新增短句';
-    document.getElementById('gexi-edit-id').value = '';
-    document.getElementById('gexi-content').value = '';
-    document.getElementById('gexi-date').value = new Date().toISOString().slice(0, 10).replace(/-/g, '/');
-}
-
-function openGexiEdit(id) {
-    DB.getById('gexi', id).then(function(item) {
-        if (!item) return;
-        document.getElementById('gexiModal').classList.add('show');
-        document.getElementById('gexiModalTitle').textContent = '编辑短句';
-        document.getElementById('gexi-edit-id').value = id;
-        document.getElementById('gexi-content').value = item.content;
-        document.getElementById('gexi-date').value = item.date;
-    });
-}
-
-function closeGexiForm() {
-    document.getElementById('gexiModal').classList.remove('show');
-}
-
-async function saveGexi() {
-    var id = document.getElementById('gexi-edit-id').value;
-    var content = document.getElementById('gexi-content').value.trim();
-    var date = document.getElementById('gexi-date').value.trim();
-    if (!content) { alert('请输入内容'); return; }
-    if (id) {
-        await DB.update('gexi', id, { content: content, date: date });
-    } else {
-        await DB.insert('gexi', { content: content, date: date });
-    }
-    closeGexiForm();
-    await renderGexi();
-    await refreshDashboard();
-}
-
-async function deleteGexi(id) {
-    if (!confirm('确定删除？')) return;
-    await DB.delete('gexi', id);
-    await renderGexi();
-    await refreshDashboard();
 }
 
 // ============================================================
@@ -1201,20 +558,15 @@ async function saveAbout() {
 async function loadSiteSettings() {
     var list = await DB.getAll('site_settings');
     var s = list.length > 0 ? list[0] : {};
-    
     document.getElementById('site-logo-color').value = s.logo_color || '#b89c84';
     document.getElementById('site-name').value = s.site_name || '见南山';
     document.getElementById('site-desc').value = s.site_desc || '春山如黛草如烟';
-
     var themeColor = s.theme_color || s.logo_color || '#b89c84';
     var titleSize = s.title_size || '20';
-    
     document.getElementById('site-theme-color').value = themeColor;
     document.getElementById('site-theme-color-text').value = themeColor;
     document.getElementById('site-title-size').value = titleSize;
-    
     updateTitleSizePreview(titleSize, themeColor);
-
     var logoImage = s.logo_image || '';
     var preview = document.getElementById('logo-preview');
     if (preview) {
@@ -1234,35 +586,6 @@ function updateTitleSizePreview(size, color) {
         preview.style.color = color || '#b89c84';
     }
 }
-
-document.addEventListener('DOMContentLoaded', function() {
-    var colorInput = document.getElementById('site-theme-color');
-    var colorText = document.getElementById('site-theme-color-text');
-    var sizeInput = document.getElementById('site-title-size');
-    var preview = document.getElementById('title-size-preview');
-    
-    if (colorInput && colorText) {
-        colorInput.addEventListener('input', function() {
-            colorText.value = this.value;
-            if (preview) preview.style.color = this.value;
-        });
-        colorText.addEventListener('input', function() {
-            if (this.value.match(/^#[0-9a-fA-F]{6}$/)) {
-                colorInput.value = this.value;
-                if (preview) preview.style.color = this.value;
-            }
-        });
-    }
-    
-    if (sizeInput && preview) {
-        sizeInput.addEventListener('input', function() {
-            var size = parseInt(this.value) || 20;
-            if (size < 14) size = 14;
-            if (size > 36) size = 36;
-            preview.style.fontSize = size + 'px';
-        });
-    }
-});
 
 var uploadInput = document.getElementById('logo-upload');
 if (uploadInput) {
@@ -1298,10 +621,8 @@ async function saveSiteSettings() {
     var logoColor = document.getElementById('site-logo-color').value || '#b89c84';
     var siteName = document.getElementById('site-name').value || '见南山';
     var siteDesc = document.getElementById('site-desc').value || '春山如黛草如烟';
-    
     var themeColor = document.getElementById('site-theme-color').value || '#b89c84';
     var titleSize = document.getElementById('site-title-size').value || '20';
-
     var logoImage = window._tempLogoImage || '';
     if (!logoImage || logoImage.trim() === '') {
         var list = await DB.getAll('site_settings');
@@ -1309,7 +630,6 @@ async function saveSiteSettings() {
             logoImage = list[0].logo_image || '';
         }
     }
-
     var data = {
         logo_color: logoColor,
         logo_image: logoImage,
@@ -1318,7 +638,6 @@ async function saveSiteSettings() {
         theme_color: themeColor,
         title_size: titleSize
     };
-
     var list = await DB.getAll('site_settings');
     if (list.length > 0) {
         await DB.update('site_settings', list[0].id, data);
@@ -1335,15 +654,8 @@ async function saveSiteSettings() {
 async function refreshDashboard() {
     var xingyin = await DB.getAll('xingyin');
     var shinian = await DB.getAll('shinian');
-    var xueye = await DB.getAll('xueye');
-    var tingyu = await DB.getAll('tingyu');
-    var gexi = await DB.getAll('gexi');
-
     document.getElementById('count-xingyin').textContent = xingyin.length;
     document.getElementById('count-shinian').textContent = shinian.length;
-    document.getElementById('count-xueye').textContent = xueye.length;
-    document.getElementById('count-tingyu').textContent = tingyu.length;
-    document.getElementById('count-gexi').textContent = gexi.length;
 }
 
 // ============================================================
@@ -1362,9 +674,6 @@ document.querySelectorAll('.admin-sidebar nav a').forEach(function(link) {
         if (panelId === 'panel-dashboard') await refreshDashboard();
         if (panelId === 'panel-xingyin') await renderXingyin();
         if (panelId === 'panel-shinian') { await renderShinian(); await renderShinianCategories(); }
-        if (panelId === 'panel-xueye') { await renderXueye(); await renderXueyeCategories(); }
-        if (panelId === 'panel-tingyu') await renderTingyu();
-        if (panelId === 'panel-gexi') await renderGexi();
         if (panelId === 'panel-about') await loadAbout();
         if (panelId === 'panel-site') await loadSiteSettings();
     });
@@ -1376,18 +685,12 @@ document.querySelectorAll('.admin-sidebar nav a').forEach(function(link) {
 async function initAdmin() {
     var emailEl = document.getElementById('currentUserEmail');
     if (emailEl) emailEl.textContent = AUTH.getUserEmail() || '管理员';
-
     await refreshDashboard();
     await renderXingyin();
     await renderShinian();
     await renderShinianCategories();
-    await renderXueye();
-    await renderXueyeCategories();
-    await renderTingyu();
-    await renderGexi();
     await loadAbout();
     await loadSiteSettings();
-    generateYearOptions();
 }
 
 checkLogin();
