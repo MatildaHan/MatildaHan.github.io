@@ -78,13 +78,11 @@ body {
     background: #f3efe9;
 }
 
-/* ===== 所有前端页面版心 1000px ===== */
 .container {
     width: 1000px;
     margin: 0 auto;
 }
 
-/* ===== 面包屑（隐藏） ===== */
 .breadcrumb {
     display: none;
 }
@@ -101,7 +99,7 @@ body {
     100% { opacity: 1; transform: translateY(0); }
 }
 
-/* ===== 首页样式 - 三列不等宽 ===== */
+/* ===== 首页样式 ===== */
 .home-row {
     display: grid;
     grid-template-columns: 200px 1fr 320px;
@@ -111,7 +109,6 @@ body {
     margin: 0 auto;
 }
 
-/* 左侧列 - 居中 */
 .home-left {
     text-align: center;
     padding: 0 10px;
@@ -140,7 +137,6 @@ body {
     margin: 10px auto 0;
 }
 
-/* 中间列 - 图片居中 */
 .center-image {
     display: flex;
     align-items: center;
@@ -168,7 +164,6 @@ body {
     background-color: transparent !important;
 }
 
-/* 右侧列 */
 #homeLatest {
     display: flex;
     flex-direction: column;
@@ -186,7 +181,6 @@ body {
     width: 100%;
 }
 
-/* 第一行：文章标题 - 18px 加粗 主题色 */
 #homeLatest .list-item .item-title {
     font-size: 18px;
     font-weight: 700;
@@ -201,7 +195,6 @@ body {
     opacity: 0.7;
 }
 
-/* 第二行：文章内容 - 13px #666666 不加粗 */
 #homeLatest .list-item .item-desc {
     font-size: 13px;
     color: #666666;
@@ -216,7 +209,6 @@ body {
     font-family: "Noto Serif SC", "Songti SC", "SimSun", serif;
 }
 
-/* 第三行：分类标签 + 日期 */
 #homeLatest .list-item .item-footer {
     display: flex;
     align-items: center;
@@ -244,8 +236,7 @@ body {
     display: none !important;
 }
 
-/* ===== 通用列表（行吟册·絮 / 各西东·语 / 十年灯·文系列详情） ===== */
-/* 垂直居中对齐，内容左对齐 */
+/* ===== 通用列表 ===== */
 .article-item {
     display: flex;
     align-items: center;
@@ -280,7 +271,7 @@ body {
     text-decoration: underline;
 }
 
-/* ===== 十年灯·文 / 雪夜舟·图 系列卡片 ===== */
+/* ===== 十年灯·文 系列卡片 ===== */
 .card-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -325,91 +316,6 @@ body {
     margin-top: auto;
 }
 .card-link:hover {
-    opacity: 0.7;
-}
-
-/* ===== 雪夜舟·图 图集 ===== */
-.gallery-group {
-    display: grid;
-    grid-template-columns: 110px 1fr;
-    padding: 20px 0;
-    border-bottom: 1px solid #f3efe9;
-    align-items: start;
-}
-.group-date {
-    font-size: 14px;
-    color: #666666;
-    padding-top: 8px;
-    font-family: "Noto Serif SC", "Songti SC", "SimSun", serif;
-}
-.img-row {
-    display: grid;
-    grid-template-columns: repeat(6, 1fr);
-    gap: 16px;
-}
-.img-row .img-wrap {
-    aspect-ratio: 1 / 0.8;
-    overflow: hidden;
-    background: #f3efe9;
-}
-.img-row .img-wrap img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-/* ===== 听雨眠·记 ===== */
-.year-block {
-    display: flex;
-    align-items: stretch;
-    gap: 40px;
-    margin-bottom: 40px;
-}
-.year-card {
-    width: 130px;
-    height: 160px;
-    border: 1px solid #c9b39f;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    padding: 16px;
-    text-align: center;
-    flex-shrink: 0;
-}
-.year-num {
-    font-size: 20px;
-    font-weight: 700;
-    font-family: "Noto Serif SC", "Songti SC", "SimSun", serif;
-    margin-bottom: 6px;
-}
-.year-desc {
-    font-size: 14px;
-    color: #666666;
-    font-weight: 400;
-    font-family: "Noto Serif SC", "Songti SC", "SimSun", serif;
-}
-.year-link {
-    display: none !important;
-}
-
-.book-wrap {
-    flex: 1;
-    display: flex;
-    flex-wrap: wrap;
-    align-content: flex-start;
-    gap: 10px 20px;
-    padding-top: 0;
-}
-.book-item {
-    font-size: 18px;
-    font-weight: 700;
-    font-family: "Noto Serif SC", "Songti SC", "SimSun", serif;
-    text-decoration: none;
-    cursor: pointer;
-    white-space: nowrap;
-}
-.book-item:hover {
     opacity: 0.7;
 }
 
@@ -538,8 +444,6 @@ body {
     #homeLatest .list-item .item-desc { font-size: 13px; }
     #homeLatest .list-item .item-footer { font-size: 12px; gap: 14px; }
     .card-grid { grid-template-columns: repeat(2, 1fr); }
-    .img-row { grid-template-columns: repeat(3, 1fr); }
-    .book-wrap { grid-template-columns: repeat(2, 1fr); }
     .detail-grid { grid-template-columns: 1fr; gap: 40px; }
     .sidebar { order: 2; margin-top: 20px; }
     .header-wrap, .container { padding: 0 30px; }
@@ -558,9 +462,7 @@ body {
         min-width: auto;
         white-space: normal;
     }
-    .card-grid, .book-wrap, .img-row { grid-template-columns: 1fr; }
-    .year-block { flex-direction: column; gap: 20px; }
-    .year-card { width: 100%; height: auto; padding: 16px; }
+    .card-grid { grid-template-columns: 1fr; }
     .home-row { gap: 30px; max-width: 100%; }
     .home-left { width: 100%; padding: 0; }
     .center-image { width: 100%; display: flex; justify-content: center; }
@@ -575,11 +477,4 @@ body {
     .detail-grid { grid-template-columns: 1fr; gap: 24px; }
     .sidebar { width: 100%; }
     .series-card { height: auto; min-height: 160px; }
-    .book-wrap {
-        gap: 8px 12px;
-    }
-    .book-item {
-        font-size: 16px;
-        white-space: normal;
-    }
 }
