@@ -883,6 +883,7 @@ async function saveXueyeItem() {
     var date = document.getElementById('xueye-date').value.trim();
     if (!category) { alert('请选择分类'); return; }
 
+    // 获取已有的图片 URL
     var existingImages = [];
     if (id) {
         var existing = await DB.getById('xueye', id);
@@ -891,25 +892,39 @@ async function saveXueyeItem() {
         }
     }
 
+    // ★★★ 上传新图片到 Storage ★★★
     var uploadedUrls = [];
     if (xueyeTempFiles.length > 0) {
-        await STORAGE.ensureBucket();
-        var folder = 'xueye/' + (id || Date.now());
-        uploadedUrls = await STORAGE.uploadMultiple(xueyeTempFiles, folder);
-        console.log('上传完成，图片 URLs:', uploadedUrls);
+        try {
+            await STORAGE.ensureBucket();
+            var folder = 'xueye/' + (id || Date.now());
+            uploadedUrls = await STORAGE.uploadMultiple(xueyeTempFiles, folder);
+            console.log('上传完成，图片 URLs:', uploadedUrls);
+        } catch (e) {
+            alert('图片上传失败: ' + e.message);
+            return;
+        }
     }
 
-    var newImages = existingImages.concat(uploadedUrls);
-    
-    newImages = newImages.filter(function(url) {
-        return url && !url.startsWith('blob:') && !url.startsWith('data:');
+    // ★★★ 合并所有图片 URL，过滤无效值 ★★★
+    var allImages = existingImages.concat(uploadedUrls);
+    allImages = allImages.filter(function(url) {
+        return url && typeof url === 'string' && url.trim() !== '' && url.startsWith('http');
     });
+
+    // ★★★ 去重 ★★★
+    var uniqueImages = [];
+    for (var i = 0; i < allImages.length; i++) {
+        if (uniqueImages.indexOf(allImages[i]) === -1) {
+            uniqueImages.push(allImages[i]);
+        }
+    }
 
     var data = {
         category: category,
         date: date,
-        images: newImages,
-        count: newImages.length
+        images: uniqueImages,
+        count: uniqueImages.length
     };
 
     if (id) {
@@ -918,11 +933,14 @@ async function saveXueyeItem() {
         await DB.insert('xueye', data);
     }
     
+    // 清空临时数据
     xueyeTempFiles = [];
     xueyeTempUrls = [];
     closeXueyeItemForm();
     await renderXueye();
     await refreshDashboard();
+    // ★★★ 刷新首页 ★★★
+    renderHome();
 }
 
 async function deleteXueyeItem(id) {
