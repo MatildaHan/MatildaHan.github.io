@@ -247,6 +247,7 @@
                 </div>
             </div>
 
+            <!-- 图片组编辑弹窗（使用 Storage） -->
             <div class="modal-overlay" id="xueyeItemModal">
                 <div class="modal-box">
                     <button class="modal-close" onclick="closeXueyeItemForm()">×</button>
@@ -255,7 +256,7 @@
                     <div class="form-group"><label>分类</label><select id="xueye-category-select"></select></div>
                     <div class="form-group"><label>图片上传</label>
                         <input type="file" id="xueye-image-upload" accept="image/*" multiple>
-                        <p style="font-size:12px;color:#999;margin-top:4px;">可多选图片，按实际上传数量统计</p>
+                        <p style="font-size:12px;color:#999;margin-top:4px;">可多选图片，上传后自动存储到 Supabase Storage</p>
                     </div>
                     <div id="xueye-image-preview" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;"></div>
                     <div class="form-group"><label>日期</label><input type="text" id="xueye-date"></div>
@@ -420,9 +421,6 @@ document.getElementById('login-username').addEventListener('keydown', function(e
 // ============================================================
 // 分类管理 - 十年灯·文
 // ============================================================
-// 分类数据现在存放在 Supabase 的 shinian_categories 表中，
-// 不再是 localStorage——这样在其他设备/浏览器登录后台也能看到
-// 同一份分类列表。
 var _shinianCategoriesCache = [];
 
 async function getShinianCategories() {
@@ -741,9 +739,10 @@ async function deleteShinianCategory(id) {
 }
 
 // ============================================================
-// 雪夜舟·图 (CRUD) - 图片上传
+// 雪夜舟·图 (CRUD) - 使用 Storage 存储图片
 // ============================================================
-var xueyeTempImages = [];
+var xueyeTempFiles = [];
+var xueyeTempUrls = [];
 
 function openXueyeItemForm() {
     document.getElementById('xueyeItemModal').classList.add('show');
@@ -753,7 +752,8 @@ function openXueyeItemForm() {
     document.getElementById('xueye-date').value = new Date().toISOString().slice(0, 10).replace(/-/g, '/');
     document.getElementById('xueye-image-upload').value = '';
     document.getElementById('xueye-image-preview').innerHTML = '';
-    xueyeTempImages = [];
+    xueyeTempFiles = [];
+    xueyeTempUrls = [];
     updateXueyeCategorySelect();
     setupXueyeImageUpload();
 }
@@ -768,19 +768,33 @@ function openXueyeItemEdit(id) {
         document.getElementById('xueye-date').value = item.date;
         document.getElementById('xueye-image-upload').value = '';
         document.getElementById('xueye-image-preview').innerHTML = '';
-        xueyeTempImages = [];
-        // 如果有存储的图片，显示预览
+        xueyeTempFiles = [];
+        xueyeTempUrls = [];
+        
         if (item.images && item.images.length > 0) {
             var previewContainer = document.getElementById('xueye-image-preview');
             for (var i = 0; i < item.images.length; i++) {
+                var imgUrl = item.images[i];
                 var imgDiv = document.createElement('div');
                 imgDiv.style.cssText = 'width:80px;height:60px;border-radius:4px;overflow:hidden;border:1px solid #e0d6cc;position:relative;';
                 var img = document.createElement('img');
-                img.src = item.images[i];
+                img.src = imgUrl;
                 img.style.cssText = 'width:100%;height:100%;object-fit:cover;';
                 imgDiv.appendChild(img);
+                
+                var removeBtn = document.createElement('button');
+                removeBtn.textContent = '×';
+                removeBtn.style.cssText = 'position:absolute;top:-6px;right:-6px;width:18px;height:18px;border-radius:50%;border:none;background:#c0392b;color:#fff;font-size:12px;cursor:pointer;line-height:18px;text-align:center;padding:0;';
+                removeBtn.onclick = function() {
+                    var idx = xueyeTempUrls.indexOf(imgUrl);
+                    if (idx > -1) {
+                        xueyeTempUrls.splice(idx, 1);
+                    }
+                    imgDiv.remove();
+                };
+                imgDiv.appendChild(removeBtn);
                 previewContainer.appendChild(imgDiv);
-                xueyeTempImages.push(item.images[i]);
+                xueyeTempUrls.push(imgUrl);
             }
         }
         updateXueyeCategorySelect();
@@ -808,30 +822,34 @@ function handleXueyeImageUpload(e) {
     for (var i = 0; i < files.length; i++) {
         var file = files[i];
         if (!file.type.startsWith('image/')) continue;
-        var reader = new FileReader();
-        reader.onload = function(event) {
-            var base64 = event.target.result;
-            xueyeTempImages.push(base64);
-            var imgDiv = document.createElement('div');
-            imgDiv.style.cssText = 'width:80px;height:60px;border-radius:4px;overflow:hidden;border:1px solid #e0d6cc;position:relative;';
-            var img = document.createElement('img');
-            img.src = base64;
-            img.style.cssText = 'width:100%;height:100%;object-fit:cover;';
-            imgDiv.appendChild(img);
-            var removeBtn = document.createElement('button');
-            removeBtn.textContent = '×';
-            removeBtn.style.cssText = 'position:absolute;top:-6px;right:-6px;width:18px;height:18px;border-radius:50%;border:none;background:#c0392b;color:#fff;font-size:12px;cursor:pointer;line-height:18px;text-align:center;padding:0;';
-            removeBtn.onclick = function() {
-                var idx = xueyeTempImages.indexOf(base64);
-                if (idx > -1) {
-                    xueyeTempImages.splice(idx, 1);
+        
+        xueyeTempFiles.push(file);
+        
+        var objectUrl = URL.createObjectURL(file);
+        xueyeTempUrls.push(objectUrl);
+        
+        var imgDiv = document.createElement('div');
+        imgDiv.style.cssText = 'width:80px;height:60px;border-radius:4px;overflow:hidden;border:1px solid #e0d6cc;position:relative;';
+        var img = document.createElement('img');
+        img.src = objectUrl;
+        img.style.cssText = 'width:100%;height:100%;object-fit:cover;';
+        imgDiv.appendChild(img);
+        
+        var removeBtn = document.createElement('button');
+        removeBtn.textContent = '×';
+        removeBtn.style.cssText = 'position:absolute;top:-6px;right:-6px;width:18px;height:18px;border-radius:50%;border:none;background:#c0392b;color:#fff;font-size:12px;cursor:pointer;line-height:18px;text-align:center;padding:0;';
+        removeBtn.onclick = function() {
+            var idx = xueyeTempUrls.indexOf(objectUrl);
+            if (idx > -1) {
+                xueyeTempUrls.splice(idx, 1);
+                if (idx < xueyeTempFiles.length) {
+                    xueyeTempFiles.splice(idx, 1);
                 }
-                imgDiv.remove();
-            };
-            imgDiv.appendChild(removeBtn);
-            previewContainer.appendChild(imgDiv);
+            }
+            imgDiv.remove();
         };
-        reader.readAsDataURL(file);
+        imgDiv.appendChild(removeBtn);
+        previewContainer.appendChild(imgDiv);
     }
     e.target.value = '';
 }
@@ -864,7 +882,6 @@ async function saveXueyeItem() {
     var date = document.getElementById('xueye-date').value.trim();
     if (!category) { alert('请选择分类'); return; }
 
-    // 获取已有的图片（编辑时从 DB 读取）
     var existingImages = [];
     if (id) {
         var existing = await DB.getById('xueye', id);
@@ -872,14 +889,26 @@ async function saveXueyeItem() {
             existingImages = existing.images;
         }
     }
-    // 合并已有图片和新上传图片
-    var allImages = existingImages.concat(xueyeTempImages);
+
+    var uploadedUrls = [];
+    if (xueyeTempFiles.length > 0) {
+        await STORAGE.ensureBucket();
+        var folder = 'xueye/' + (id || Date.now());
+        uploadedUrls = await STORAGE.uploadMultiple(xueyeTempFiles, folder);
+        console.log('上传完成，图片 URLs:', uploadedUrls);
+    }
+
+    var newImages = existingImages.concat(uploadedUrls);
+    
+    newImages = newImages.filter(function(url) {
+        return url && !url.startsWith('blob:') && !url.startsWith('data:');
+    });
 
     var data = {
         category: category,
         date: date,
-        images: allImages,
-        count: allImages.length
+        images: newImages,
+        count: newImages.length
     };
 
     if (id) {
@@ -887,8 +916,9 @@ async function saveXueyeItem() {
     } else {
         await DB.insert('xueye', data);
     }
-    // 清空临时图片数组
-    xueyeTempImages = [];
+    
+    xueyeTempFiles = [];
+    xueyeTempUrls = [];
     closeXueyeItemForm();
     await renderXueye();
     await refreshDashboard();
