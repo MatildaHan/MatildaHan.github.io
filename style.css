@@ -55,10 +55,11 @@ body {
     margin-left: 8px;
     font-family: "Noto Serif SC", "Songti SC", "SimSun", serif;
 }
+
 /* ===== 导航页签样式 ===== */
 .nav-list {
     display: flex;
-    gap: 8px;
+    gap: 6px;
     flex-wrap: wrap;
     align-items: center;
 }
@@ -71,12 +72,15 @@ body {
     cursor: pointer;
     font-family: "Noto Serif SC", "Songti SC", "SimSun", serif;
     position: relative;
-    /* ★★★ 默认只显示图标 ★★★ */
     border-radius: 4px;
     background: transparent;
+    /* ★★★ 固定宽度 ★★★ */
+    width: 80px;
+    text-align: center;
+    display: inline-block;
 }
 
-/* ★★★ 默认：只显示图标，隐藏文字 ★★★ */
+/* 默认：只显示图标 */
 .nav-list a .nav-text {
     display: none;
 }
@@ -84,22 +88,24 @@ body {
     display: inline;
 }
 
-/* ★★★ 悬停：显示颜色底框 + 文字 ★★★ */
+/* ★★★ 悬停：只显示文字，不显示图标 ★★★ */
 .nav-list a:hover {
     background: #f3efe9;
     color: #6d5745;
+    font-weight: 700;
 }
 .nav-list a:hover .nav-text {
     display: inline;
 }
 .nav-list a:hover .nav-icon {
-    display: inline;
+    display: none;  /* 悬停时隐藏图标 */
 }
 
 /* ★★★ 选中：图标 + 下划线 ★★★ */
 .nav-list a.active {
     color: #6d5745;
     background: transparent;
+    font-weight: 400;
 }
 .nav-list a.active .nav-text {
     display: none;
@@ -119,11 +125,13 @@ body {
     transition: 0.3s ease;
 }
 
+/* ===== 所有前端页面版心 1000px ===== */
 .container {
     width: 1000px;
     margin: 0 auto;
 }
 
+/* ===== 面包屑（隐藏） ===== */
 .breadcrumb {
     display: none;
 }
@@ -140,7 +148,7 @@ body {
     100% { opacity: 1; transform: translateY(0); }
 }
 
-/* ===== 首页样式 ===== */
+/* ===== 首页样式 - 三列不等宽 ===== */
 .home-row {
     display: grid;
     grid-template-columns: 200px 1fr 320px;
@@ -150,6 +158,7 @@ body {
     margin: 0 auto;
 }
 
+/* 左侧列 - 居中 */
 .home-left {
     text-align: center;
     padding: 0 10px;
@@ -160,7 +169,7 @@ body {
     width: 100%;
 }
 .home-left .post-title {
-    font-size: 20px;
+    font-size: 18px;
     font-weight: 700;
     font-family: "Noto Serif SC", "Songti SC", "SimSun", serif;
     margin-bottom: 24px;
@@ -178,6 +187,7 @@ body {
     margin: 10px auto 0;
 }
 
+/* 中间列 - 图片居中 */
 .center-image {
     display: flex;
     align-items: center;
@@ -205,6 +215,7 @@ body {
     background-color: transparent !important;
 }
 
+/* 右侧列 */
 #homeLatest {
     display: flex;
     flex-direction: column;
@@ -222,6 +233,7 @@ body {
     width: 100%;
 }
 
+/* 第一行：文章标题 - 18px 加粗 主题色 */
 #homeLatest .list-item .item-title {
     font-size: 18px;
     font-weight: 700;
@@ -236,6 +248,7 @@ body {
     opacity: 0.7;
 }
 
+/* 第二行：文章内容 - 13px #666666 不加粗 */
 #homeLatest .list-item .item-desc {
     font-size: 13px;
     color: #666666;
@@ -250,6 +263,7 @@ body {
     font-family: "Noto Serif SC", "Songti SC", "SimSun", serif;
 }
 
+/* 第三行：分类标签 + 日期 */
 #homeLatest .list-item .item-footer {
     display: flex;
     align-items: center;
@@ -277,7 +291,7 @@ body {
     display: none !important;
 }
 
-/* ===== 通用列表 ===== */
+/* ===== 通用列表（行吟册·絮 / 十年灯·文系列详情） ===== */
 .article-item {
     display: flex;
     align-items: center;
@@ -296,7 +310,7 @@ body {
     min-width: 100px;
 }
 .article-text {
-    font-size: 20px;
+    font-size: 18px;
     font-weight: 700;
     font-family: "Noto Serif SC", "Songti SC", "SimSun", serif;
     text-align: left;
@@ -313,6 +327,11 @@ body {
 }
 
 /* ===== 十年灯·文 系列卡片 ===== */
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+}
 .series-card {
     border: 1px solid #c9b39f;
     padding: 24px 20px;
@@ -326,7 +345,7 @@ body {
     font-family: "Noto Serif SC", "Songti SC", "SimSun", serif;
 }
 .card-title {
-    font-size: 20px;
+    font-size: 18px;
     font-weight: 700;
     font-family: "Noto Serif SC", "Songti SC", "SimSun", serif;
     margin-bottom: 10px;
@@ -434,7 +453,7 @@ body {
     margin-bottom: 0;
 }
 .sidebar-year {
-    font-size: 20px;
+    font-size: 18px;
     font-weight: 700;
     font-family: "Noto Serif SC", "Songti SC", "SimSun", serif;
     margin-bottom: 14px;
@@ -442,7 +461,7 @@ body {
 
 /* ===== 山野渔夫 ===== */
 .about-text p {
-    font-size: 20px;
+    font-size: 18px;
     font-weight: 700;
     font-family: "Noto Serif SC", "Songti SC", "SimSun", serif;
     margin-bottom: 8px;
