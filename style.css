@@ -546,3 +546,7 @@ body {
     .detail-grid { grid-template-columns: 1fr; gap: 24px; }
     .sidebar { width: 100%; }
 }
+/* 隐藏面包屑 */
+.breadcrumb {
+    display: none !important;
+}
