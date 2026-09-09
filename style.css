@@ -55,27 +55,68 @@ body {
     margin-left: 8px;
     font-family: "Noto Serif SC", "Songti SC", "SimSun", serif;
 }
+/* ===== 导航页签样式 ===== */
 .nav-list {
     display: flex;
-    gap: 18px;
+    gap: 8px;
     flex-wrap: wrap;
+    align-items: center;
 }
 .nav-list a {
     font-size: 13px;
     color: #9c836e;
     text-decoration: none;
-    padding: 4px 10px;
-    transition: 0.2s;
+    padding: 6px 12px;
+    transition: 0.3s ease;
     cursor: pointer;
     font-family: "Noto Serif SC", "Songti SC", "SimSun", serif;
+    position: relative;
+    /* ★★★ 默认只显示图标 ★★★ */
+    border-radius: 4px;
+    background: transparent;
 }
-.nav-list a.active {
-    background: #9c836e;
-    color: #fff;
+
+/* ★★★ 默认：只显示图标，隐藏文字 ★★★ */
+.nav-list a .nav-text {
+    display: none;
 }
-.nav-list a:hover:not(.active) {
-    color: #6d5745;
+.nav-list a .nav-icon {
+    display: inline;
+}
+
+/* ★★★ 悬停：显示颜色底框 + 文字 ★★★ */
+.nav-list a:hover {
     background: #f3efe9;
+    color: #6d5745;
+}
+.nav-list a:hover .nav-text {
+    display: inline;
+}
+.nav-list a:hover .nav-icon {
+    display: inline;
+}
+
+/* ★★★ 选中：图标 + 下划线 ★★★ */
+.nav-list a.active {
+    color: #6d5745;
+    background: transparent;
+}
+.nav-list a.active .nav-text {
+    display: none;
+}
+.nav-list a.active .nav-icon {
+    display: inline;
+}
+.nav-list a.active::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60%;
+    height: 2px;
+    background: #6d5745;
+    transition: 0.3s ease;
 }
 
 .container {
