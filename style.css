@@ -471,13 +471,76 @@ body {
     margin-bottom: 8px;
     color: #2A2A28;
 }
+
+/* ★★★ 分割线 ★★★ */
+.about-divider {
+    border: none;
+    border-top: 1px solid #e0d6cc;
+    margin: 40px 0 32px 0;
+}
+
+/* ★★★ 站点信息卡片 ★★★ */
+.about-links {
+    padding: 0;
+}
+.links-title {
+    font-size: 15px;
+    color: #2A2A28;
+    margin-bottom: 16px;
+    font-weight: 400;
+}
+.site-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    border: 1px solid #e0d6cc;
+    background: #ffffff;
+}
+.site-info-item {
+    display: flex;
+    align-items: stretch;
+    border-bottom: 1px solid #f0ebe6;
+}
+.site-info-item:last-child {
+    border-bottom: none;
+}
+.site-info-label {
+    display: flex;
+    align-items: center;
+    min-width: 80px;
+    padding: 10px 16px;
+    color: #666666;
+    font-size: 13px;
+    font-weight: 400;
+    background: #f8f5f1;
+    border-right: 1px solid #e0d6cc;
+    flex-shrink: 0;
+}
+.site-info-value {
+    display: flex;
+    align-items: center;
+    padding: 10px 16px;
+    color: #2A2A28;
+    font-size: 14px;
+    font-weight: 400;
+    flex: 1;
+    word-break: break-all;
+    background: #fcfafa;
+}
+.site-info-value a {
+    color: #2A2A28;
+    text-decoration: none;
+}
+.site-info-value a:hover {
+    text-decoration: underline;
+}
+
 .date-footer {
     margin-top: 120px;
     font-size: 13px;
     color: #999999;
     font-family: "Noto Serif SC", "Songti SC", "SimSun", serif;
 }
-
 /* ===== 响应式 ===== */
 @media (max-width: 1020px) {
     .header-wrap,
