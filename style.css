@@ -11,7 +11,7 @@ body {
     line-height: 1.8;
 }
 .site-header {
-    border-bottom: 1px solid #f3efe9;
+    border-bottom: none;
     padding: 30px 0;
 }
 .header-wrap {
