@@ -74,7 +74,6 @@ body {
     position: relative;
     border-radius: 4px;
     background: transparent;
-    /* ★★★ 固定宽度 ★★★ */
     width: 80px;
     text-align: center;
     display: inline-block;
@@ -88,7 +87,7 @@ body {
     display: inline;
 }
 
-/* ★★★ 悬停：只显示文字，不显示图标 ★★★ */
+/* 悬停：只显示文字，不显示图标 */
 .nav-list a:hover {
     background: #f3efe9;
     color: #6d5745;
@@ -98,10 +97,10 @@ body {
     display: inline;
 }
 .nav-list a:hover .nav-icon {
-    display: none;  /* 悬停时隐藏图标 */
+    display: none;
 }
 
-/* ★★★ 选中：图标 + 下划线 ★★★ */
+/* 选中：图标 + 下划线 */
 .nav-list a.active {
     color: #6d5745;
     background: transparent;
@@ -291,7 +290,7 @@ body {
     display: none !important;
 }
 
-/* ===== 通用列表（行吟册·絮 / 十年灯·文系列详情） ===== */
+/* ===== 通用列表（行吟册 / 十年灯系列详情） ===== */
 .article-item {
     display: flex;
     align-items: center;
@@ -326,7 +325,7 @@ body {
     text-decoration: underline;
 }
 
-/* ===== 十年灯·文 系列卡片 ===== */
+/* ===== 十年灯 系列卡片 ===== */
 .card-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -507,6 +506,7 @@ body {
 @media (max-width: 768px) {
     .header-wrap { flex-direction: column; align-items: flex-start; }
     .nav-list { width: 100%; justify-content: flex-start; gap: 8px; }
+    .nav-list a { width: 60px; padding: 6px 8px; }
     .article-item { 
         flex-direction: column;
         align-items: flex-start;
