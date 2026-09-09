@@ -50,7 +50,7 @@ body {
     font-weight: 700;
 }
 .logo-slogan {
-    font-size: 15px;
+    font-size: 14px;
     color: #2A2A28;
     margin-left: 8px;
     font-family: "Noto Serif SC", "Songti SC", "SimSun", serif;
@@ -174,7 +174,7 @@ body {
     color: #2A2A28;
 }
 .home-left .post-date {
-    font-size: 13px;
+    font-size: 12px;
     color: #999999;
     font-family: "Noto Serif SC", "Songti SC", "SimSun", serif;
 }
@@ -268,7 +268,7 @@ body {
     align-items: center;
     gap: 16px;
     font-size: 12px;
-    color: #a8917e;
+    color: #2A2A28;
     margin-top: 2px;
     flex-wrap: wrap;
     font-family: "Noto Serif SC", "Songti SC", "SimSun", serif;
