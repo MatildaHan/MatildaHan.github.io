@@ -3,7 +3,7 @@
 // ============================================================
 
 const SUPABASE_URL = 'https://phvayjkoephsyavkjcuk.supabase.co';
-const SUPABASE_ANON_KEY = 'sb_publishable_uunGD7DLA9YWwtkl5mgEvw_Z95hid4l';
+const SUPABASE_ANON_KEY = 'sb_publishable_eLqmBExr2Z2GFx9FFnOjww_i3B5t_tf';
 
 // ============================================================
 // 鉴权模块（AUTH）
