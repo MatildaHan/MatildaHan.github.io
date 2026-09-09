@@ -31,7 +31,6 @@ body {
 .logo-block {
     width: 42px;
     height: 42px;
-    border-radius: 4px;
     flex-shrink: 0;
     overflow: hidden;
     background-color: #b89c84;
@@ -43,7 +42,6 @@ body {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    border-radius: 4px;
 }
 .logo-name {
     font-size: 22px;
@@ -70,14 +68,6 @@ body {
     transition: 0.2s;
     cursor: pointer;
     font-family: "Noto Serif SC", "Songti SC", "SimSun", serif;
-}
-.nav-list a.active {
-    background: #9c836e;
-    color: #fff;
-}
-.nav-list a:hover:not(.active) {
-    color: #6d5745;
-    background: #f3efe9;
 }
 .nav-list a.active {
     background: #9c836e;
@@ -175,7 +165,6 @@ body {
     background-color: #b89c84;
     transform: rotate(3deg);
     transition: transform 0.4s ease;
-    border-radius: 4px;
     margin: 0 auto;
     background-size: cover;
     background-position: center;
@@ -254,7 +243,6 @@ body {
     display: inline-block;
     padding: 0;
     background: none;
-    border-radius: 0;
 }
 #homeLatest .list-item .item-footer .item-time {
     font-size: 11px;
@@ -301,7 +289,6 @@ body {
 }
 .series-card {
     border: 1px solid #c9b39f;
-    border-radius: 12px;
     padding: 24px 20px;
 }
 .card-index {
@@ -354,7 +341,6 @@ body {
 }
 .img-row .img-wrap {
     aspect-ratio: 1 / 0.8;
-    border-radius: 4px;
     overflow: hidden;
     background: #f3efe9;
 }
@@ -375,7 +361,6 @@ body {
     width: 130px;
     height: 160px;
     border: 1px solid #c9b39f;
-    border-radius: 16px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -452,7 +437,6 @@ body {
     font-size: 13px;
     font-family: "Noto Serif SC", "Songti SC", "SimSun", serif;
     cursor: pointer;
-    border-radius: 4px;
     margin-top: 40px;
 }
 .back-btn:hover {
