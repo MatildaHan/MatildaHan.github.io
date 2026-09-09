@@ -422,8 +422,7 @@ document.getElementById('login-username').addEventListener('keydown', function(e
 // ============================================================
 // 分类数据现在存放在 Supabase 的 shinian_categories 表中，
 // 不再是 localStorage——这样在其他设备/浏览器登录后台也能看到
-// 同一份分类列表。首次使用请在 Supabase 里为该表建好结构
-// （id / name / desc）并按需插入初始分类。
+// 同一份分类列表。
 var _shinianCategoriesCache = [];
 
 async function getShinianCategories() {
@@ -440,7 +439,7 @@ async function renderShinianCategories() {
         var item = list[i];
         html += '<tr>';
         html += '<td><strong>' + item.name + '</strong></td>';
-        html += '<td>' + (item.desc || '') + '</td>';
+        html += '<td>' + (item.description || '') + '</td>';
         html += '<td class="actions">';
         html += '<button class="btn" onclick="openShinianCategoryEdit(' + item.id + ')">编辑</button>';
         html += '<button class="btn btn-danger" onclick="deleteShinianCategory(' + item.id + ')">删除</button>';
@@ -465,7 +464,6 @@ function updateShinianCategorySelect() {
 // ============================================================
 // 分类管理 - 雪夜舟·图
 // ============================================================
-// 同上：分类数据存放在 Supabase 的 xueye_categories 表中
 var _xueyeCategoriesCache = [];
 
 async function getXueyeCategories() {
@@ -482,7 +480,7 @@ async function renderXueyeCategories() {
         var item = list[i];
         html += '<tr>';
         html += '<td><strong>' + item.name + '</strong></td>';
-        html += '<td>' + (item.desc || '') + '</td>';
+        html += '<td>' + (item.description || '') + '</td>';
         html += '<td class="actions">';
         html += '<button class="btn" onclick="openXueyeCategoryEdit(' + item.id + ')">编辑</button>';
         html += '<button class="btn btn-danger" onclick="deleteXueyeCategory(' + item.id + ')">删除</button>';
@@ -711,7 +709,7 @@ function openShinianCategoryEdit(id) {
     document.getElementById('shinianCategoryModalTitle').textContent = '编辑分类';
     document.getElementById('shinian-category-edit-id').value = id;
     document.getElementById('shinian-category-name').value = item.name;
-    document.getElementById('shinian-category-desc-input').value = item.desc || '';
+    document.getElementById('shinian-category-desc-input').value = item.description || '';
 }
 
 function closeShinianCategoryForm() {
@@ -726,9 +724,9 @@ async function saveShinianCategory() {
 
     if (!id) {
         if (_shinianCategoriesCache.find(c => c.name === name)) { alert('分类已存在'); return; }
-        await DB.insert('shinian_categories', { name: name, desc: desc });
+        await DB.insert('shinian_categories', { name: name, description: desc });
     } else {
-        await DB.update('shinian_categories', id, { name: name, desc: desc });
+        await DB.update('shinian_categories', id, { name: name, description: desc });
     }
     closeShinianCategoryForm();
     await renderShinianCategories();
@@ -921,7 +919,7 @@ function openXueyeCategoryEdit(id) {
     document.getElementById('xueyeCategoryModalTitle').textContent = '编辑分类';
     document.getElementById('xueye-category-edit-id').value = id;
     document.getElementById('xueye-category-name').value = item.name;
-    document.getElementById('xueye-category-desc-input').value = item.desc || '';
+    document.getElementById('xueye-category-desc-input').value = item.description || '';
 }
 
 function closeXueyeCategoryForm() {
@@ -936,9 +934,9 @@ async function saveXueyeCategory() {
 
     if (!id) {
         if (_xueyeCategoriesCache.find(c => c.name === name)) { alert('分类已存在'); return; }
-        await DB.insert('xueye_categories', { name: name, desc: desc });
+        await DB.insert('xueye_categories', { name: name, description: desc });
     } else {
-        await DB.update('xueye_categories', id, { name: name, desc: desc });
+        await DB.update('xueye_categories', id, { name: name, description: desc });
     }
     closeXueyeCategoryForm();
     await renderXueyeCategories();
@@ -1248,10 +1246,6 @@ async function saveSiteSettings() {
 
 // ============================================================
 // 总览数据刷新
-// ------------------------------------------------------------
-// 改为使用 DB.getAll（真正请求 Supabase），不再用 DB.get 读取
-// 本地 localStorage 缓存——之前的写法会导致总览页的数字和实际
-// 保存到 Supabase 的数据对不上。
 // ============================================================
 async function refreshDashboard() {
     var xingyin = await DB.getAll('xingyin');
@@ -1293,13 +1287,6 @@ document.querySelectorAll('.admin-sidebar nav a').forEach(function(link) {
 
 // ============================================================
 // 初始化
-// ------------------------------------------------------------
-// 注：之前这里还调用了 renderHome() / updateLogo() /
-// renderTingyuYears() 三个函数，但那是前台 index.html 专用的
-// 渲染逻辑（操作的是 #homeTitle / #siteName / #tingyuYears 等
-// 只存在于 index.html 里的 DOM 节点），被误粘贴进了 admin.html。
-// 后台页面本身没有这些元素，调用它们不会报错但完全无效，
-// 属于死代码，这里一并删除。
 // ============================================================
 async function initAdmin() {
     var emailEl = document.getElementById('currentUserEmail');
