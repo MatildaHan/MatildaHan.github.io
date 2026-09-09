@@ -15,14 +15,12 @@ a {
     color: inherit;
 }
 
-/* ===== 登录界面样式 ===== */
 .login-container {
     max-width: 400px;
     margin: 120px auto;
     padding: 50px 40px 40px;
     background: #ffffff;
-    border-radius: 16px;
-    box-shadow: 0 8px 40px rgba(0,0,0,0.06);
+    border: 1px solid #e0d6cc;
     text-align: center;
 }
 .login-container .login-logo {
@@ -50,11 +48,9 @@ a {
     width: 100%;
     padding: 10px 14px;
     border: 1px solid #d5c8bc;
-    border-radius: 8px;
     font-size: 14px;
     font-family: inherit;
     background: #fcfaf8;
-    transition: border-color 0.2s;
 }
 .login-container .form-group input:focus {
     outline: none;
@@ -67,7 +63,6 @@ a {
     background: #8c7562;
     color: #fff;
     border: none;
-    border-radius: 8px;
     font-size: 16px;
     cursor: pointer;
     font-family: inherit;
@@ -76,9 +71,6 @@ a {
 }
 .login-container .btn-login:hover {
     background: #7a6451;
-}
-.login-container .btn-login:active {
-    transform: scale(0.98);
 }
 .login-container .error {
     color: #c0392b;
@@ -90,7 +82,6 @@ a {
     display: block;
 }
 
-/* ===== 后台整体布局 - 全屏宽度 ===== */
 .admin-wrapper {
     display: none;
     max-width: 100% !important;
@@ -101,7 +92,6 @@ a {
     display: flex;
 }
 
-/* ===== 侧边栏 ===== */
 .admin-sidebar {
     width: 220px;
     background: #2c241e;
@@ -153,7 +143,6 @@ a {
     margin-top: 30px;
 }
 
-/* ===== 主内容区 - 全屏宽度 ===== */
 .admin-main {
     flex: 1;
     padding: 30px 40px 60px;
@@ -161,7 +150,6 @@ a {
     width: 100% !important;
 }
 
-/* ===== 顶部标题栏 ===== */
 .admin-header {
     display: flex;
     justify-content: space-between;
@@ -190,7 +178,6 @@ a {
     color: #6a5a4a;
 }
 
-/* ===== 面板 ===== */
 .panel {
     display: none;
     animation: fade 0.25s ease;
@@ -203,7 +190,6 @@ a {
     100% { opacity: 1; transform: translateY(0); }
 }
 
-/* ===== 工具栏 ===== */
 .toolbar {
     display: flex;
     gap: 12px;
@@ -211,13 +197,11 @@ a {
     margin-bottom: 24px;
 }
 
-/* ===== 按钮 ===== */
 .btn {
     padding: 6px 18px;
     border: 1px solid #c9b39f;
     background: #fff;
     color: #5a4a3a;
-    border-radius: 4px;
     cursor: pointer;
     font-size: 13px;
     font-family: inherit;
@@ -244,13 +228,10 @@ a {
     color: #fff;
 }
 
-/* ===== 表格 ===== */
 .table-wrap {
     background: #fff;
-    border-radius: 8px;
     padding: 20px;
     overflow-x: auto;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
 }
 table {
     width: 100%;
@@ -280,7 +261,6 @@ td {
     font-size: 12px;
 }
 
-/* ===== 表单 ===== */
 .form-group {
     margin-bottom: 16px;
 }
@@ -296,7 +276,6 @@ td {
     width: 100%;
     padding: 8px 12px;
     border: 1px solid #d5c8bc;
-    border-radius: 4px;
     font-family: inherit;
     font-size: 13px;
     background: #fff;
@@ -306,14 +285,10 @@ td {
     min-height: 80px;
     resize: vertical;
 }
-
-/* ===== 卡片 ===== */
 .form-card {
     background: #fff;
-    border-radius: 8px;
     padding: 24px;
     margin-bottom: 30px;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
 }
 .form-card h3 {
     font-weight: normal;
@@ -324,16 +299,13 @@ td {
     border-bottom: 1px solid #f0ebe6;
 }
 
-/* ===== 图片预览 ===== */
 .img-preview {
     width: 80px;
     height: 60px;
     background: #b89c84;
-    border-radius: 4px;
     display: inline-block;
 }
 
-/* ===== Tab 切换样式 ===== */
 .tab-container {
     display: flex;
     gap: 0;
@@ -367,7 +339,6 @@ td {
     display: block;
 }
 
-/* ===== 弹窗样式 ===== */
 .modal-overlay {
     display: none;
     position: fixed;
@@ -385,18 +356,17 @@ td {
 }
 .modal-box {
     background: #fff;
-    border-radius: 12px;
     padding: 30px;
     max-width: 500px;
     width: 90%;
     max-height: 80vh;
     overflow-y: auto;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+    border: 1px solid #e0d6cc;
     animation: modalIn 0.25s ease;
 }
 @keyframes modalIn {
-    0% { opacity: 0; transform: translateY(-20px) scale(0.95); }
-    100% { opacity: 1; transform: translateY(0) scale(1); }
+    0% { opacity: 0; transform: translateY(-20px); }
+    100% { opacity: 1; transform: translateY(0); }
 }
 .modal-box h3 {
     font-weight: normal;
@@ -432,7 +402,6 @@ td {
     width: 100%;
     padding: 8px 12px;
     border: 1px solid #d5c8bc;
-    border-radius: 4px;
     font-family: inherit;
     font-size: 13px;
     background: #fff;
@@ -452,7 +421,6 @@ td {
     padding: 8px 24px;
 }
 
-/* ===== 颜色选择器联动 ===== */
 .color-input-group {
     display: flex;
     align-items: center;
@@ -464,13 +432,11 @@ td {
     padding: 2px;
     cursor: pointer;
     border: 1px solid #d5c8bc;
-    border-radius: 4px;
 }
 .color-input-group input[type="text"] {
     flex: 1;
     padding: 8px 12px;
     border: 1px solid #d5c8bc;
-    border-radius: 4px;
     font-family: inherit;
     font-size: 13px;
 }
@@ -483,7 +449,6 @@ td {
     width: 100px;
     padding: 8px 12px;
     border: 1px solid #d5c8bc;
-    border-radius: 4px;
     font-family: inherit;
     font-size: 13px;
 }
@@ -497,72 +462,23 @@ td {
     margin-top: 4px;
 }
 
-/* ===== 响应式 ===== */
 @media (max-width: 1024px) {
-    .admin-sidebar {
-        width: 180px;
-    }
-    .admin-main {
-        padding: 20px 24px;
-        max-width: 100% !important;
-    }
-    .admin-wrapper {
-        max-width: 100% !important;
-    }
+    .admin-sidebar { width: 180px; }
+    .admin-main { padding: 20px 24px; max-width: 100% !important; }
+    .admin-wrapper { max-width: 100% !important; }
 }
-
 @media (max-width: 768px) {
-    .admin-wrapper {
-        flex-direction: column;
-        max-width: 100% !important;
-    }
-    .admin-sidebar {
-        width: 100%;
-        height: auto;
-        position: relative;
-        padding: 16px 0;
-    }
-    .admin-sidebar .logo {
-        padding: 0 20px 16px;
-    }
-    .admin-sidebar nav a {
-        padding: 10px 20px;
-    }
-    .admin-main {
-        max-width: 100% !important;
-        padding: 16px;
-    }
-    .admin-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 8px;
-    }
-    .table-wrap {
-        padding: 12px;
-    }
-    .actions {
-        flex-direction: column;
-        gap: 4px;
-    }
-    .login-container {
-        margin: 60px 20px;
-        padding: 30px 20px;
-    }
-    .modal-box {
-        padding: 20px;
-        width: 95%;
-    }
-    .tab-container {
-        overflow-x: auto;
-        flex-wrap: nowrap;
-    }
-    .tab-btn {
-        padding: 8px 16px;
-        font-size: 13px;
-        white-space: nowrap;
-    }
-    .color-input-group,
-    .size-input-group {
-        flex-wrap: wrap;
-    }
+    .admin-wrapper { flex-direction: column; max-width: 100% !important; }
+    .admin-sidebar { width: 100%; height: auto; position: relative; padding: 16px 0; }
+    .admin-sidebar .logo { padding: 0 20px 16px; }
+    .admin-sidebar nav a { padding: 10px 20px; }
+    .admin-main { max-width: 100% !important; padding: 16px; }
+    .admin-header { flex-direction: column; align-items: flex-start; gap: 8px; }
+    .table-wrap { padding: 12px; }
+    .actions { flex-direction: column; gap: 4px; }
+    .login-container { margin: 60px 20px; padding: 30px 20px; }
+    .modal-box { padding: 20px; width: 95%; }
+    .tab-container { overflow-x: auto; flex-wrap: nowrap; }
+    .tab-btn { padding: 8px 16px; font-size: 13px; white-space: nowrap; }
+    .color-input-group, .size-input-group { flex-wrap: wrap; }
 }
