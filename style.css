@@ -67,10 +67,17 @@ body {
     color: #9c836e;
     text-decoration: none;
     padding: 4px 10px;
-    border-radius: 4px;
     transition: 0.2s;
     cursor: pointer;
     font-family: "Noto Serif SC", "Songti SC", "SimSun", serif;
+}
+.nav-list a.active {
+    background: #9c836e;
+    color: #fff;
+}
+.nav-list a:hover:not(.active) {
+    color: #6d5745;
+    background: #f3efe9;
 }
 .nav-list a.active {
     background: #9c836e;
