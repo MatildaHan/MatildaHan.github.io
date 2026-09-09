@@ -131,83 +131,167 @@
         }
     }
 
-    // ============================================================
-    // 6. 首页（含雪夜舟·图最新一张、十年灯·文最新3条）
-    // ============================================================
-    async function renderHome() {
-        var site = await getSite();
-        var theme = getThemeConfig(site);
+   // ============================================================
+// 6. 首页（含雪夜舟·图最新一张）
+// ============================================================
+async function renderHome() {
+    var site = await getSite();
+    var theme = getThemeConfig(site);
 
-        updateLogo(site);
+    updateLogo(site);
 
-        var xingyinList = await DB.getAll('xingyin', { orderBy: 'id' });
-        var latestXingyin = xingyinList.length > 0 ? xingyinList[xingyinList.length - 1] : null;
+    // 行吟册·絮 最新一条
+    var xingyinList = await DB.getAll('xingyin', { orderBy: 'id' });
+    var latestXingyin = xingyinList.length > 0 ? xingyinList[xingyinList.length - 1] : null;
 
-        var homeTitle = document.getElementById('homeTitle');
-        var homeDate = document.getElementById('homeDate');
-        if (homeTitle) {
-            homeTitle.textContent = latestXingyin ? latestXingyin.content : '暂无短句，请前往后台添加';
-            homeTitle.style.color = theme.color;
-            homeTitle.style.fontSize = theme.size + 'px';
-        }
-        if (homeDate) {
-            homeDate.textContent = latestXingyin ? latestXingyin.date : new Date().toISOString().slice(0, 10).replace(/-/g, '/');
-        }
+    var homeTitle = document.getElementById('homeTitle');
+    var homeDate = document.getElementById('homeDate');
+    if (homeTitle) {
+        homeTitle.textContent = latestXingyin ? latestXingyin.content : '暂无短句，请前往后台添加';
+        homeTitle.style.color = theme.color;
+        homeTitle.style.fontSize = theme.size + 'px';
+    }
+    if (homeDate) {
+        homeDate.textContent = latestXingyin ? latestXingyin.date : new Date().toISOString().slice(0, 10).replace(/-/g, '/');
+    }
 
-        // 中间图片：显示雪夜舟·图最新一组的第一张
-        var homeImage = document.getElementById('homeImage');
-        var xueyeList = await DB.getAll('xueye', { orderBy: 'id' });
-        var latestXueye = xueyeList.length > 0 ? xueyeList[xueyeList.length - 1] : null;
+    // ★★★ 中间图片：显示雪夜舟·图最新一张 ★★★
+    var homeImage = document.getElementById('homeImage');
+    var xueyeList = await DB.getAll('xueye', { orderBy: 'id' });
+    var latestXueye = xueyeList.length > 0 ? xueyeList[xueyeList.length - 1] : null;
 
-        if (homeImage) {
-            homeImage.className = 'tilted-card';
-            homeImage.style.transform = 'rotate(3deg)';
-            if (latestXueye && latestXueye.images && latestXueye.images.length > 0) {
-                homeImage.style.backgroundImage = 'url(' + latestXueye.images[0] + ')';
+    if (homeImage) {
+        // 重置样式
+        homeImage.className = 'tilted-card';
+        homeImage.style.transform = 'rotate(3deg)';
+        homeImage.style.backgroundImage = 'none';
+        homeImage.style.backgroundColor = site.logo_color || '#b89c84';
+        homeImage.classList.remove('has-image');
+
+        // ★★★ 检查是否有图片 ★★★
+        if (latestXueye && latestXueye.images && latestXueye.images.length > 0) {
+            var imgUrl = latestXueye.images[0];
+            // 验证 URL 是否有效
+            if (imgUrl && imgUrl.trim() !== '' && imgUrl.startsWith('http')) {
+                homeImage.style.backgroundImage = 'url(' + imgUrl + ')';
                 homeImage.style.backgroundSize = 'cover';
                 homeImage.style.backgroundPosition = 'center';
                 homeImage.style.backgroundRepeat = 'no-repeat';
                 homeImage.style.backgroundColor = 'transparent';
+                homeImage.classList.add('has-image');
+                console.log('首页图片加载成功:', imgUrl);
             } else {
-                homeImage.style.backgroundImage = 'none';
+                console.warn('图片 URL 无效:', imgUrl);
                 homeImage.style.backgroundColor = site.logo_color || '#b89c84';
             }
-        }
-
-        var siteNameEl = document.getElementById('siteName');
-        var siteDescEl = document.getElementById('siteDesc');
-        if (siteNameEl) siteNameEl.textContent = site.site_name || '见南山';
-        if (siteDescEl) siteDescEl.textContent = site.site_desc || '春山如黛草如烟';
-
-        var shinian = await DB.getAll('shinian', { orderBy: 'id' });
-        var latest3Shinian = shinian.slice(-3).reverse();
-
-        var html = '';
-        var homeLatest = document.getElementById('homeLatest');
-
-        if (latest3Shinian.length > 0) {
-            for (var i = 0; i < latest3Shinian.length; i++) {
-                var item = latest3Shinian[i];
-                var summary = item.content ? item.content.substring(0, 80) : '';
-                var displaySummary = summary + (item.content && item.content.length > 80 ? '...' : '');
-                var dateDisplay = item.date || '';
-
-                html += '<div class="list-item">';
-                html += '<h3 class="item-title" data-sub="shinian-detail" data-id="' + item.id + '" style="color:' + theme.color + ';font-size:' + theme.size + 'px;font-weight:bold;">' + item.title + '</h3>';
-                html += '<p class="item-desc">' + displaySummary + '</p>';
-                html += '<div class="item-footer">';
-                html += '<span class="tag" style="color:' + theme.color + ';">#' + (item.category || '未分类') + '</span>';
-                html += '<span class="item-time">' + dateDisplay + '</span>';
-                html += '</div>';
-                html += '</div>';
-            }
         } else {
-            html = '<div class="list-item"><p class="item-desc" style="text-align:center;color:#b8b0a8;">暂无文章，请前往后台添加</p></div>';
+            console.log('没有雪夜舟·图图片，显示默认颜色');
+            homeImage.style.backgroundColor = site.logo_color || '#b89c84';
         }
-
-        if (homeLatest) homeLatest.innerHTML = html;
     }
 
+    // 网站名称和描述
+    var siteNameEl = document.getElementById('siteName');
+    var siteDescEl = document.getElementById('siteDesc');
+    if (siteNameEl) siteNameEl.textContent = site.site_name || '见南山';
+    if (siteDescEl) siteDescEl.textContent = site.site_desc || '春山如黛草如烟';
+
+    // 十年灯·文 最新3条
+    var shinian = await DB.getAll('shinian', { orderBy: 'id' });
+    var latest3Shinian = shinian.slice(-3).reverse();
+
+    var html = '';
+    var homeLatest = document.getElementById('homeLatest');
+
+    if (latest3Shinian.length > 0) {
+        for (var i = 0; i < latest3Shinian.length; i++) {
+            var item = latest3Shinian[i];
+            var summary = item.content ? item.content.substring(0, 80) : '';
+            var displaySummary = summary + (item.content && item.content.length > 80 ? '...' : '');
+            var dateDisplay = item.date || '';
+
+            html += '<div class="list-item">';
+            html += '<h3 class="item-title" data-sub="shinian-detail" data-id="' + item.id + '" style="color:' + theme.color + ';font-size:' + theme.size + 'px;font-weight:bold;">' + item.title + '</h3>';
+            html += '<p class="item-desc">' + displaySummary + '</p>';
+            html += '<div class="item-footer">';
+            html += '<span class="tag" style="color:' + theme.color + ';">#' + (item.category || '未分类') + '</span>';
+            html += '<span class="item-time">' + dateDisplay + '</span>';
+            html += '</div>';
+            html += '</div>';
+        }
+    } else {
+        html = '<div class="list-item"><p class="item-desc" style="text-align:center;color:#b8b0a8;">暂无文章，请前往后台添加</p></div>';
+    }
+
+    if (homeLatest) homeLatest.innerHTML = html;
+}
+
+
+// ============================================================
+// 10. 雪夜舟·图 - 图集显示
+// ============================================================
+async function loadXueyeGallery(id) {
+    var item = await DB.getById('xueye', id);
+    if (!item) return;
+    var container = document.getElementById('xueyeGallery');
+    if (!container) return;
+
+    var images = item.images || [];
+    var count = images.length || 0;
+
+    container.innerHTML = '';
+
+    if (count > 0) {
+        var group = document.createElement('div');
+        group.className = 'gallery-group';
+
+        var dateDiv = document.createElement('div');
+        dateDiv.className = 'group-date';
+        dateDiv.textContent = item.date;
+        group.appendChild(dateDiv);
+
+        var rowDiv = document.createElement('div');
+        rowDiv.className = 'img-row';
+
+        // ★★★ 过滤有效的图片 URL ★★★
+        var validImages = images.filter(function(url) {
+            return url && url.trim() !== '' && url.startsWith('http');
+        });
+
+        if (validImages.length === 0) {
+            container.innerHTML = '<p style="text-align:center;color:#999;padding:40px 0;">暂无有效图片</p>';
+            return;
+        }
+
+        for (var j = 0; j < validImages.length; j++) {
+            var imgWrap = document.createElement('div');
+            imgWrap.className = 'img-wrap';
+            var img = document.createElement('img');
+            img.src = validImages[j];
+            img.alt = item.category + ' - ' + (j + 1);
+            img.loading = 'lazy';
+            // 图片加载失败时显示占位
+            img.onerror = function() {
+                this.style.display = 'none';
+                this.parentElement.style.backgroundColor = '#f3efe9';
+                this.parentElement.innerHTML = '<span style="display:flex;align-items:center;justify-content:center;height:100%;color:#ccc;font-size:12px;">加载失败</span>';
+            };
+            imgWrap.appendChild(img);
+            rowDiv.appendChild(imgWrap);
+        }
+        group.appendChild(rowDiv);
+        container.appendChild(group);
+
+        var site = await getSite();
+        var theme = getThemeConfig(site);
+        var infoDiv = document.createElement('div');
+        infoDiv.style.cssText = 'text-align:center;padding:20px 0;color:' + theme.color + ';font-size:13px;';
+        infoDiv.textContent = item.category + ' · 共 ' + validImages.length + ' 张图片';
+        container.appendChild(infoDiv);
+    } else {
+        container.innerHTML = '<p style="text-align:center;color:#999;padding:40px 0;">暂无图片</p>';
+    }
+}
     // ============================================================
     // 7. 行吟册·絮
     // ============================================================
@@ -356,84 +440,71 @@
         }
     }
 
-    // ============================================================
-    // 9. 雪夜舟·图
-    // ============================================================
-    async function getXueyeCategoryDescMap() {
-        var cats = await DB.getAll('xueye_categories');
-        var map = {};
-        for (var i = 0; i < cats.length; i++) {
-            map[cats[i].name] = cats[i].description || '';
-        }
-        return map;
-    }
+  // ============================================================
+// 10. 雪夜舟·图 - 图集显示
+// ============================================================
+async function loadXueyeGallery(id) {
+    var item = await DB.getById('xueye', id);
+    if (!item) return;
+    var container = document.getElementById('xueyeGallery');
+    if (!container) return;
 
-    async function renderXueyeCards() {
-        var list = await DB.getAll('xueye', { orderBy: 'id' });
-        var descMap = await getXueyeCategoryDescMap();
-        var container = document.getElementById('xueyeCards');
-        if (!container) return;
+    var images = item.images || [];
+    var count = images.length || 0;
+
+    container.innerHTML = '';
+
+    if (count > 0) {
+        var group = document.createElement('div');
+        group.className = 'gallery-group';
+
+        var dateDiv = document.createElement('div');
+        dateDiv.className = 'group-date';
+        dateDiv.textContent = item.date;
+        group.appendChild(dateDiv);
+
+        var rowDiv = document.createElement('div');
+        rowDiv.className = 'img-row';
+
+        // ★★★ 过滤有效的图片 URL ★★★
+        var validImages = images.filter(function(url) {
+            return url && url.trim() !== '' && url.startsWith('http');
+        });
+
+        if (validImages.length === 0) {
+            container.innerHTML = '<p style="text-align:center;color:#999;padding:40px 0;">暂无有效图片</p>';
+            return;
+        }
+
+        for (var j = 0; j < validImages.length; j++) {
+            var imgWrap = document.createElement('div');
+            imgWrap.className = 'img-wrap';
+            var img = document.createElement('img');
+            img.src = validImages[j];
+            img.alt = item.category + ' - ' + (j + 1);
+            img.loading = 'lazy';
+            // 图片加载失败时显示占位
+            img.onerror = function() {
+                this.style.display = 'none';
+                this.parentElement.style.backgroundColor = '#f3efe9';
+                this.parentElement.innerHTML = '<span style="display:flex;align-items:center;justify-content:center;height:100%;color:#ccc;font-size:12px;">加载失败</span>';
+            };
+            imgWrap.appendChild(img);
+            rowDiv.appendChild(imgWrap);
+        }
+        group.appendChild(rowDiv);
+        container.appendChild(group);
+
         var site = await getSite();
         var theme = getThemeConfig(site);
-        var html = '';
-        for (var i = 0; i < list.length; i++) {
-            var item = list[i];
-            var indexStr = String(i + 1).padStart(2, '0');
-            html += '<div class="series-card">';
-            html += '<div class="card-index" style="color:' + theme.color + ';font-size:14px;">' + indexStr + ' / 系列</div>';
-            html += '<h3 class="card-title" style="color:' + theme.color + ';font-size:' + theme.size + 'px;font-weight:bold;">' + item.category + '</h3>';
-            html += '<p class="card-desc">' + (descMap[item.category] || '暂无描述') + '</p>';
-            html += '<a class="card-link" data-sub="xueye-gallery" data-id="' + item.id + '" style="color:' + theme.color + ';font-size:14px;text-decoration:none;">进入系列&gt;</a>';
-            html += '</div>';
-        }
-        container.innerHTML = html || '<p style="text-align:center;color:#999;padding:40px 0;">暂无内容</p>';
+        var infoDiv = document.createElement('div');
+        infoDiv.style.cssText = 'text-align:center;padding:20px 0;color:' + theme.color + ';font-size:13px;';
+        infoDiv.textContent = item.category + ' · 共 ' + validImages.length + ' 张图片';
+        container.appendChild(infoDiv);
+    } else {
+        container.innerHTML = '<p style="text-align:center;color:#999;padding:40px 0;">暂无图片</p>';
     }
-
-    async function loadXueyeGallery(id) {
-        var item = await DB.getById('xueye', id);
-        if (!item) return;
-        var container = document.getElementById('xueyeGallery');
-        if (!container) return;
-
-        var images = item.images || [];
-        var count = images.length || 0;
-
-        container.innerHTML = '';
-
-        if (count > 0) {
-            var group = document.createElement('div');
-            group.className = 'gallery-group';
-
-            var dateDiv = document.createElement('div');
-            dateDiv.className = 'group-date';
-            dateDiv.textContent = item.date;
-            group.appendChild(dateDiv);
-
-            var rowDiv = document.createElement('div');
-            rowDiv.className = 'img-row';
-
-            for (var j = 0; j < count; j++) {
-                var imgWrap = document.createElement('div');
-                imgWrap.className = 'img-wrap';
-                var img = document.createElement('img');
-                img.src = images[j];
-                imgWrap.appendChild(img);
-                rowDiv.appendChild(imgWrap);
-            }
-            group.appendChild(rowDiv);
-            container.appendChild(group);
-
-            var site = await getSite();
-            var theme = getThemeConfig(site);
-            var infoDiv = document.createElement('div');
-            infoDiv.style.cssText = 'text-align:center;padding:20px 0;color:' + theme.color + ';font-size:13px;';
-            infoDiv.textContent = item.category + ' · 共 ' + count + ' 张图片';
-            container.appendChild(infoDiv);
-        } else {
-            container.innerHTML = '<p style="text-align:center;color:#999;padding:40px 0;">暂无图片</p>';
-        }
-    }
-
+}
     // ============================================================
     // 10. 听雨眠·记
     // ============================================================
