@@ -2,23 +2,28 @@
     // ============================================================
     // 1. 数据访问
     // ------------------------------------------------------------
-    // 注意：这里直接复用 supabase.js 挂载到 window 上的 DB 对象，
-    // 不再定义自己的本地 DB（之前的版本在这里重新声明了一个只读
-    // localStorage 的 DB，导致前台永远读不到后台在 Supabase 里
-    // 保存的数据）。DB.getAll/getById 内部已经处理好了网络失败
-    // 时的 localStorage 降级，这里无需关心。
+    // 直接使用 supabase.js 挂载到 window 上的 DB 对象，
+    // 不再重新声明 DB 变量，避免覆盖。
     // ============================================================
-    var DB = window.DB;
 
     // ============================================================
-    // 2. 主题配置（颜色 / 字号），字段统一使用 snake_case，
-    //    与后台 saveSiteSettings() 写入 Supabase 的字段保持一致
+    // 2. 主题配置（颜色 / 字号）
     // ============================================================
     function getThemeConfig(site) {
         return {
             color: (site && (site.theme_color || site.logo_color)) || '#b89c84',
             size: (site && site.title_size) || '20'
         };
+    }
+
+    // 缓存站点配置，避免重复请求
+    var _siteCache = null;
+
+    async function getSite() {
+        if (_siteCache) return _siteCache;
+        var list = await DB.getAll('site_settings');
+        _siteCache = list && list.length > 0 ? list[0] : {};
+        return _siteCache;
     }
 
     // ============================================================
@@ -126,11 +131,6 @@
         }
     }
 
-    async function getSite() {
-        var list = await DB.getAll('site_settings');
-        return list && list.length > 0 ? list[0] : {};
-    }
-
     // ============================================================
     // 6. 首页（含雪夜舟·图最新一张、十年灯·文最新3条）
     // ============================================================
@@ -215,7 +215,8 @@
         var list = await DB.getAll('xingyin', { orderBy: 'id' });
         var container = document.getElementById('xingyinList');
         if (!container) return;
-        var theme = getThemeConfig(await getSite());
+        var site = await getSite();
+        var theme = getThemeConfig(site);
         var html = '';
         for (var i = 0; i < list.length; i++) {
             var item = list[i];
@@ -231,7 +232,8 @@
         var item = await DB.getById('xingyin', id);
         if (!item) return;
         var list = await DB.getAll('xingyin', { orderBy: 'id' });
-        var theme = getThemeConfig(await getSite());
+        var site = await getSite();
+        var theme = getThemeConfig(site);
 
         var titleEl = document.getElementById('xingyinDetailTitle');
         var dateEl = document.getElementById('xingyinDetailDate');
@@ -259,14 +261,13 @@
     }
 
     // ============================================================
-    // 8. 十年灯·文（系列描述取自 shinian_categories 表，而不是
-    //    文章记录自身——后台文章表里的 category_desc 字段已废弃）
+    // 8. 十年灯·文
     // ============================================================
     async function getShinianCategoryDescMap() {
         var cats = await DB.getAll('shinian_categories');
         var map = {};
         for (var i = 0; i < cats.length; i++) {
-            map[cats[i].name] = cats[i].desc || '';
+            map[cats[i].name] = cats[i].description || '';
         }
         return map;
     }
@@ -282,7 +283,8 @@
         }
         var container = document.getElementById('shinianCards');
         if (!container) return;
-        var theme = getThemeConfig(await getSite());
+        var site = await getSite();
+        var theme = getThemeConfig(site);
         var html = '';
         for (var j = 0; j < categories.length; j++) {
             var cat = categories[j];
@@ -303,7 +305,8 @@
         var items = list.filter(function(x) { return x.category === category; });
         var container = document.getElementById('shinianList');
         if (!container) return;
-        var theme = getThemeConfig(await getSite());
+        var site = await getSite();
+        var theme = getThemeConfig(site);
         var html = '';
         for (var j = 0; j < items.length; j++) {
             var item = items[j];
@@ -319,7 +322,8 @@
         var item = await DB.getById('shinian', id);
         if (!item) return;
         var list = await DB.getAll('shinian', { orderBy: 'id' });
-        var theme = getThemeConfig(await getSite());
+        var site = await getSite();
+        var theme = getThemeConfig(site);
 
         var titleEl = document.getElementById('shinianDetailTitle');
         var dateEl = document.getElementById('shinianDetailDate');
@@ -353,13 +357,13 @@
     }
 
     // ============================================================
-    // 9. 雪夜舟·图（同样从 xueye_categories 表取描述）
+    // 9. 雪夜舟·图
     // ============================================================
     async function getXueyeCategoryDescMap() {
         var cats = await DB.getAll('xueye_categories');
         var map = {};
         for (var i = 0; i < cats.length; i++) {
-            map[cats[i].name] = cats[i].desc || '';
+            map[cats[i].name] = cats[i].description || '';
         }
         return map;
     }
@@ -369,7 +373,8 @@
         var descMap = await getXueyeCategoryDescMap();
         var container = document.getElementById('xueyeCards');
         if (!container) return;
-        var theme = getThemeConfig(await getSite());
+        var site = await getSite();
+        var theme = getThemeConfig(site);
         var html = '';
         for (var i = 0; i < list.length; i++) {
             var item = list[i];
@@ -418,7 +423,8 @@
             group.appendChild(rowDiv);
             container.appendChild(group);
 
-            var theme = getThemeConfig(await getSite());
+            var site = await getSite();
+            var theme = getThemeConfig(site);
             var infoDiv = document.createElement('div');
             infoDiv.style.cssText = 'text-align:center;padding:20px 0;color:' + theme.color + ';font-size:13px;';
             infoDiv.textContent = item.category + ' · 共 ' + count + ' 张图片';
@@ -441,7 +447,8 @@
         }
         var container = document.getElementById('tingyuYears');
         if (!container) return;
-        var theme = getThemeConfig(await getSite());
+        var site = await getSite();
+        var theme = getThemeConfig(site);
         var yearKeys = Object.keys(years).sort(function(a, b) { return b - a; });
         var html = '';
         for (var j = 0; j < yearKeys.length; j++) {
@@ -474,7 +481,8 @@
         if (!target && items.length > 0) target = items[0];
         if (!target) return;
 
-        var theme = getThemeConfig(await getSite());
+        var site = await getSite();
+        var theme = getThemeConfig(site);
 
         var titleEl = document.getElementById('tingyuDetailTitle');
         var dateEl = document.getElementById('tingyuDetailDate');
@@ -516,7 +524,8 @@
         var list = await DB.getAll('gexi', { orderBy: 'id' });
         var container = document.getElementById('gexiList');
         if (!container) return;
-        var theme = getThemeConfig(await getSite());
+        var site = await getSite();
+        var theme = getThemeConfig(site);
         var html = '';
         for (var i = 0; i < list.length; i++) {
             var item = list[i];
@@ -536,7 +545,8 @@
         var content = list.length > 0 ? (list[0].content || '') : '';
         var container = document.getElementById('aboutContent');
         if (!container) return;
-        var theme = getThemeConfig(await getSite());
+        var site = await getSite();
+        var theme = getThemeConfig(site);
         var lines = content.split('\n');
         var html = '';
         for (var i = 0; i < lines.length; i++) {
