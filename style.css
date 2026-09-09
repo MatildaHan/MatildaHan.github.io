@@ -6,7 +6,7 @@
 body {
     background: #ffffff;
     color: #8c7562;
-    font-family: "Songti SC", "SimSun", serif;
+    font-family: "Noto Serif SC", "Songti SC", "SimSun", serif;
     font-size: 15px;
     line-height: 1.8;
 }
@@ -48,12 +48,14 @@ body {
 .logo-name {
     font-size: 22px;
     color: #444;
-    font-weight: bold;
+    font-family: "Noto Serif SC", "Songti SC", "SimSun", serif;
+    font-weight: 700;
 }
 .logo-slogan {
     font-size: 15px;
     color: #9c836e;
     margin-left: 8px;
+    font-family: "Noto Serif SC", "Songti SC", "SimSun", serif;
 }
 .nav-list {
     display: flex;
@@ -68,6 +70,7 @@ body {
     border-radius: 4px;
     transition: 0.2s;
     cursor: pointer;
+    font-family: "Noto Serif SC", "Songti SC", "SimSun", serif;
 }
 .nav-list a.active {
     background: #9c836e;
@@ -89,6 +92,7 @@ body {
     font-size: 12px;
     color: #999999;
     margin-bottom: 24px;
+    font-family: "Noto Serif SC", "Songti SC", "SimSun", serif;
 }
 .breadcrumb a {
     color: #999999;
@@ -133,12 +137,14 @@ body {
 }
 .home-left .post-title {
     font-size: 20px;
-    font-weight: bold;
+    font-weight: 700;
+    font-family: "Noto Serif SC", "Songti SC", "SimSun", serif;
     margin-bottom: 24px;
 }
 .home-left .post-date {
     font-size: 13px;
     color: #999999;
+    font-family: "Noto Serif SC", "Songti SC", "SimSun", serif;
 }
 .divider-line {
     display: block;
@@ -148,7 +154,7 @@ body {
     margin: 10px auto 0;
 }
 
-/* ===== 中间列 - 图片居中 ===== */
+/* 中间列 - 图片居中 */
 .center-image {
     display: flex;
     align-items: center;
@@ -161,26 +167,23 @@ body {
     aspect-ratio: 1 / 1.8;
     background-color: #b89c84;
     transform: rotate(3deg);
-    transition: transform 0.4s ease, opacity 0.3s ease;
+    transition: transform 0.4s ease;
     border-radius: 4px;
     margin: 0 auto;
-    /* ★★★ 图片铺满 ★★★ */
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
     min-height: 180px;
     display: block;
-    cursor: pointer;
 }
 .tilted-card:hover {
     transform: rotate(0deg);
 }
-/* 当有图片时，背景色透明 */
 .tilted-card.has-image {
-    background-color: transparent;
+    background-color: transparent !important;
 }
 
-/* 右侧列 - 与左侧等宽 */
+/* 右侧列 */
 #homeLatest {
     display: flex;
     flex-direction: column;
@@ -201,7 +204,8 @@ body {
 /* 第一行：文章标题 - 20px 加粗 主题色 */
 #homeLatest .list-item .item-title {
     font-size: 20px;
-    font-weight: bold;
+    font-weight: 700;
+    font-family: "Noto Serif SC", "Songti SC", "SimSun", serif;
     cursor: pointer;
     line-height: 1.3;
     margin: 0;
@@ -223,7 +227,8 @@ body {
     white-space: nowrap;
     display: block;
     max-width: 100%;
-    font-weight: normal;
+    font-weight: 400;
+    font-family: "Noto Serif SC", "Songti SC", "SimSun", serif;
 }
 
 /* 第三行：分类标签 + 日期 */
@@ -235,6 +240,7 @@ body {
     color: #a8917e;
     margin-top: 2px;
     flex-wrap: wrap;
+    font-family: "Noto Serif SC", "Songti SC", "SimSun", serif;
 }
 #homeLatest .list-item .item-footer .tag {
     font-size: 13px;
@@ -265,10 +271,12 @@ body {
 .article-date {
     font-size: 14px;
     color: #666666;
+    font-family: "Noto Serif SC", "Songti SC", "SimSun", serif;
 }
 .article-text {
     font-size: 20px;
-    font-weight: bold;
+    font-weight: 700;
+    font-family: "Noto Serif SC", "Songti SC", "SimSun", serif;
 }
 .article-text a {
     text-decoration: none;
@@ -292,10 +300,12 @@ body {
 .card-index {
     font-size: 14px;
     margin-bottom: 12px;
+    font-family: "Noto Serif SC", "Songti SC", "SimSun", serif;
 }
 .card-title {
     font-size: 20px;
-    font-weight: bold;
+    font-weight: 700;
+    font-family: "Noto Serif SC", "Songti SC", "SimSun", serif;
     margin-bottom: 10px;
 }
 .card-desc {
@@ -303,12 +313,14 @@ body {
     color: #666666;
     line-height: 1.6;
     margin-bottom: 18px;
-    font-weight: normal;
+    font-weight: 400;
+    font-family: "Noto Serif SC", "Songti SC", "SimSun", serif;
 }
 .card-link {
     font-size: 14px;
     text-decoration: none;
     cursor: pointer;
+    font-family: "Noto Serif SC", "Songti SC", "SimSun", serif;
 }
 .card-link:hover {
     opacity: 0.7;
@@ -326,6 +338,7 @@ body {
     font-size: 14px;
     color: #666666;
     padding-top: 8px;
+    font-family: "Noto Serif SC", "Songti SC", "SimSun", serif;
 }
 .img-row {
     display: grid;
@@ -342,7 +355,6 @@ body {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    display: block;
 }
 
 /* ===== 听雨眠·记 ===== */
@@ -364,14 +376,16 @@ body {
 }
 .year-num {
     font-size: 20px;
-    font-weight: bold;
+    font-weight: 700;
+    font-family: "Noto Serif SC", "Songti SC", "SimSun", serif;
     margin-bottom: 6px;
 }
 .year-desc {
     font-size: 14px;
     color: #666666;
     margin-bottom: auto;
-    font-weight: normal;
+    font-weight: 400;
+    font-family: "Noto Serif SC", "Songti SC", "SimSun", serif;
 }
 .year-link {
     display: none !important;
@@ -385,7 +399,8 @@ body {
 }
 .book-item {
     font-size: 20px;
-    font-weight: bold;
+    font-weight: 700;
+    font-family: "Noto Serif SC", "Songti SC", "SimSun", serif;
     text-decoration: none;
     cursor: pointer;
 }
@@ -405,7 +420,8 @@ body {
 .book-main .title,
 .book-main .book-title {
     font-size: 22px;
-    font-weight: bold;
+    font-weight: 700;
+    font-family: "Noto Serif SC", "Songti SC", "SimSun", serif;
     margin-bottom: 6px;
 }
 .book-main .date,
@@ -413,11 +429,13 @@ body {
     font-size: 14px;
     color: #666666;
     margin-bottom: 24px;
+    font-family: "Noto Serif SC", "Songti SC", "SimSun", serif;
 }
 .book-content p {
     margin-bottom: 14px;
     font-size: 15px;
     color: #444444;
+    font-family: "Noto Serif SC", "Songti SC", "SimSun", serif;
 }
 .back-btn {
     border: 1px solid #b89c84;
@@ -425,7 +443,7 @@ body {
     background: #fff;
     padding: 4px 16px;
     font-size: 13px;
-    font-family: inherit;
+    font-family: "Noto Serif SC", "Songti SC", "SimSun", serif;
     cursor: pointer;
     border-radius: 4px;
     margin-top: 40px;
@@ -442,14 +460,16 @@ body {
 }
 .sidebar-title {
     font-size: 17px;
-    font-weight: bold;
+    font-weight: 700;
+    font-family: "Noto Serif SC", "Songti SC", "SimSun", serif;
     margin-bottom: 16px;
 }
 .sidebar-list a {
     display: block;
     text-decoration: none;
     font-size: 14px;
-    font-weight: bold;
+    font-weight: 400;
+    font-family: "Noto Serif SC", "Songti SC", "SimSun", serif;
     margin-bottom: 8px;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -469,20 +489,23 @@ body {
 }
 .sidebar-year {
     font-size: 20px;
-    font-weight: bold;
+    font-weight: 700;
+    font-family: "Noto Serif SC", "Songti SC", "SimSun", serif;
     margin-bottom: 16px;
 }
 
 /* ===== 山野渔夫 ===== */
 .about-text p {
     font-size: 20px;
-    font-weight: bold;
+    font-weight: 700;
+    font-family: "Noto Serif SC", "Songti SC", "SimSun", serif;
     margin-bottom: 8px;
 }
 .date-footer {
     margin-top: 120px;
     font-size: 13px;
     color: #999999;
+    font-family: "Noto Serif SC", "Songti SC", "SimSun", serif;
 }
 
 /* ===== 响应式 ===== */
