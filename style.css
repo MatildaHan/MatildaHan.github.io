@@ -111,10 +111,10 @@ body {
     100% { opacity: 1; transform: translateY(0); }
 }
 
-/* ===== 首页样式 - 三列等宽 ===== */
+/* ===== 首页样式 - 三列不等宽 ===== */
 .home-row {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: 240px 1fr 360px;
     align-items: center;
     gap: 40px;
     max-width: 1200px;
@@ -167,6 +167,8 @@ body {
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
+    min-height: 180px;
+    display: block;
 }
 .tilted-card:hover {
     transform: rotate(0deg);
@@ -496,7 +498,7 @@ body {
     }
     .home-left { width: 100%; }
     .center-image { width: 100%; display: flex; justify-content: center; }
-    .tilted-card { max-width: 260px; }
+    .tilted-card { max-width: 260px; min-height: 200px; }
     #homeLatest { max-width: 100%; width: 100%; }
     .card-grid { grid-template-columns: repeat(2, 1fr); }
     .img-row { grid-template-columns: repeat(3, 1fr); }
@@ -516,7 +518,7 @@ body {
     .home-row { gap: 30px; max-width: 100%; margin: 0 auto; }
     .home-left { width: 100%; padding: 0; }
     .center-image { width: 100%; display: flex; justify-content: center; }
-    .tilted-card { max-width: 220px; }
+    .tilted-card { max-width: 200px; min-height: 160px; }
     #homeLatest { max-width: 100%; width: 100%; gap: 24px; }
     .header-wrap, .container { padding: 0 16px; }
     .detail-grid { grid-template-columns: 1fr; gap: 30px; }
