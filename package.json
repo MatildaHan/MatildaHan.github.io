@@ -1,9 +1,0 @@
-{
-    "name": "jiananshan",
-    "version": "1.1.0",
-    "description": "见南山博客系统（纯静态站点 + Supabase 数据/鉴权，无需构建）",
-    "private": true,
-    "scripts": {
-        "dev": "echo '静态站点，直接用本地服务器打开 index.html / admin.html 即可，例如: npx serve .'"
-    }
-}
