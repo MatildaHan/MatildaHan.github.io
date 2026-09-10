@@ -230,88 +230,96 @@
         container.innerHTML = html || '<p style="text-align:center;color:#999;padding:40px 0;">暂无内容</p>';
     }
 
-    // ============================================================
-    // 9. 十年灯系列卡片
-    // ============================================================
-    async function getShinianCategoryDescMap() {
-        var cats = await DB.getAll('shinian_categories');
-        var map = {};
-        for (var i = 0; i < cats.length; i++) {
-            map[cats[i].name] = cats[i].description || '';
+ // ============================================================
+// 十年灯页面渲染（文章列表 + 系列导航）
+// ============================================================
+var _currentShinianCategory = null;  // 当前选中的系列（null 表示全部）
+
+async function renderShinianPage() {
+    // 获取所有文章
+    var list = await DB.getAll('shinian', { orderBy: 'id' });
+
+    // 获取所有系列（从分类表读取）
+    var categories = await DB.getAll('shinian_categories', { orderBy: 'id' });
+    if (categories.length === 0) {
+        // 如果分类表为空，从文章中提取
+        var catSet = {};
+        for (var i = 0; i < list.length; i++) {
+            catSet[list[i].category] = true;
         }
-        return map;
+        categories = Object.keys(catSet).map(function(name) {
+            return { name: name, description: '' };
+        });
     }
 
-    async function renderShinianCards() {
-        var list = await DB.getAll('shinian', { orderBy: 'id' });
-        var descMap = await getShinianCategoryDescMap();
-        var categories = [];
-        for (var i = 0; i < list.length; i++) {
-            if (categories.indexOf(list[i].category) === -1) {
-                categories.push(list[i].category);
-            }
-        }
-        var container = document.getElementById('shinianCards');
-        if (!container) return;
-        var html = '';
+    // 渲染右侧系列导航
+    var seriesContainer = document.getElementById('shinianSeriesList');
+    if (seriesContainer) {
+        var seriesHtml = '';
         for (var j = 0; j < categories.length; j++) {
             var cat = categories[j];
-            var desc = descMap[cat] || '';
-            var indexStr = String(j + 1).padStart(2, '0');
-            html += '<div class="series-card">';
-            html += '<div class="card-index">' + indexStr + ' / 系列</div>';
-            html += '<h3 class="card-title">' + cat + '</h3>';
-            html += '<p class="card-desc">' + (desc || '暂无描述') + '</p>';
-            html += '<a class="card-link" data-sub="shinian-list" data-category="' + cat + '">进入系列&gt;</a>';
-            html += '</div>';
+            var activeClass = (_currentShinianCategory === cat.name) ? ' active' : '';
+            seriesHtml += '<a class="shinian-series-item' + activeClass + '" data-series="' + cat.name + '">' + cat.name + '</a>';
         }
-        container.innerHTML = html || '<p style="text-align:center;color:#999;padding:40px 0;">暂无内容</p>';
+        seriesContainer.innerHTML = seriesHtml;
     }
 
-    async function loadShinianList(category) {
-        var list = await DB.getAll('shinian', { orderBy: 'id' });
-        var items = list.filter(function(x) { return x.category === category; });
-        var container = document.getElementById('shinianList');
-        if (!container) return;
-        var html = '';
-        for (var j = 0; j < items.length; j++) {
-            var item = items[j];
-            html += '<div class="article-item">';
-            html += '<div class="article-date">' + item.date + '</div>';
-            html += '<div class="article-text"><a data-sub="shinian-detail" data-id="' + item.id + '">' + item.title + '</a></div>';
-            html += '</div>';
-        }
-        container.innerHTML = html || '<p style="text-align:center;color:#999;padding:40px 0;">该系列暂无文章</p>';
+    // 渲染左侧文章列表
+    renderShinianArticleList(list);
+}
+
+function renderShinianArticleList(list) {
+    var container = document.getElementById('shinianArticleList');
+    if (!container) return;
+
+    // 按当前系列筛选
+    var filtered = list;
+    if (_currentShinianCategory) {
+        filtered = list.filter(function(x) {
+            return x.category === _currentShinianCategory;
+        });
     }
 
-    async function loadShinianDetail(id) {
-        var item = await DB.getById('shinian', id);
-        if (!item) return;
-        var list = await DB.getAll('shinian', { orderBy: 'id' });
+    // 倒序显示（最新的在前）
+    var sorted = filtered.slice().reverse();
 
-        var titleEl = document.getElementById('shinianDetailTitle');
-        var dateEl = document.getElementById('shinianDetailDate');
-        var contentEl = document.getElementById('shinianDetailContent');
-        var sidebarTitleEl = document.getElementById('shinianSidebarTitle');
-        var sidebarEl = document.getElementById('shinianSidebar');
-
-        if (titleEl) titleEl.textContent = item.title;
-        if (dateEl) dateEl.textContent = item.date;
-        if (contentEl) contentEl.innerHTML = '<p>' + (item.content || '').replace(/\n/g, '</p><p>') + '</p>';
-        if (sidebarTitleEl) sidebarTitleEl.textContent = '系列 / ' + item.category;
-
-        if (sidebarEl) {
-            var sameCategory = list.filter(function(x) { return x.category === item.category; });
-            var html = '';
-            for (var k = 0; k < sameCategory.length; k++) {
-                var displayTitle = sameCategory[k].title;
-                if (displayTitle.length > 40) displayTitle = displayTitle.substring(0, 40) + '...';
-                html += '<a href="#" data-sub="shinian-detail" data-id="' + sameCategory[k].id + '">' + displayTitle + '</a>';
-            }
-            sidebarEl.innerHTML = html;
-        }
+    if (sorted.length === 0) {
+        container.innerHTML = '<p style="text-align:center;color:#999;padding:40px 0;">暂无文章</p>';
+        return;
     }
 
+    var html = '';
+    for (var i = 0; i < sorted.length; i++) {
+        var item = sorted[i];
+        html += '<div class="shinian-article-item">';
+        // 第一行：文章名称
+        html += '<a class="shinian-article-title" data-sub="shinian-detail" data-id="' + item.id + '">' + item.title + '</a>';
+        // 第二行：分类标签
+        html += '<span class="shinian-article-tag">#' + (item.category || '未分类') + '</span>';
+        // 第三行：日期
+        html += '<span class="shinian-article-date">' + (item.date || '') + '</span>';
+        html += '</div>';
+    }
+    container.innerHTML = html;
+}
+
+// 系列点击事件
+document.addEventListener('click', function(e) {
+    var seriesItem = e.target.closest('.shinian-series-item');
+    if (seriesItem) {
+        e.preventDefault();
+        var series = seriesItem.dataset.series;
+        // 如果点击的是当前选中的系列，取消选中显示全部
+        if (_currentShinianCategory === series) {
+            _currentShinianCategory = null;
+        } else {
+            _currentShinianCategory = series;
+        }
+        // 重新渲染
+        renderShinianPage();
+        return;
+    }
+});
     // ============================================================
     // 10. 山野渔夫
     // ============================================================
