@@ -63,6 +63,7 @@
     // 4. 页面跳转（data-sub / data-back）
     // ============================================================
     document.addEventListener('click', function(e) {
+        // 处理 data-sub（跳转到详情页）
         var target = e.target.closest('[data-sub]');
         if (target) {
             e.preventDefault();
@@ -81,6 +82,7 @@
             return;
         }
 
+        // 处理 data-back（返回按钮）
         var backBtn = e.target.closest('[data-back]');
         if (backBtn) {
             e.preventDefault();
@@ -88,6 +90,7 @@
             if (backId) {
                 showPage(backId);
             }
+            return;
         }
     });
 
@@ -302,7 +305,6 @@
             } else {
                 _currentShinianCategory = series;
             }
-            // 重新渲染
             DB.getAll('shinian', { orderBy: 'id' }).then(function(list) {
                 renderShinianArticleList(list);
                 var items = document.querySelectorAll('.shinian-series-item');
@@ -318,7 +320,7 @@
     });
 
     // ============================================================
-    // 10. 十年灯 文章详情（已去除右侧系列卡片）
+    // 10. 十年灯 文章详情
     // ============================================================
     async function loadShinianDetail(id) {
         var item = await DB.getById('shinian', id);
