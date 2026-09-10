@@ -582,6 +582,12 @@ body {
     .sidebar { width: 100%; }
     .series-card { height: auto; min-height: 160px; }
     /* 移动端行吟册保持内容左日期右 */
+    @media (max-width: 768px) {
+    /* 小屏改为单列 */
+    .article-list {
+        grid-template-columns: 1fr;
+    }
+}
     .home-xingyin .xingyin-item {
         flex-direction: row;
         align-items: flex-start;
