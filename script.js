@@ -122,72 +122,64 @@ document.addEventListener('click', function(e) {
         }
     }
 
-    // ============================================================
-    // 6. 首页
-    // ============================================================
-    async function renderHome() {
-        var site = await getSite();
-        var theme = getThemeConfig(site);
+// ============================================================
+// 首页渲染
+// ============================================================
+async function renderHome() {
+    var site = await getSite();
+    var theme = getThemeConfig(site);
 
-        updateLogo(site);
+    updateLogo(site);
 
-        var xingyinList = await DB.getAll('xingyin', { orderBy: 'id' });
-        var latestXingyin = xingyinList.length > 0 ? xingyinList[xingyinList.length - 1] : null;
+    // 网站名称和描述
+    var siteNameEl = document.getElementById('siteName');
+    var siteDescEl = document.getElementById('siteDesc');
+    if (siteNameEl) siteNameEl.textContent = site.site_name || '见南山';
+    if (siteDescEl) siteDescEl.textContent = site.site_desc || '春山如黛草如烟';
 
-        var homeTitle = document.getElementById('homeTitle');
-        var homeDate = document.getElementById('homeDate');
-        if (homeTitle) {
-            homeTitle.textContent = latestXingyin ? latestXingyin.content : '暂无短句';
-            homeTitle.style.color = theme.color;
-            homeTitle.style.fontSize = theme.size + 'px';
-        }
-        if (homeDate) {
-            homeDate.textContent = latestXingyin ? latestXingyin.date : new Date().toISOString().slice(0, 10).replace(/-/g, '/');
-        }
+    // ① 更新记录
+    renderUpdateRecord();
 
-        var homeImage = document.getElementById('homeImage');
-        if (homeImage) {
-            homeImage.className = 'tilted-card';
-            homeImage.style.transform = 'rotate(3deg)';
-            homeImage.style.backgroundImage = 'none';
-            homeImage.style.backgroundColor = site.logo_color || '#b89c84';
-            homeImage.classList.remove('has-image');
-        }
-
-        var siteNameEl = document.getElementById('siteName');
-        var siteDescEl = document.getElementById('siteDesc');
-        if (siteNameEl) siteNameEl.textContent = site.site_name || '见南山';
-        if (siteDescEl) siteDescEl.textContent = site.site_desc || '春山如黛草如烟';
-
-        var shinian = await DB.getAll('shinian', { orderBy: 'id' });
-        var latest3Shinian = shinian.slice(-3).reverse();
-
-        var html = '';
-        var homeLatest = document.getElementById('homeLatest');
-
-        if (latest3Shinian.length > 0) {
-            for (var i = 0; i < latest3Shinian.length; i++) {
-                var item = latest3Shinian[i];
-                var summary = item.content ? item.content.substring(0, 80) : '';
-                var displaySummary = summary + (item.content && item.content.length > 80 ? '...' : '');
-                var dateDisplay = item.date || '';
-
-                html += '<div class="list-item">';
-                html += '<h3 class="item-title" data-sub="shinian-detail" data-id="' + item.id + '" style="color:' + theme.color + ';font-size:' + theme.size + 'px;font-weight:bold;">' + item.title + '</h3>';
-                html += '<p class="item-desc">' + displaySummary + '</p>';
-                html += '<div class="item-footer">';
-                html += '<span class="tag" style="color:' + theme.color + ';">#' + (item.category || '未分类') + '</span>';
-                html += '<span class="item-time">' + dateDisplay + '</span>';
-                html += '</div>';
-                html += '</div>';
-            }
+    // ② 行吟册（只显示最新一条）
+    var xingyinList = await DB.getAll('xingyin', { orderBy: 'id' });
+    var latestXingyin = xingyinList.length > 0 ? xingyinList[xingyinList.length - 1] : null;
+    var homeXingyin = document.getElementById('homeXingyin');
+    if (homeXingyin) {
+        if (latestXingyin) {
+            homeXingyin.innerHTML =
+                '<div class="xingyin-item">' +
+                '<span class="xingyin-date">' + (latestXingyin.date || '') + '</span>' +
+                '<span class="xingyin-text">' + (latestXingyin.content || '') + '</span>' +
+                '</div>';
         } else {
-            html = '<div class="list-item"><p class="item-desc" style="text-align:center;color:#b8b0a8;">暂无文章</p></div>';
+            homeXingyin.innerHTML = '<p style="text-align:center;color:#999;padding:20px 0;">暂无内容</p>';
         }
-
-        if (homeLatest) homeLatest.innerHTML = html;
     }
 
+    // ③ 十年灯（只显示最新一条）
+    var shinian = await DB.getAll('shinian', { orderBy: 'id' });
+    var latestShinian = shinian.length > 0 ? shinian[shinian.length - 1] : null;
+    var homeShinian = document.getElementById('homeShinian');
+    if (homeShinian) {
+        if (latestShinian) {
+            var summary = latestShinian.content ? latestShinian.content.substring(0, 100) : '';
+            var displaySummary = summary + (latestShinian.content && latestShinian.content.length > 100 ? '...' : '');
+            var dateDisplay = latestShinian.date || '';
+
+            homeShinian.innerHTML =
+                '<div class="shinian-item">' +
+                '<h3 class="item-title" data-sub="shinian-detail" data-id="' + latestShinian.id + '">' + latestShinian.title + '</h3>' +
+                '<p class="item-desc">' + displaySummary + '</p>' +
+                '<div class="item-footer">' +
+                '<span class="tag">#' + (latestShinian.category || '未分类') + '</span>' +
+                '<span class="item-time">' + dateDisplay + '</span>' +
+                '</div>' +
+                '</div>';
+        } else {
+            homeShinian.innerHTML = '<p style="text-align:center;color:#999;padding:20px 0;">暂无文章</p>';
+        }
+    }
+}
     // ============================================================
     // 7. 行吟册·絮（仅列表）
     // ============================================================
