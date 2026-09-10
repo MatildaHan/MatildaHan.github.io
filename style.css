@@ -27,7 +27,7 @@ body {
     flex-direction: column;
     align-items: flex-start;
     gap: 8px;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
 }
 .logo-name {
     font-size: 30px;
