@@ -20,7 +20,7 @@ body {
 /* ===== 顶部区域 ===== */
 .site-header {
     border-bottom: none;
-    padding: 30px 0 0 0;
+    padding: 20px 0 0 0;
 }
 .header-wrap {
     width: 800px;
@@ -34,7 +34,7 @@ body {
     flex-direction: column;
     align-items: flex-start;
     gap: 8px;
-    margin-bottom: 10px;
+    margin-bottom: 0px;
 }
 .logo-name {
     font-size: 30px;
@@ -133,7 +133,7 @@ body {
 .page-section.active#page-home {
     display: flex;
     flex-direction: column;
-    gap: 40px;
+    gap: 60px;
 }
 
 /* ===== 通用版块 ===== */
