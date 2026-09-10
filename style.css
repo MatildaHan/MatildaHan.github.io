@@ -199,7 +199,7 @@ body {
 #homeLatest .list-item .item-title:hover {
     opacity: 0.7;
 }
-
+/* 第二行：文章内容 - 最多 2 行 */
 #homeLatest .list-item .item-desc {
     font-size: 13px;
     color: #666666;
@@ -207,8 +207,9 @@ body {
     margin: 0;
     overflow: hidden;
     text-overflow: ellipsis;
-    white-space: nowrap;
-    display: block;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
     width: 100%;
     font-weight: 400;
     font-family: "Noto Serif SC", "Songti SC", "SimSun", serif;
