@@ -185,49 +185,47 @@ body {
 .update-day.level-3 { background-color: #9c836e; }
 .update-day.level-4 { background-color: #6d5745; }
 
-/* ===== ② 行吟册版块 ===== */
-.home-xingyin {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
+/* ===== 行吟册列表（两列布局） ===== */
+.article-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
     width: 100%;
+    align-items: start;   /* 卡片按自身高度显示，不拉伸 */
 }
-/* 每一条：内容左，日期右 */
-.home-xingyin .xingyin-item {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 24px;
-    padding: 4px 0;
+
+.article-item {
+    display: block;
+    padding: 20px 24px;
+    background: #f8f5f1;
+    border: 1px solid #f0ebe6;
+    border-radius: 0;
     width: 100%;
+    /* 高度自适应内容 */
+    height: auto;
 }
-/* 内容：加粗，左对齐，占主要空间 */
-.home-xingyin .xingyin-text {
-    font-size: 17px;
+
+.article-text {
+    font-size: 15px;
     color: #2A2A28;
     font-family: "Noto Serif SC", "Songti SC", "SimSun", serif;
-    font-weight: 700;
-    line-height: 1.6;
+    line-height: 1.8;
     word-wrap: break-word;
     overflow-wrap: break-word;
-    flex: 1 1 auto;
-    text-align: left;
-    order: 1;
 }
-/* 日期：右对齐，短横线，不换行 */
-.home-xingyin .xingyin-date {
-    font-size: 13px;
-    color: #999999;
-    font-family: "Noto Serif SC", "Songti SC", "SimSun", serif;
-    font-weight: 400;
-    white-space: nowrap;
-    flex: 0 0 auto;
-    text-align: right;
-    order: 2;
+
+.article-text a {
+    text-decoration: none;
+    cursor: pointer;
+    color: #2A2A28;
 }
-.home-xingyin .xingyin-date::before {
-    content: '— ';
-    color: #999999;
+.article-text a:hover {
+    text-decoration: underline;
+}
+
+/* 隐藏日期 */
+.article-date {
+    display: none;
 }
 /* ===== 十年灯页面布局 ===== */
 .shinian-layout {
