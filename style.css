@@ -130,7 +130,7 @@ body {
 }
 
 /* ===== 首页样式 - 竖向排列 ===== */
-#page-home {
+.page-section.active#page-home {
     display: flex;
     flex-direction: column;
     gap: 40px;
