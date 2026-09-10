@@ -28,7 +28,7 @@ body {
     flex-direction: column;
     align-items: flex-start;
     gap: 8px;
-    margin-bottom: 10px;
+    margin-bottom: 0px;
 }
 .logo-name {
     font-size: 30px;
@@ -127,7 +127,7 @@ body {
 .page-section.active#page-home {
     display: flex;
     flex-direction: column;
-    gap: 40px;
+    gap: 50px;
 }
 
 /* ===== 通用版块 ===== */
@@ -196,7 +196,7 @@ body {
     width: 100%;
 }
 .home-xingyin .xingyin-text {
-    font-size: 15px;
+    font-size: 17px;
     color: #2A2A28;
     font-family: "Noto Serif SC", "Songti SC", "SimSun", serif;
     font-weight: 700;
@@ -208,7 +208,7 @@ body {
     order: 1;
 }
 .home-xingyin .xingyin-date {
-    font-size: 13px;
+    font-size: 12px;
     color: #999999;
     font-family: "Noto Serif SC", "Songti SC", "SimSun", serif;
     font-weight: 400;
@@ -248,7 +248,7 @@ body {
     opacity: 0.7;
 }
 .home-shinian .item-desc {
-    font-size: 13px;
+    font-size: 12px;
     color: #666666;
     line-height: 1.5;
     overflow: hidden;
