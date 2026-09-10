@@ -9,7 +9,7 @@
     // ============================================================
     function getThemeConfig(site) {
         return {
-            color: (site && (site.theme_color || site.logo_color)) || '#b89c84',
+            color: (site && (site.theme_color || site.logo_color)) || '#2A2A28',
             size: (site && site.title_size) || '20'
         };
     }
@@ -24,39 +24,39 @@
     }
 
     // ============================================================
-    // 3. 页面导航
+    // 3. 页面导航（核心逻辑）
     // ============================================================
     var sections = document.querySelectorAll('.page-section');
     var navLinks = document.querySelectorAll('#globalNav a');
 
     function showPage(pageId) {
-        var i;
-        for (i = 0; i < sections.length; i++) {
+        // 隐藏所有页面
+        for (var i = 0; i < sections.length; i++) {
             sections[i].classList.remove('active');
         }
+        // 显示目标页面
         var target = document.getElementById(pageId);
         if (target) target.classList.add('active');
 
-        for (i = 0; i < navLinks.length; i++) {
-            navLinks[i].classList.remove('active');
-            if (navLinks[i].dataset.page === pageId) {
-                navLinks[i].classList.add('active');
+        // 更新导航选中状态
+        for (var j = 0; j < navLinks.length; j++) {
+            navLinks[j].classList.remove('active');
+            if (navLinks[j].dataset.page === pageId) {
+                navLinks[j].classList.add('active');
             }
         }
 
-        var container = document.querySelector('.container');
-        if (container) {
-            container.style.marginTop = (pageId === 'page-home') ? '80px' : '30px';
-        }
-
+        // 滚动到顶部
         window.scrollTo({ top: 0, behavior: 'smooth' });
 
+        // 加载对应页面数据
         if (pageId === 'page-home') renderHome();
         if (pageId === 'page-xingyin') renderXingyinList();
         if (pageId === 'page-shinian') renderShinianCards();
         if (pageId === 'page-about') renderAbout();
     }
 
+    // 绑定导航点击
     for (var i = 0; i < navLinks.length; i++) {
         navLinks[i].addEventListener('click', function(e) {
             e.preventDefault();
@@ -65,143 +65,173 @@
         });
     }
 
-   // ============================================================
-// 4. 页面跳转（data-sub / data-back）
-// ============================================================
-document.addEventListener('click', function(e) {
-    var target = e.target.closest('[data-sub]');
-    if (target) {
-        e.preventDefault();
-        var sub = target.dataset.sub;
-        if (sub) {
-            var section = document.getElementById(sub);
-            if (section) {
-                for (var i = 0; i < sections.length; i++) {
-                    sections[i].classList.remove('active');
+    // ============================================================
+    // 4. 页面跳转（data-sub / data-back）
+    // ============================================================
+    document.addEventListener('click', function(e) {
+        var target = e.target.closest('[data-sub]');
+        if (target) {
+            e.preventDefault();
+            var sub = target.dataset.sub;
+            if (sub) {
+                var section = document.getElementById(sub);
+                if (section) {
+                    for (var i = 0; i < sections.length; i++) {
+                        sections[i].classList.remove('active');
+                    }
+                    section.classList.add('active');
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                    if (sub === 'shinian-list') loadShinianList(target.dataset.category);
+                    if (sub === 'shinian-detail') loadShinianDetail(target.dataset.id);
                 }
-                section.classList.add('active');
+            }
+            return;
+        }
 
-                var container = document.querySelector('.container');
-                if (container) {
-                    container.style.marginTop = '30px';
-                }
-
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-                if (sub === 'shinian-list') loadShinianList(target.dataset.category);
-                if (sub === 'shinian-detail') loadShinianDetail(target.dataset.id);
+        var backBtn = e.target.closest('[data-back]');
+        if (backBtn) {
+            e.preventDefault();
+            var backId = backBtn.dataset.back;
+            if (backId) {
+                showPage(backId);
             }
         }
-        return;
-    }
+    });
 
-    var backBtn = e.target.closest('[data-back]');
-    if (backBtn) {
-        e.preventDefault();
-        var backId = backBtn.dataset.back;
-        if (backId) {
-            // ★★★ 使用 showPage 跳转到指定页面 ★★★
-            showPage(backId);
-        }
-    }
-});
     // ============================================================
     // 5. Logo 更新
     // ============================================================
     function updateLogo(site) {
-        var logoBlock = document.getElementById('logoBlock');
-        var logoImage = document.getElementById('logoImage');
-        var logoImg = (site && site.logo_image) || '';
-
-        if (logoImage && logoImg && logoImg.trim() !== '') {
-            logoImage.src = logoImg;
-            logoImage.style.display = 'block';
-            if (logoBlock) logoBlock.style.backgroundColor = 'transparent';
-        } else {
-            if (logoImage) logoImage.style.display = 'none';
-            if (logoBlock) logoBlock.style.backgroundColor = (site && site.logo_color) || '#b89c84';
-        }
+        var siteNameEl = document.getElementById('siteName');
+        var siteDescEl = document.getElementById('siteDesc');
+        if (siteNameEl) siteNameEl.textContent = site.site_name || '见南山';
+        if (siteDescEl) siteDescEl.textContent = site.site_desc || '春山如黛草如烟';
     }
 
-// ============================================================
-// 首页渲染
-// ============================================================
-async function renderHome() {
-    var site = await getSite();
-    var theme = getThemeConfig(site);
-
-    updateLogo(site);
-
-    // 网站名称和描述
-    var siteNameEl = document.getElementById('siteName');
-    var siteDescEl = document.getElementById('siteDesc');
-    if (siteNameEl) siteNameEl.textContent = site.site_name || '见南山';
-    if (siteDescEl) siteDescEl.textContent = site.site_desc || '春山如黛草如烟';
-
-    // ① 更新记录
-    renderUpdateRecord();
-
-    // ② 行吟册（只显示最新一条）
-    var xingyinList = await DB.getAll('xingyin', { orderBy: 'id' });
-    var latestXingyin = xingyinList.length > 0 ? xingyinList[xingyinList.length - 1] : null;
-    var homeXingyin = document.getElementById('homeXingyin');
-    if (homeXingyin) {
-        if (latestXingyin) {
-            homeXingyin.innerHTML =
-                '<div class="xingyin-item">' +
-                '<span class="xingyin-date">' + (latestXingyin.date || '') + '</span>' +
-                '<span class="xingyin-text">' + (latestXingyin.content || '') + '</span>' +
-                '</div>';
-        } else {
-            homeXingyin.innerHTML = '<p style="text-align:center;color:#999;padding:20px 0;">暂无内容</p>';
-        }
-    }
-
-    // ③ 十年灯（只显示最新一条）
-    var shinian = await DB.getAll('shinian', { orderBy: 'id' });
-    var latestShinian = shinian.length > 0 ? shinian[shinian.length - 1] : null;
-    var homeShinian = document.getElementById('homeShinian');
-    if (homeShinian) {
-        if (latestShinian) {
-            var summary = latestShinian.content ? latestShinian.content.substring(0, 100) : '';
-            var displaySummary = summary + (latestShinian.content && latestShinian.content.length > 100 ? '...' : '');
-            var dateDisplay = latestShinian.date || '';
-
-            homeShinian.innerHTML =
-                '<div class="shinian-item">' +
-                '<h3 class="item-title" data-sub="shinian-detail" data-id="' + latestShinian.id + '">' + latestShinian.title + '</h3>' +
-                '<p class="item-desc">' + displaySummary + '</p>' +
-                '<div class="item-footer">' +
-                '<span class="tag">#' + (latestShinian.category || '未分类') + '</span>' +
-                '<span class="item-time">' + dateDisplay + '</span>' +
-                '</div>' +
-                '</div>';
-        } else {
-            homeShinian.innerHTML = '<p style="text-align:center;color:#999;padding:20px 0;">暂无文章</p>';
-        }
-    }
-}
     // ============================================================
-    // 7. 行吟册·絮（仅列表）
+    // 6. 首页
+    // ============================================================
+    async function renderHome() {
+        var site = await getSite();
+        updateLogo(site);
+
+        // ① 更新记录
+        await renderUpdateRecord();
+
+        // ② 行吟册（最新一条）
+        var xingyinList = await DB.getAll('xingyin', { orderBy: 'id' });
+        var latestXingyin = xingyinList.length > 0 ? xingyinList[xingyinList.length - 1] : null;
+        var homeXingyin = document.getElementById('homeXingyin');
+        if (homeXingyin) {
+            if (latestXingyin) {
+                homeXingyin.innerHTML =
+                    '<div class="xingyin-item">' +
+                    '<span class="xingyin-date">' + (latestXingyin.date || '') + '</span>' +
+                    '<span class="xingyin-text">' + (latestXingyin.content || '') + '</span>' +
+                    '</div>';
+            } else {
+                homeXingyin.innerHTML = '<p style="text-align:center;color:#999;padding:20px 0;">暂无内容</p>';
+            }
+        }
+
+        // ③ 十年灯（最新一条）
+        var shinian = await DB.getAll('shinian', { orderBy: 'id' });
+        var latestShinian = shinian.length > 0 ? shinian[shinian.length - 1] : null;
+        var homeShinian = document.getElementById('homeShinian');
+        if (homeShinian) {
+            if (latestShinian) {
+                var summary = latestShinian.content ? latestShinian.content.substring(0, 100) : '';
+                var displaySummary = summary + (latestShinian.content && latestShinian.content.length > 100 ? '...' : '');
+                var dateDisplay = latestShinian.date || '';
+
+                homeShinian.innerHTML =
+                    '<div class="shinian-item">' +
+                    '<h3 class="item-title" data-sub="shinian-detail" data-id="' + latestShinian.id + '">' + latestShinian.title + '</h3>' +
+                    '<p class="item-desc">' + displaySummary + '</p>' +
+                    '<div class="item-footer">' +
+                    '<span class="tag">#' + (latestShinian.category || '未分类') + '</span>' +
+                    '<span class="item-time">' + dateDisplay + '</span>' +
+                    '</div>' +
+                    '</div>';
+            } else {
+                homeShinian.innerHTML = '<p style="text-align:center;color:#999;padding:20px 0;">暂无文章</p>';
+            }
+        }
+    }
+
+    // ============================================================
+    // 7. 更新记录
+    // ============================================================
+    async function renderUpdateRecord() {
+        var container = document.getElementById('updateRecordGrid');
+        if (!container) return;
+
+        var records = await DB.getAll('update_records', { orderBy: 'date' });
+        var recordMap = {};
+        for (var i = 0; i < records.length; i++) {
+            recordMap[records[i].date] = records[i].word_count || 0;
+        }
+
+        var now = new Date();
+        var months = [];
+        for (var m = 5; m >= 0; m--) {
+            var d = new Date(now.getFullYear(), now.getMonth() - m, 1);
+            months.push({
+                year: d.getFullYear(),
+                month: d.getMonth() + 1,
+                days: new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate()
+            });
+        }
+
+        var html = '';
+        for (var k = 0; k < months.length; k++) {
+            var mo = months[k];
+            html += '<div class="update-row">';
+            html += '<span class="update-month">' + mo.month + '月</span>';
+            html += '<div class="update-days">';
+
+            for (var day = 1; day <= mo.days; day++) {
+                var dateStr = mo.year + '-' +
+                    String(mo.month).padStart(2, '0') + '-' +
+                    String(day).padStart(2, '0');
+
+                var count = recordMap[dateStr] || 0;
+                var level = 0;
+                if (count > 0 && count <= 200) level = 1;
+                else if (count > 200 && count <= 500) level = 2;
+                else if (count > 500 && count <= 1000) level = 3;
+                else if (count > 1000) level = 4;
+
+                html += '<div class="update-day level-' + level + '" title="' + dateStr + '（' + count + '字）"></div>';
+            }
+
+            html += '</div>';
+            html += '</div>';
+        }
+
+        container.innerHTML = html;
+    }
+
+    // ============================================================
+    // 8. 行吟册列表
     // ============================================================
     async function renderXingyinList() {
         var list = await DB.getAll('xingyin', { orderBy: 'id' });
         var container = document.getElementById('xingyinList');
         if (!container) return;
-        var site = await getSite();
-        var theme = getThemeConfig(site);
         var html = '';
         for (var i = 0; i < list.length; i++) {
             var item = list[i];
             html += '<div class="article-item">';
             html += '<div class="article-date">' + item.date + '</div>';
-            html += '<div class="article-text" style="color:' + theme.color + ';font-size:' + theme.size + 'px;font-weight:bold;">' + item.content + '</div>';
+            html += '<div class="article-text" style="color:#2A2A28;font-size:17px;font-weight:bold;">' + item.content + '</div>';
             html += '</div>';
         }
         container.innerHTML = html || '<p style="text-align:center;color:#999;padding:40px 0;">暂无内容</p>';
     }
 
     // ============================================================
-    // 8. 十年灯·文
+    // 9. 十年灯系列卡片
     // ============================================================
     async function getShinianCategoryDescMap() {
         var cats = await DB.getAll('shinian_categories');
@@ -223,18 +253,16 @@ async function renderHome() {
         }
         var container = document.getElementById('shinianCards');
         if (!container) return;
-        var site = await getSite();
-        var theme = getThemeConfig(site);
         var html = '';
         for (var j = 0; j < categories.length; j++) {
             var cat = categories[j];
             var desc = descMap[cat] || '';
             var indexStr = String(j + 1).padStart(2, '0');
             html += '<div class="series-card">';
-            html += '<div class="card-index" style="color:' + theme.color + ';font-size:14px;">' + indexStr + ' / 系列</div>';
-            html += '<h3 class="card-title" style="color:' + theme.color + ';font-size:' + theme.size + 'px;font-weight:bold;">' + cat + '</h3>';
+            html += '<div class="card-index">' + indexStr + ' / 系列</div>';
+            html += '<h3 class="card-title">' + cat + '</h3>';
             html += '<p class="card-desc">' + (desc || '暂无描述') + '</p>';
-            html += '<a class="card-link" data-sub="shinian-list" data-category="' + cat + '" style="color:' + theme.color + ';font-size:14px;text-decoration:none;">进入系列&gt;</a>';
+            html += '<a class="card-link" data-sub="shinian-list" data-category="' + cat + '">进入系列&gt;</a>';
             html += '</div>';
         }
         container.innerHTML = html || '<p style="text-align:center;color:#999;padding:40px 0;">暂无内容</p>';
@@ -245,14 +273,12 @@ async function renderHome() {
         var items = list.filter(function(x) { return x.category === category; });
         var container = document.getElementById('shinianList');
         if (!container) return;
-        var site = await getSite();
-        var theme = getThemeConfig(site);
         var html = '';
         for (var j = 0; j < items.length; j++) {
             var item = items[j];
             html += '<div class="article-item">';
             html += '<div class="article-date">' + item.date + '</div>';
-            html += '<div class="article-text"><a data-sub="shinian-detail" data-id="' + item.id + '" style="color:' + theme.color + ';font-size:' + theme.size + 'px;font-weight:bold;">' + item.title + '</a></div>';
+            html += '<div class="article-text"><a data-sub="shinian-detail" data-id="' + item.id + '">' + item.title + '</a></div>';
             html += '</div>';
         }
         container.innerHTML = html || '<p style="text-align:center;color:#999;padding:40px 0;">该系列暂无文章</p>';
@@ -262,8 +288,6 @@ async function renderHome() {
         var item = await DB.getById('shinian', id);
         if (!item) return;
         var list = await DB.getAll('shinian', { orderBy: 'id' });
-        var site = await getSite();
-        var theme = getThemeConfig(site);
 
         var titleEl = document.getElementById('shinianDetailTitle');
         var dateEl = document.getElementById('shinianDetailDate');
@@ -271,18 +295,10 @@ async function renderHome() {
         var sidebarTitleEl = document.getElementById('shinianSidebarTitle');
         var sidebarEl = document.getElementById('shinianSidebar');
 
-        if (titleEl) {
-            titleEl.textContent = item.title;
-            titleEl.style.color = theme.color;
-            titleEl.style.fontSize = theme.size + 'px';
-            titleEl.style.fontWeight = 'bold';
-        }
+        if (titleEl) titleEl.textContent = item.title;
         if (dateEl) dateEl.textContent = item.date;
         if (contentEl) contentEl.innerHTML = '<p>' + (item.content || '').replace(/\n/g, '</p><p>') + '</p>';
-        if (sidebarTitleEl) {
-            sidebarTitleEl.textContent = '系列 / ' + item.category;
-            sidebarTitleEl.style.color = theme.color;
-        }
+        if (sidebarTitleEl) sidebarTitleEl.textContent = '系列 / ' + item.category;
 
         if (sidebarEl) {
             var sameCategory = list.filter(function(x) { return x.category === item.category; });
@@ -290,41 +306,36 @@ async function renderHome() {
             for (var k = 0; k < sameCategory.length; k++) {
                 var displayTitle = sameCategory[k].title;
                 if (displayTitle.length > 40) displayTitle = displayTitle.substring(0, 40) + '...';
-                html += '<a href="#" data-sub="shinian-detail" data-id="' + sameCategory[k].id + '" style="font-size:14px;font-weight:bold;color:' + theme.color + ';display:block;margin-bottom:6px;text-decoration:none;">' + displayTitle + '</a>';
+                html += '<a href="#" data-sub="shinian-detail" data-id="' + sameCategory[k].id + '">' + displayTitle + '</a>';
             }
             sidebarEl.innerHTML = html;
         }
     }
 
     // ============================================================
-    // 9. 山野渔夫
+    // 10. 山野渔夫
     // ============================================================
     async function renderAbout() {
         var list = await DB.getAll('about');
         var content = list.length > 0 ? (list[0].content || '') : '';
         var container = document.getElementById('aboutContent');
         if (!container) return;
-        var site = await getSite();
-        var theme = getThemeConfig(site);
         var lines = content.split('\n');
         var html = '';
         for (var i = 0; i < lines.length; i++) {
             var line = lines[i].trim();
             if (line) {
-                html += '<p style="color:' + theme.color + ';font-size:' + theme.size + 'px;font-weight:bold;">' + line + '</p>';
+                html += '<p>' + line + '</p>';
             }
         }
         container.innerHTML = html;
     }
 
     // ============================================================
-    // 10. 初始化
+    // 11. 初始化
     // ============================================================
     document.addEventListener('DOMContentLoaded', function() {
-        var container = document.querySelector('.container');
-        if (container) container.style.marginTop = '80px';
-        renderHome();
+        // 确保只有首页可见
+        showPage('page-home');
     });
-
-    showPage('page-home');
 })();
