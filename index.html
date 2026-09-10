@@ -55,17 +55,32 @@
     </header>
 
     <main class="container" id="app">
-        <!-- ===== 首页 ===== -->
-        <section id="page-home" class="page-section active">
-            <div class="home-row">
-                <div class="home-left">
-                    <h2 class="post-title" id="homeTitle">不再热爱生活。</h2>
-                    <div class="post-date" id="homeDate">2026/09/07</div>
-                    <span class="divider-line"></span>
-                </div>
-                <div class="right-list" id="homeLatest"></div>
-            </div>
-        </section>
+  <!-- ===== 首页 ===== -->
+<section id="page-home" class="page-section active">
+
+    <!-- ① 更新记录表 -->
+    <div class="update-record">
+        <h3 class="update-record-title">更新记录</h3>
+        <div class="update-record-grid" id="updateRecordGrid"></div>
+    </div>
+
+    <!-- ② 行吟册（最新短句） -->
+    <div class="home-section">
+        <h3 class="home-section-title">
+            <a href="#" data-page="page-xingyin">行吟册</a>
+        </h3>
+        <div class="home-xingyin" id="homeXingyin"></div>
+    </div>
+
+    <!-- ③ 十年灯（最新文章） -->
+    <div class="home-section">
+        <h3 class="home-section-title">
+            <a href="#" data-page="page-shinian">十年灯</a>
+        </h3>
+        <div class="home-shinian" id="homeShinian"></div>
+    </div>
+
+</section>
 
         <!-- ===== 行吟册 ===== -->
         <section id="page-xingyin" class="page-section">
