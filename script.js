@@ -170,14 +170,15 @@
 
         var now = new Date();
         var months = [];
-        for (var m = 5; m >= 0; m--) {
-            var d = new Date(now.getFullYear(), now.getMonth() - m, 1);
-            months.push({
-                year: d.getFullYear(),
-                month: d.getMonth() + 1,
-                days: new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate()
-            });
-        }
+   // 修改后：从当前月到 5 个月前（9月 → 4月）
+for (var m = 0; m <= 5; m++) {
+    var d = new Date(now.getFullYear(), now.getMonth() - m, 1);
+    months.push({
+        year: d.getFullYear(),
+        month: d.getMonth() + 1,
+        days: new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate()
+    });
+}
 
         var html = '';
         for (var k = 0; k < months.length; k++) {
