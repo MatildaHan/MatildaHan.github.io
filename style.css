@@ -191,17 +191,16 @@ body {
     grid-template-columns: repeat(2, 1fr);
     gap: 16px;
     width: 100%;
-    align-items: start;   /* 卡片按自身高度显示，不拉伸 */
+    align-items: start;
 }
 
 .article-item {
     display: block;
-    padding: 20px 24px;
+    padding: 15px;
     background: #f8f5f1;
     border: 1px solid #f0ebe6;
     border-radius: 0;
     width: 100%;
-    /* 高度自适应内容 */
     height: auto;
 }
 
@@ -227,6 +226,14 @@ body {
 .article-date {
     display: none;
 }
+
+/* 响应式 */
+@media (max-width: 768px) {
+    .article-list {
+        grid-template-columns: 1fr;
+    }
+}
+
 /* ===== 十年灯页面布局 ===== */
 .shinian-layout {
     display: grid;
