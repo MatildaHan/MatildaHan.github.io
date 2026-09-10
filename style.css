@@ -50,7 +50,7 @@ body {
     justify-content: flex-end;
     gap: 28px;
     flex-wrap: wrap;
-    padding-bottom: 20px;
+    padding-bottom: 10px;
     border-bottom: 1px solid #e0d6cc;
 }
 .nav-list a {
