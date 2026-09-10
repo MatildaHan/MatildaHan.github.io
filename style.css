@@ -14,7 +14,7 @@ body {
 /* ===== 顶部区域 ===== */
 .site-header {
     border-bottom: none;
-    padding: 60px 0 0 0;
+    padding: 30px 0 0 0;
 }
 .header-wrap {
     width: 800px;
@@ -27,10 +27,10 @@ body {
     flex-direction: column;
     align-items: flex-start;
     gap: 8px;
-    margin-bottom: 60px;
+    margin-bottom: 20px;
 }
 .logo-name {
-    font-size: 40px;
+    font-size: 30px;
     color: #2A2A28;
     font-family: "Noto Serif SC", "Songti SC", "SimSun", serif;
     font-weight: 700;
