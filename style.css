@@ -10,6 +10,12 @@ body {
     font-size: 15px;
     line-height: 1.8;
 }
+.page-section {
+    display: none;
+}
+.page-section.active {
+    display: block;
+}
 
 /* ===== 顶部区域 ===== */
 .site-header {
