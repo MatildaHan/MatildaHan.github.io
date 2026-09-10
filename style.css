@@ -162,12 +162,12 @@ body {
     100% { opacity: 1; transform: translateY(0); }
 }
 
-/* ===== 首页样式 - 三列不等宽 ===== */
+/* ===== 首页样式 - 两列布局 ===== */
 .home-row {
     display: grid;
-    grid-template-columns: 200px 1fr 320px;
+    grid-template-columns: 240px 1fr;
     align-items: center;
-    gap: 32px;
+    gap: 60px;
     max-width: 1000px;
     margin: 0 auto;
 }
@@ -202,34 +202,6 @@ body {
     margin: 10px auto 0;
 }
 
-/* 中间列 - 图片居中 */
-.center-image {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-}
-.tilted-card {
-    width: 100%;
-    max-width: 200px;
-    aspect-ratio: 1 / 1.8;
-    background-color: #999999;
-    transform: rotate(3deg);
-    transition: transform 0.4s ease;
-    margin: 0 auto;
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    min-height: 160px;
-    display: block;
-}
-.tilted-card:hover {
-    transform: rotate(0deg);
-}
-.tilted-card.has-image {
-    background-color: transparent !important;
-}
-
 /* 右侧列 */
 #homeLatest {
     display: flex;
@@ -248,7 +220,6 @@ body {
     width: 100%;
 }
 
-/* 第一行：文章标题 - 17px 加粗 */
 #homeLatest .list-item .item-title {
     font-size: 17px !important;
     font-weight: 700;
@@ -264,7 +235,6 @@ body {
     opacity: 0.7;
 }
 
-/* 第二行：文章内容 - 13px #666666 不加粗 */
 #homeLatest .list-item .item-desc {
     font-size: 13px;
     color: #666666;
@@ -279,7 +249,6 @@ body {
     font-family: "Noto Serif SC", "Songti SC", "SimSun", serif;
 }
 
-/* 第三行：分类标签 + 日期 */
 #homeLatest .list-item .item-footer {
     display: flex;
     align-items: center;
@@ -301,13 +270,6 @@ body {
     font-size: 11px;
     color: #999999;
 }
-#homeLatest .list-item .divider-line {
-    display: none !important;
-}
-#homeLatest .list-item .item-header {
-    display: none !important;
-}
-
 /* ===== 通用列表（行吟册 / 十年灯系列详情） ===== */
 .article-item {
     display: flex;
