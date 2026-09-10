@@ -1,3 +1,16 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body {
+    background: #ffffff;
+    color: #2A2A28;
+    font-family: "Noto Serif SC", "Songti SC", "SimSun", serif;
+    font-size: 15px;
+    line-height: 1.8;
+}
+
 /* ===== 顶部区域 ===== */
 .site-header {
     border-bottom: none;
@@ -6,7 +19,6 @@
 .header-wrap {
     width: 800px;
     margin: 0 auto;
-    /* ★★★ 更新记录与页签之间距离 20px ★★★ */
     padding-bottom: 20px;
 }
 
@@ -91,7 +103,6 @@
 .container {
     width: 800px;
     margin: 0 auto;
-    /* ★★★ 首页内容区距顶部（页签下方）20px ★★★ */
     padding-top: 20px;
 }
 
@@ -116,7 +127,6 @@
 #page-home {
     display: flex;
     flex-direction: column;
-    /* ★★★ 首页三个板块之间距离 40px ★★★ */
     gap: 40px;
 }
 
@@ -177,9 +187,10 @@
     gap: 12px;
     width: 100%;
 }
-/* 每一条 */
+/* 每一条：内容左，日期右 */
 .home-xingyin .xingyin-item {
     display: flex;
+    flex-direction: row;
     align-items: center;
     gap: 24px;
     padding: 4px 0;
@@ -194,8 +205,9 @@
     line-height: 1.6;
     word-wrap: break-word;
     overflow-wrap: break-word;
-    flex: 1;
+    flex: 1 1 auto;
     text-align: left;
+    order: 1;
 }
 /* 日期：右对齐，短横线，不换行 */
 .home-xingyin .xingyin-date {
@@ -204,8 +216,9 @@
     font-family: "Noto Serif SC", "Songti SC", "SimSun", serif;
     font-weight: 400;
     white-space: nowrap;
-    flex-shrink: 0;
+    flex: 0 0 auto;
     text-align: right;
+    order: 2;
 }
 .home-xingyin .xingyin-date::before {
     content: '— ';
@@ -271,6 +284,7 @@
     font-size: 11px;
     color: #999999;
 }
+
 /* ===== 通用列表（行吟册 / 十年灯子列表） ===== */
 .article-item {
     display: flex;
@@ -558,13 +572,17 @@
     .detail-grid { grid-template-columns: 1fr; gap: 24px; }
     .sidebar { width: 100%; }
     .series-card { height: auto; min-height: 160px; }
-    /* 移动端行吟册布局调整 */
+    /* 移动端行吟册保持内容左日期右 */
     .home-xingyin .xingyin-item {
-        flex-direction: column;
+        flex-direction: row;
         align-items: flex-start;
-        gap: 4px;
+        gap: 16px;
+    }
+    .home-xingyin .xingyin-text {
+        font-size: 14px;
     }
     .home-xingyin .xingyin-date {
-        text-align: left;
+        font-size: 12px;
+        text-align: right;
     }
 }
