@@ -126,8 +126,8 @@
             if (latestXingyin) {
                 homeXingyin.innerHTML =
                     '<div class="xingyin-item">' +
-                    '<span class="xingyin-date">' + (latestXingyin.date || '') + '</span>' +
                     '<span class="xingyin-text">' + (latestXingyin.content || '') + '</span>' +
+                    '<span class="xingyin-date">' + (latestXingyin.date || '') + '</span>' +
                     '</div>';
             } else {
                 homeXingyin.innerHTML = '<p style="text-align:center;color:#999;padding:20px 0;">暂无内容</p>';
@@ -223,8 +223,8 @@
         for (var i = 0; i < list.length; i++) {
             var item = list[i];
             html += '<div class="article-item">';
-            html += '<div class="article-date">' + item.date + '</div>';
-            html += '<div class="article-text" style="color:#2A2A28;font-size:17px;font-weight:bold;">' + item.content + '</div>';
+            html += '<div class="article-text" style="font-weight:700;flex:1;">' + item.content + '</div>';
+            html += '<div class="article-date" style="text-align:right;">— ' + item.date + '</div>';
             html += '</div>';
         }
         container.innerHTML = html || '<p style="text-align:center;color:#999;padding:40px 0;">暂无内容</p>';
