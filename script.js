@@ -49,12 +49,12 @@
         // 滚动到顶部
         window.scrollTo({ top: 0, behavior: 'smooth' });
 
-        // 加载对应页面数据
-        if (pageId === 'page-home') renderHome();
-        if (pageId === 'page-xingyin') renderXingyinList();
-        if (pageId === 'page-shinian') renderShinianCards();
-        if (pageId === 'page-about') renderAbout();
-    }
+       // 加载对应页面数据
+    if (pageId === 'page-home') renderHome();
+    if (pageId === 'page-xingyin') renderXingyinList();
+    if (pageId === 'page-shinian') renderShinianPage();  // ← 改为 renderShinianPage
+    if (pageId === 'page-about') renderAbout();
+}
 
     // 绑定导航点击
     for (var i = 0; i < navLinks.length; i++) {
