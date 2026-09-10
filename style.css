@@ -425,11 +425,7 @@ body {
 }
 
 /* ===== 文章详情 ===== */
-.detail-grid {
-    display: grid;
-    grid-template-columns: 1fr 180px;
-    gap: 40px;
-}
+
 .book-main .title,
 .book-main .book-title {
     font-size: 22px;
