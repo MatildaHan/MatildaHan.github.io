@@ -525,17 +525,6 @@ body {
     color: #999999;
     font-family: "Noto Serif SC", "Songti SC", "SimSun", serif;
 }
-/* ===== 响应式 ===== */
-@media (max-width: 1020px) {
-    .header-wrap,
-    .container {
-        width: 100%;
-        max-width: 1000px;
-        padding: 0 20px;
-        box-sizing: border-box;
-    }
-}
-
 @media (max-width: 1024px) {
     .home-row {
         grid-template-columns: 1fr;
@@ -544,8 +533,6 @@ body {
         margin: 0 auto;
     }
     .home-left { width: 100%; }
-    .center-image { width: 100%; display: flex; justify-content: center; }
-    .tilted-card { max-width: 240px; min-height: 180px; }
     #homeLatest { max-width: 100%; width: 100%; }
     #homeLatest .list-item .item-title { font-size: 17px !important; }
     #homeLatest .list-item .item-desc { font-size: 13px; }
@@ -557,32 +544,10 @@ body {
 }
 
 @media (max-width: 768px) {
-    .header-wrap { flex-direction: column; align-items: flex-start; }
-    .nav-list { width: 100%; justify-content: flex-start; gap: 8px; }
-    .nav-list a { width: 60px; padding: 6px 8px; }
-    .article-item { 
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 4px;
-        padding: 16px 0;
-    }
-    .article-date {
-        min-width: auto;
-        white-space: normal;
-    }
-    .card-grid { grid-template-columns: 1fr; }
     .home-row { gap: 30px; max-width: 100%; }
     .home-left { width: 100%; padding: 0; }
-    .center-image { width: 100%; display: flex; justify-content: center; }
-    .tilted-card { max-width: 180px; min-height: 140px; }
     #homeLatest { max-width: 100%; width: 100%; gap: 28px; }
     #homeLatest .list-item .item-title { font-size: 16px !important; }
     #homeLatest .list-item .item-desc { font-size: 13px; }
     #homeLatest .list-item .item-footer { font-size: 11px; gap: 12px; flex-wrap: wrap; }
-    #homeLatest .list-item .item-footer .tag { font-size: 11px; padding: 0; }
-    #homeLatest .list-item .item-footer .item-time { font-size: 11px; }
-    .header-wrap, .container { padding: 0 16px; }
-    .detail-grid { grid-template-columns: 1fr; gap: 24px; }
-    .sidebar { width: 100%; }
-    .series-card { height: auto; min-height: 160px; }
 }
