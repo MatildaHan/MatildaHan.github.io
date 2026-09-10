@@ -116,8 +116,8 @@
 #page-home {
     display: flex;
     flex-direction: column;
-    /* ★★★ 首页三个板块之间距离 20px ★★★ */
-    gap: 20px;
+    /* ★★★ 首页三个板块之间距离 40px ★★★ */
+    gap: 40px;
 }
 
 /* ===== 通用版块 ===== */
@@ -175,28 +175,29 @@
     display: flex;
     flex-direction: column;
     gap: 12px;
+    width: 100%;
 }
-/* 每一条：内容左对齐，日期右对齐 */
+/* 每一条 */
 .home-xingyin .xingyin-item {
     display: flex;
     align-items: center;
-    justify-content: space-between;
     gap: 24px;
-    padding: 8px 0;
+    padding: 4px 0;
     width: 100%;
 }
-/* 内容：加粗，左对齐 */
+/* 内容：加粗，左对齐，占主要空间 */
 .home-xingyin .xingyin-text {
     font-size: 15px;
     color: #2A2A28;
     font-family: "Noto Serif SC", "Songti SC", "SimSun", serif;
     font-weight: 700;
+    line-height: 1.6;
     word-wrap: break-word;
     overflow-wrap: break-word;
     flex: 1;
     text-align: left;
 }
-/* 日期：右对齐，短横线 */
+/* 日期：右对齐，短横线，不换行 */
 .home-xingyin .xingyin-date {
     font-size: 13px;
     color: #999999;
@@ -216,6 +217,7 @@
     display: flex;
     flex-direction: column;
     gap: 32px;
+    width: 100%;
 }
 .home-shinian .shinian-item {
     display: flex;
@@ -269,7 +271,6 @@
     font-size: 11px;
     color: #999999;
 }
-
 /* ===== 通用列表（行吟册 / 十年灯子列表） ===== */
 .article-item {
     display: flex;
