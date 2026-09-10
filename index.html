@@ -55,32 +55,30 @@
     </header>
 
     <main class="container" id="app">
-  <!-- ===== 首页 ===== -->
-<section id="page-home" class="page-section active">
+        <!-- ===== 首页 ===== -->
+        <section id="page-home" class="page-section active">
+            <!-- ① 更新记录 -->
+            <div class="update-record">
+                <h3 class="update-record-title">更新记录</h3>
+                <div class="update-record-grid" id="updateRecordGrid"></div>
+            </div>
 
-    <!-- ① 更新记录表 -->
-    <div class="update-record">
-        <h3 class="update-record-title">更新记录</h3>
-        <div class="update-record-grid" id="updateRecordGrid"></div>
-    </div>
+            <!-- ② 行吟册 -->
+            <div class="home-section">
+                <h3 class="home-section-title">
+                    <a href="#" data-page="page-xingyin">行吟册</a>
+                </h3>
+                <div class="home-xingyin" id="homeXingyin"></div>
+            </div>
 
-    <!-- ② 行吟册（最新短句） -->
-    <div class="home-section">
-        <h3 class="home-section-title">
-            <a href="#" data-page="page-xingyin">行吟册</a>
-        </h3>
-        <div class="home-xingyin" id="homeXingyin"></div>
-    </div>
-
-    <!-- ③ 十年灯（最新文章） -->
-    <div class="home-section">
-        <h3 class="home-section-title">
-            <a href="#" data-page="page-shinian">十年灯</a>
-        </h3>
-        <div class="home-shinian" id="homeShinian"></div>
-    </div>
-
-</section>
+            <!-- ③ 十年灯 -->
+            <div class="home-section">
+                <h3 class="home-section-title">
+                    <a href="#" data-page="page-shinian">十年灯</a>
+                </h3>
+                <div class="home-shinian" id="homeShinian"></div>
+            </div>
+        </section>
 
         <!-- ===== 行吟册 ===== -->
         <section id="page-xingyin" class="page-section">
@@ -125,7 +123,7 @@
                         <span class="site-info-label">名称</span>
                         <span class="site-info-value">見南山</span>
                     </div>
-               
+                    
                     <div class="site-info-item">
                         <span class="site-info-label">描述</span>
                         <span class="site-info-value">春山如黛草如烟。</span>
