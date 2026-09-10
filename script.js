@@ -24,7 +24,7 @@
     }
 
     // ============================================================
-    // 3. 页面导航（核心逻辑）
+    // 3. 页面导航
     // ============================================================
     var sections = document.querySelectorAll('.page-section');
     var navLinks = document.querySelectorAll('#globalNav a');
@@ -63,7 +63,6 @@
     // 4. 页面跳转（data-sub / data-back）
     // ============================================================
     document.addEventListener('click', function(e) {
-        // 处理 data-sub（跳转到详情页）
         var target = e.target.closest('[data-sub]');
         if (target) {
             e.preventDefault();
@@ -82,7 +81,6 @@
             return;
         }
 
-        // 处理 data-back（返回按钮）
         var backBtn = e.target.closest('[data-back]');
         if (backBtn) {
             e.preventDefault();
@@ -90,7 +88,6 @@
             if (backId) {
                 showPage(backId);
             }
-            return;
         }
     });
 
@@ -156,7 +153,7 @@
     }
 
     // ============================================================
-    // 7. 更新记录
+    // 7. 更新记录（月份倒序）
     // ============================================================
     async function renderUpdateRecord() {
         var container = document.getElementById('updateRecordGrid');
@@ -170,15 +167,15 @@
 
         var now = new Date();
         var months = [];
-   // 修改后：从当前月到 5 个月前（9月 → 4月）
-for (var m = 0; m <= 5; m++) {
-    var d = new Date(now.getFullYear(), now.getMonth() - m, 1);
-    months.push({
-        year: d.getFullYear(),
-        month: d.getMonth() + 1,
-        days: new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate()
-    });
-}
+        // 从当前月往前推 5 个月（9月 → 4月）
+        for (var m = 0; m <= 5; m++) {
+            var d = new Date(now.getFullYear(), now.getMonth() - m, 1);
+            months.push({
+                year: d.getFullYear(),
+                month: d.getMonth() + 1,
+                days: new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate()
+            });
+        }
 
         var html = '';
         for (var k = 0; k < months.length; k++) {
@@ -210,7 +207,7 @@ for (var m = 0; m <= 5; m++) {
     }
 
     // ============================================================
-    // 8. 行吟册列表
+    // 8. 行吟册列表（两列卡片）
     // ============================================================
     async function renderXingyinList() {
         var list = await DB.getAll('xingyin', { orderBy: 'id' });
@@ -220,8 +217,7 @@ for (var m = 0; m <= 5; m++) {
         for (var i = 0; i < list.length; i++) {
             var item = list[i];
             html += '<div class="article-item">';
-            html += '<div class="article-text" style="font-weight:700;flex:1;">' + item.content + '</div>';
-            html += '<div class="article-date" style="text-align:right;">— ' + item.date + '</div>';
+            html += '<div class="article-text">' + (item.content || '') + '</div>';
             html += '</div>';
         }
         container.innerHTML = html || '<p style="text-align:center;color:#999;padding:40px 0;">暂无内容</p>';
