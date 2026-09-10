@@ -196,7 +196,7 @@ body {
 
 .article-item {
     display: block;
-    padding: 15px;
+    padding: 20px;
     background: #f8f5f1;
     border: 1px solid #f0ebe6;
     border-radius: 0;
@@ -233,7 +233,6 @@ body {
         grid-template-columns: 1fr;
     }
 }
-
 /* ===== 十年灯页面布局 ===== */
 .shinian-layout {
     display: grid;
