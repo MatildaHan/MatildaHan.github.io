@@ -83,11 +83,11 @@ body {
     display: none;
 }
 .nav-list a .nav-icon {
-    display: inline-block;  /* 改为 inline-block */
+    display: inline-block;
     line-height: 1;
 }
 
-/* ★★★ SVG 尺寸和颜色 ★★★ */
+/* SVG 尺寸和颜色 */
 .nav-list a .nav-icon svg {
     width: 18px;
     height: 18px;
@@ -100,7 +100,7 @@ body {
     transition: fill 0.3s ease;
 }
 
-/* 悬停：底色 #2A2A28，文字 #ffffff，图标白色 */
+/* ★★★ 悬停：底色 #2A2A28，只显示文字，不显示图标 ★★★ */
 .nav-list a:hover {
     background: #2A2A28;
     color: #ffffff;
@@ -110,10 +110,7 @@ body {
     display: inline;
 }
 .nav-list a:hover .nav-icon {
-    display: inline-block;
-}
-.nav-list a:hover .nav-icon svg path {
-    fill: #ffffff;
+    display: none;  /* 悬停时隐藏图标 */
 }
 
 /* 选中：图标 + 下划线 */
@@ -142,7 +139,6 @@ body {
     background: #2A2A28;
     transition: 0.3s ease;
 }
-
 /* ===== 所有前端页面版心 1000px ===== */
 .container {
     width: 1000px;
