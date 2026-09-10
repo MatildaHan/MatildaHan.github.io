@@ -121,92 +121,146 @@ body {
     100% { opacity: 1; transform: translateY(0); }
 }
 
-/* ===== 首页样式 - 两列布局 ===== */
-.home-row {
-    display: grid;
-    grid-template-columns: 200px 1fr;
-    align-items: center;
-    gap: 48px;
-    width: 800px;
-    margin: 0 auto;
-}
-
-/* 左侧列 - 居中 */
-.home-left {
-    text-align: center;
-    padding: 0 10px;
+/* ===== 首页样式 - 竖向排列 ===== */
+#page-home {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    gap: 60px;
+}
+
+/* ===== 通用版块 ===== */
+.home-section {
     width: 100%;
 }
-.home-left .post-title {
-    font-size: 17px !important;
+.home-section-title {
+    font-size: 17px;
     font-weight: 700;
     font-family: "Noto Serif SC", "Songti SC", "SimSun", serif;
-    margin-bottom: 24px;
     color: #2A2A28;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #f3efe9;
 }
-.home-left .post-date {
+.home-section-title a {
+    color: #2A2A28;
+    text-decoration: none;
+    transition: 0.2s;
+}
+.home-section-title a:hover {
+    opacity: 0.7;
+}
+
+/* ===== ① 更新记录版块 ===== */
+.update-record {
+    width: 100%;
+}
+.update-record-title {
+    font-size: 17px;
+    font-weight: 700;
+    font-family: "Noto Serif SC", "Songti SC", "SimSun", serif;
+    color: #2A2A28;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #f3efe9;
+}
+.update-record-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+.update-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+.update-month {
     font-size: 13px;
     color: #999999;
     font-family: "Noto Serif SC", "Songti SC", "SimSun", serif;
+    width: 40px;
+    flex-shrink: 0;
+    text-align: right;
 }
-.divider-line {
-    display: block;
-    width: 32px;
-    height: 1px;
-    background: #2A2A28;
-    margin: 10px auto 0;
+.update-days {
+    display: flex;
+    gap: 3px;
+    flex-wrap: nowrap;
+}
+.update-day {
+    width: 14px;
+    height: 14px;
+    border-radius: 2px;
+    background-color: #f0ebe6;
+    transition: 0.2s;
+    cursor: pointer;
+}
+.update-day:hover {
+    transform: scale(1.3);
+    z-index: 1;
+}
+.update-day.level-0 { background-color: #f0ebe6; }
+.update-day.level-1 { background-color: #d5c8bc; }
+.update-day.level-2 { background-color: #b89c84; }
+.update-day.level-3 { background-color: #9c836e; }
+.update-day.level-4 { background-color: #6d5745; }
+
+/* ===== ② 行吟册版块 ===== */
+.home-xingyin {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+.home-xingyin .xingyin-item {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    padding: 8px 0;
+}
+.home-xingyin .xingyin-date {
+    font-size: 13px;
+    color: #999999;
+    font-family: "Noto Serif SC", "Songti SC", "SimSun", serif;
+    white-space: nowrap;
+    flex-shrink: 0;
+    min-width: 90px;
+}
+.home-xingyin .xingyin-text {
+    font-size: 15px;
+    color: #2A2A28;
+    font-family: "Noto Serif SC", "Songti SC", "SimSun", serif;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    flex: 1;
 }
 
-/* ===== 首页右侧列 ===== */
-#homeLatest {
+/* ===== ③ 十年灯版块 ===== */
+.home-shinian {
     display: flex;
     flex-direction: column;
     gap: 32px;
-    width: 100%;
-    max-width: 552px;
-    margin: 0 auto;
-    overflow: hidden;
 }
-
-#homeLatest .list-item {
+.home-shinian .shinian-item {
     display: flex;
     flex-direction: column;
     gap: 4px;
-    padding: 0;
-    border-bottom: none;
     width: 100%;
-    overflow: hidden;
 }
-
-/* 第一行：文章标题 - 17px 加粗 */
-#homeLatest .list-item .item-title {
-    font-size: 17px !important;
+.home-shinian .item-title {
+    font-size: 17px;
     font-weight: 700;
     font-family: "Noto Serif SC", "Songti SC", "SimSun", serif;
     cursor: pointer;
     line-height: 1.3;
-    margin: 0;
-    transition: color 0.2s;
-    display: block;
     color: #2A2A28;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    transition: color 0.2s;
 }
-#homeLatest .list-item .item-title:hover {
+.home-shinian .item-title:hover {
     opacity: 0.7;
 }
-
-/* 第二行：文章内容 - 最多 2 行 */
-#homeLatest .list-item .item-desc {
+.home-shinian .item-desc {
     font-size: 13px;
     color: #666666;
     line-height: 1.5;
-    margin: 0;
     overflow: hidden;
     text-overflow: ellipsis;
     display: -webkit-box;
@@ -216,9 +270,7 @@ body {
     font-weight: 400;
     font-family: "Noto Serif SC", "Songti SC", "SimSun", serif;
 }
-
-/* 第三行：分类标签 + 日期 */
-#homeLatest .list-item .item-footer {
+.home-shinian .item-footer {
     display: flex;
     align-items: center;
     gap: 16px;
@@ -227,16 +279,15 @@ body {
     margin-top: 2px;
     flex-wrap: wrap;
     font-family: "Noto Serif SC", "Songti SC", "SimSun", serif;
-    overflow: hidden;
 }
-#homeLatest .list-item .item-footer .tag {
+.home-shinian .item-footer .tag {
     font-size: 12px;
     display: inline-block;
     padding: 0;
     background: none;
     color: #2A2A28;
 }
-#homeLatest .list-item .item-footer .item-time {
+.home-shinian .item-footer .item-time {
     font-size: 11px;
     color: #999999;
 }
