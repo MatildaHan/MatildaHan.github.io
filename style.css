@@ -127,7 +127,7 @@ body {
     grid-template-columns: 200px 1fr;
     align-items: center;
     gap: 48px;
-    max-width: 800px;
+    width: 800px;
     margin: 0 auto;
 }
 
@@ -167,7 +167,9 @@ body {
     flex-direction: column;
     gap: 32px;
     width: 100%;
+    max-width: 552px;
     margin: 0 auto;
+    overflow: hidden;
 }
 
 #homeLatest .list-item {
@@ -177,6 +179,7 @@ body {
     padding: 0;
     border-bottom: none;
     width: 100%;
+    overflow: hidden;
 }
 
 #homeLatest .list-item .item-title {
@@ -189,6 +192,9 @@ body {
     transition: color 0.2s;
     display: block;
     color: #2A2A28;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 #homeLatest .list-item .item-title:hover {
     opacity: 0.7;
@@ -203,7 +209,7 @@ body {
     text-overflow: ellipsis;
     white-space: nowrap;
     display: block;
-    max-width: 100%;
+    width: 100%;
     font-weight: 400;
     font-family: "Noto Serif SC", "Songti SC", "SimSun", serif;
 }
@@ -217,6 +223,7 @@ body {
     margin-top: 2px;
     flex-wrap: wrap;
     font-family: "Noto Serif SC", "Songti SC", "SimSun", serif;
+    overflow: hidden;
 }
 #homeLatest .list-item .item-footer .tag {
     font-size: 12px;
