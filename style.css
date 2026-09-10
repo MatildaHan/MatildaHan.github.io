@@ -347,7 +347,7 @@ body {
     flex-direction: column;
     gap: 6px;
     padding-bottom: 20px;
-    border-bottom: 1px solid #f3efe9;
+    /* 无分割线 */
 }
 .shinian-article-item:last-child {
     border-bottom: none;
@@ -384,6 +384,7 @@ body {
     position: sticky;
     top: 20px;
 }
+/* 修改后 */
 .shinian-sidebar-title {
     font-size: 17px;
     font-weight: 700;
@@ -391,7 +392,7 @@ body {
     color: #2A2A28;
     margin-bottom: 16px;
     padding-bottom: 10px;
-    border-bottom: 1px solid #e0d6cc;
+    /* 无分割线 */
 }
 .shinian-series-list {
     display: flex;
