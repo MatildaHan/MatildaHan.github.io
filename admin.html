@@ -9,9 +9,6 @@
 </head>
 <body>
 
-<!-- ============================================================
-     登录界面
-     ============================================================ -->
 <div class="login-container" id="loginContainer">
     <div class="login-logo">须臾之间</div>
     <div class="login-sub">后台管理登录</div>
@@ -27,25 +24,18 @@
     <div class="error" id="loginError">邮箱或密码错误</div>
 </div>
 
-
-<!-- ============================================================
-     后台管理界面（登录后显示）
-     ============================================================ -->
 <div class="admin-wrapper" id="adminWrapper">
-
-    <!-- 侧边栏 -->
     <aside class="admin-sidebar">
         <div class="logo">须臾之间 <span>后台管理</span></div>
         <nav>
             <a href="#" data-panel="panel-dashboard" class="active">总览</a>
-            <a href="#" data-panel="panel-xingyin">随笔</a>
-            <a href="#" data-panel="panel-shinian">杂记</a>
-            <a href="#" data-panel="panel-about">闲话</a>
+            <a href="#" data-panel="panel-suibi">随笔</a>
+            <a href="#" data-panel="panel-zaji">杂记</a>
+            <a href="#" data-panel="panel-xianhua">闲话</a>
         </nav>
         <div class="footer">© 2026 须臾之间 · v1.0</div>
     </aside>
 
-    <!-- 主内容 -->
     <main class="admin-main">
         <div class="admin-header">
             <h2 id="panelTitle">总览</h2>
@@ -55,13 +45,12 @@
             </div>
         </div>
 
-        <!-- ===== 面板：总览 ===== -->
         <section id="panel-dashboard" class="panel active">
             <div class="form-card">
                 <h3>数据概览</h3>
                 <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:20px;">
-                    <div><strong>随笔</strong><br><span id="count-xingyin">0</span> 条</div>
-                    <div><strong>杂记</strong><br><span id="count-shinian">0</span> 篇</div>
+                    <div><strong>随笔</strong><br><span id="count-suibi">0</span> 条</div>
+                    <div><strong>杂记</strong><br><span id="count-zaji">0</span> 篇</div>
                 </div>
             </div>
             <div class="form-card">
@@ -71,111 +60,105 @@
             </div>
         </section>
 
-        <!-- ===== 面板：随笔 ===== -->
-        <section id="panel-xingyin" class="panel">
+        <section id="panel-suibi" class="panel">
             <div class="toolbar">
-                <button class="btn btn-primary" onclick="openXingyinForm()">+ 新增短句</button>
+                <button class="btn btn-primary" onclick="openSuibiForm()">+ 新增短句</button>
             </div>
             <div class="table-wrap">
                 <table>
                     <thead><tr><th>#</th><th>短句内容</th><th>日期</th><th>操作</th></tr></thead>
-                    <tbody id="xingyin-list"></tbody>
+                    <tbody id="suibi-list"></tbody>
                 </table>
             </div>
-            <div class="modal-overlay" id="xingyinModal">
+            <div class="modal-overlay" id="suibiModal">
                 <div class="modal-box">
-                    <button class="modal-close" onclick="closeXingyinForm()">×</button>
-                    <h3 id="xingyinModalTitle">编辑短句</h3>
-                    <input type="hidden" id="xingyin-edit-id">
-                    <div class="form-group"><label>短句内容</label><textarea id="xingyin-content" rows="2"></textarea></div>
-                    <div class="form-group"><label>日期 (YYYY/MM/DD)</label><input type="text" id="xingyin-date"></div>
+                    <button class="modal-close" onclick="closeSuibiForm()">×</button>
+                    <h3 id="suibiModalTitle">编辑短句</h3>
+                    <input type="hidden" id="suibi-edit-id">
+                    <div class="form-group"><label>短句内容</label><textarea id="suibi-content" rows="2"></textarea></div>
+                    <div class="form-group"><label>日期 (YYYY/MM/DD)</label><input type="text" id="suibi-date"></div>
                     <div class="modal-actions">
-                        <button class="btn" onclick="closeXingyinForm()">取消</button>
-                        <button class="btn btn-primary" onclick="saveXingyin()">保存</button>
+                        <button class="btn" onclick="closeSuibiForm()">取消</button>
+                        <button class="btn btn-primary" onclick="saveSuibi()">保存</button>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- ===== 面板：杂记 ===== -->
-        <section id="panel-shinian" class="panel">
+        <section id="panel-zaji" class="panel">
             <div class="tab-container">
-                <button class="tab-btn active" data-tab="shinian-articles" onclick="switchShinianTab('shinian-articles')">文章列表</button>
-                <button class="tab-btn" data-tab="shinian-categories" onclick="switchShinianTab('shinian-categories')">分类管理</button>
+                <button class="tab-btn active" data-tab="zaji-articles" onclick="switchZajiTab('zaji-articles')">文章列表</button>
+                <button class="tab-btn" data-tab="zaji-categories" onclick="switchZajiTab('zaji-categories')">分类管理</button>
             </div>
 
-            <div class="tab-content active" id="shinian-articles">
+            <div class="tab-content active" id="zaji-articles">
                 <div class="toolbar">
-                    <button class="btn btn-primary" onclick="openShinianArticleForm()">+ 新增文章</button>
+                    <button class="btn btn-primary" onclick="openZajiArticleForm()">+ 新增文章</button>
                 </div>
                 <div class="table-wrap">
                     <table>
                         <thead><tr><th>#</th><th>标题</th><th>分类</th><th>日期</th><th>操作</th></tr></thead>
-                        <tbody id="shinian-list"></tbody>
+                        <tbody id="zaji-list"></tbody>
                     </table>
                 </div>
             </div>
 
-            <div class="tab-content" id="shinian-categories">
+            <div class="tab-content" id="zaji-categories">
                 <div class="toolbar">
-                    <button class="btn btn-primary" onclick="openShinianCategoryForm()">+ 添加分类</button>
+                    <button class="btn btn-primary" onclick="openZajiCategoryForm()">+ 添加分类</button>
                 </div>
                 <div class="table-wrap">
                     <table>
                         <thead><tr><th>分类名称</th><th>分类描述</th><th>操作</th></tr></thead>
-                        <tbody id="shinian-category-list"></tbody>
+                        <tbody id="zaji-category-list"></tbody>
                     </table>
                 </div>
             </div>
 
-            <div class="modal-overlay" id="shinianArticleModal">
+            <div class="modal-overlay" id="zajiArticleModal">
                 <div class="modal-box">
-                    <button class="modal-close" onclick="closeShinianArticleForm()">×</button>
-                    <h3 id="shinianArticleModalTitle">编辑文章</h3>
-                    <input type="hidden" id="shinian-edit-id">
-                    <div class="form-group"><label>标题</label><input type="text" id="shinian-title"></div>
-                    <div class="form-group"><label>分类</label><select id="shinian-category-select"></select></div>
-                    <div class="form-group"><label>内容</label><textarea id="shinian-content" rows="6"></textarea></div>
-                    <div class="form-group"><label>日期</label><input type="text" id="shinian-date"></div>
+                    <button class="modal-close" onclick="closeZajiArticleForm()">×</button>
+                    <h3 id="zajiArticleModalTitle">编辑文章</h3>
+                    <input type="hidden" id="zaji-edit-id">
+                    <div class="form-group"><label>标题</label><input type="text" id="zaji-title"></div>
+                    <div class="form-group"><label>分类</label><select id="zaji-category-select"></select></div>
+                    <div class="form-group"><label>内容</label><textarea id="zaji-content" rows="6"></textarea></div>
+                    <div class="form-group"><label>日期</label><input type="text" id="zaji-date"></div>
                     <div class="modal-actions">
-                        <button class="btn" onclick="closeShinianArticleForm()">取消</button>
-                        <button class="btn btn-primary" onclick="saveShinianArticle()">保存</button>
+                        <button class="btn" onclick="closeZajiArticleForm()">取消</button>
+                        <button class="btn btn-primary" onclick="saveZajiArticle()">保存</button>
                     </div>
                 </div>
             </div>
 
-            <div class="modal-overlay" id="shinianCategoryModal">
+            <div class="modal-overlay" id="zajiCategoryModal">
                 <div class="modal-box">
-                    <button class="modal-close" onclick="closeShinianCategoryForm()">×</button>
-                    <h3 id="shinianCategoryModalTitle">编辑分类</h3>
-                    <input type="hidden" id="shinian-category-edit-id">
-                    <div class="form-group"><label>分类名称</label><input type="text" id="shinian-category-name"></div>
-                    <div class="form-group"><label>分类描述</label><textarea id="shinian-category-desc-input" rows="2"></textarea></div>
+                    <button class="modal-close" onclick="closeZajiCategoryForm()">×</button>
+                    <h3 id="zajiCategoryModalTitle">编辑分类</h3>
+                    <input type="hidden" id="zaji-category-edit-id">
+                    <div class="form-group"><label>分类名称</label><input type="text" id="zaji-category-name"></div>
+                    <div class="form-group"><label>分类描述</label><textarea id="zaji-category-desc-input" rows="2"></textarea></div>
                     <div class="modal-actions">
-                        <button class="btn" onclick="closeShinianCategoryForm()">取消</button>
-                        <button class="btn btn-primary" onclick="saveShinianCategory()">保存</button>
+                        <button class="btn" onclick="closeZajiCategoryForm()">取消</button>
+                        <button class="btn btn-primary" onclick="saveZajiCategory()">保存</button>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- ===== 面板：闲话 ===== -->
-        <section id="panel-about" class="panel">
+        <section id="panel-xianhua" class="panel">
             <div class="form-card">
                 <h3>个人简介</h3>
                 <div class="form-group">
                     <label>简介内容 (支持多行)</label>
-                    <textarea id="about-content" rows="8" style="min-height:200px;"></textarea>
+                    <textarea id="xianhua-content" rows="8" style="min-height:200px;"></textarea>
                 </div>
-                <button class="btn btn-primary" onclick="saveAbout()">保存简介</button>
+                <button class="btn btn-primary" onclick="saveXianhua()">保存简介</button>
             </div>
         </section>
     </main>
 </div>
 
-<!-- ============================================================
-     引入 Supabase 和脚本
-     ============================================================ -->
 <script src="supabase.js"></script>
 <script src="admin.js"></script>
 </body>
