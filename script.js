@@ -214,21 +214,30 @@ async function renderXingyinList() {
     var container = document.getElementById('xingyinList');
     if (!container) return;
 
-    var html = '';
-    var cols = 2;
-    var totalRows = Math.ceil(list.length / cols);
+    var leftHtml = '';
+    var rightHtml = '';
 
     for (var i = 0; i < list.length; i++) {
         var item = list[i];
-        var row = Math.floor(i / cols);
-        var z = totalRows - row;
+        // 左列放偶数索引（0,2,4...），右列放奇数索引（1,3,5...）
+        var colIndex = Math.floor(i / 2);          // 该卡片在本列的序号
+        var z = list.length - colIndex;            // 越靠上 z 越大
 
-        html += '<div class="article-item" style="z-index:' + z + ';">';
-        html += '  <div class="article-date">' + (item.date || '') + '</div>';
-        html += '  <div class="article-text">' + (item.content || '') + '</div>';
-        html += '</div>';
+        var card = '<div class="article-item" style="z-index:' + z + ';">';
+        card += '  <div class="article-date">' + (item.date || '') + '</div>';
+        card += '  <div class="article-text">' + (item.content || '') + '</div>';
+        card += '</div>';
+
+        if (i % 2 === 0) {
+            leftHtml += card;
+        } else {
+            rightHtml += card;
+        }
     }
-    container.innerHTML = html || '<p style="text-align:center;color:#999;padding:40px 0;">暂无内容</p>';
+
+    container.innerHTML =
+        '<div class="xingyin-col">' + leftHtml + '</div>' +
+        '<div class="xingyin-col">' + rightHtml + '</div>';
 }
     // ============================================================
     // 9. 十年灯页面（文章列表 + 系列导航）
