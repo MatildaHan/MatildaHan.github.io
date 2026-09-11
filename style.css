@@ -49,7 +49,6 @@ a {
 .container::before { left: calc(50% - 720px); }
 .container::after  { right: calc(50% - 720px); }
 
-
 /* ============================================================
    顶部区域
    ============================================================ */
@@ -61,8 +60,10 @@ a {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    /* 左右负 margin 让底部分割线延伸到版心边缘 */
     margin: 0 -60px;
-    padding: 0 60px 50px;
+    /* 上方 0，左右 60px（补回内边距），下方 30px（标题→分割线间距） */
+    padding: 0 60px 30px;
     border-bottom: 1px solid rgba(153, 153, 153, 0.5);
 }
 
@@ -77,12 +78,18 @@ a {
     font-weight: 700;
     letter-spacing: 2px;
     line-height: 1.2;
+    margin: 0;
+    padding: 0;
 }
+/* 网页描述 */
 .logo-slogan {
     font-size: 12px;
     color: #999999;
     font-weight: 400;
+    margin: 0;
+    padding: 0;
 }
+
 /* ============================================================
    导航
    ============================================================ */
@@ -91,6 +98,7 @@ a {
     gap: 8px;
     flex-wrap: wrap;
 }
+/* 未选中页签 */
 .nav-list a {
     font-size: 13px;
     color: #999999;
@@ -124,7 +132,7 @@ a {
 }
 
 /* ============================================================
-   Banner（横线延伸到版心边缘）
+   Banner（上下分割线延伸到版心边缘）
    ============================================================ */
 .banner {
     width: calc(100% + 120px);
@@ -204,12 +212,10 @@ a {
    随笔区（三列卡片）
    ============================================================ */
 .essay-section {
-    /* 横线延伸到版心边缘 */
     width: calc(100% + 120px);
     margin-left: -60px;
     margin-right: -60px;
     border-bottom: 1px solid rgba(153, 153, 153, 0.5);
-    /* 内容左右补回内边距 */
     padding: 0 60px;
 }
 .essay-grid {
@@ -241,6 +247,7 @@ a {
     word-wrap: break-word;
     overflow-wrap: break-word;
 }
+/* 随笔日期 */
 .essay-card .essay-date {
     font-size: 11px;
     color: #999999;
@@ -252,7 +259,6 @@ a {
    杂记区（左文右卡）
    ============================================================ */
 .note-section {
-    /* 横线延伸到版心边缘 */
     width: calc(100% + 120px);
     margin-left: -60px;
     margin-right: -60px;
@@ -272,6 +278,7 @@ a {
     letter-spacing: 4px;
     margin-bottom: 24px;
 }
+/* 杂记的描述 */
 .note-desc {
     font-size: 13px;
     line-height: 2.2;
@@ -315,6 +322,7 @@ a {
 .note-item:hover .note-title {
     color: #d8cec4;
 }
+/* 杂记内容摘要 */
 .note-item .note-summary {
     font-size: 12px;
     line-height: 1.9;
@@ -359,6 +367,7 @@ a {
     box-shadow: 0 -6px 22px rgba(0, 0, 0, 0.6);
     z-index: 9999 !important;
 }
+/* 随笔日期（列表） */
 #suibiList .article-date {
     font-size: 12px;
     color: #999999;
@@ -409,12 +418,14 @@ a {
     display: block;
 }
 .zaji-article-title:hover { color: #d8cec4; }
+/* 杂记系列标签 */
 .zaji-article-tag {
     font-size: 12px;
     color: #999999;
     display: inline-block;
     margin-top: 2px;
 }
+/* 杂记日期 */
 .zaji-article-date {
     font-size: 12px;
     color: #999999;
@@ -557,7 +568,7 @@ a {
     .container { width: 100%; padding: 0 40px; }
     .header-wrap {
         margin: 0 -40px;
-        padding: 0 40px 20px;
+        padding: 0 40px 30px;
     }
     .banner,
     .essay-section,
@@ -603,7 +614,7 @@ a {
         align-items: flex-start;
         gap: 16px;
         margin: 0 -20px;
-        padding: 0 20px 20px;
+        padding: 0 20px 30px;
     }
     .banner {
         height: 380px;
