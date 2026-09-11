@@ -1,3 +1,4 @@
+// script.js
 (function() {
     // ============================================================
     // 1. 数据访问
@@ -9,7 +10,7 @@
     // ============================================================
     function getThemeConfig(site) {
         return {
-            color: (site && (site.theme_color || site.logo_color)) || '#2A2A28',
+            color: (site && (site.theme_color || site.logo_color)) || '#b89c84',
             size: (site && site.title_size) || '20'
         };
     }
@@ -97,150 +98,129 @@
     function updateLogo(site) {
         var siteNameEl = document.getElementById('siteName');
         var siteDescEl = document.getElementById('siteDesc');
-        if (siteNameEl) siteNameEl.textContent = site.site_name || '见南山';
-        if (siteDescEl) siteDescEl.textContent = site.site_desc || '春山如黛草如烟';
+        if (siteNameEl) siteNameEl.textContent = site.site_name || '须臾之间';
+        if (siteDescEl) siteDescEl.textContent = site.site_desc || '寄蜉蝣于天地，渺沧海之一粟';
     }
 
     // ============================================================
-    // 6. 首页
+    // 6. 打字机效果
+    // ============================================================
+    var bannerFullText = '写信告诉我，今夜你想要梦什么';
+    var bannerTextEl = document.getElementById('bannerText');
+    var bannerBtnEl = document.getElementById('bannerBtn');
+    var typewriterTimer = null;
+    var typewriterDone = false;
+
+    function startTypewriter() {
+        if (typewriterDone) return;
+        var index = 0;
+        bannerTextEl.innerHTML = '<span class="cursor"></span>';
+        typewriterTimer = setInterval(function() {
+            if (index < bannerFullText.length) {
+                var current = bannerFullText.substring(0, index + 1);
+                bannerTextEl.innerHTML = current + '<span class="cursor"></span>';
+                index++;
+            } else {
+                clearInterval(typewriterTimer);
+                typewriterTimer = null;
+                typewriterDone = true;
+                setTimeout(function() {
+                    bannerTextEl.innerHTML = bannerFullText;
+                    bannerBtnEl.classList.add('show');
+                }, 400);
+            }
+        }, 120);
+    }
+
+    // ============================================================
+    // 7. 首页
     // ============================================================
     async function renderHome() {
         var site = await getSite();
         updateLogo(site);
 
-        // ① 更新记录
-        await renderUpdateRecord();
-
-        // ② 行吟册（最新一条）
+        // ① 随笔（行吟册）—— 最多6条
         var xingyinList = await DB.getAll('xingyin', { orderBy: 'id' });
-        var latestXingyin = xingyinList.length > 0 ? xingyinList[xingyinList.length - 1] : null;
-        var homeXingyin = document.getElementById('homeXingyin');
-        if (homeXingyin) {
-            if (latestXingyin) {
-                homeXingyin.innerHTML =
-                    '<div class="xingyin-item">' +
-                    '<span class="xingyin-text">' + (latestXingyin.content || '') + '</span>' +
-                    '<span class="xingyin-date">' + (latestXingyin.date || '') + '</span>' +
-                    '</div>';
-            } else {
-                homeXingyin.innerHTML = '<p style="text-align:center;color:#999;padding:20px 0;">暂无内容</p>';
+        var essayContainer = document.getElementById('homeXingyin');
+        if (essayContainer) {
+            var displayList = xingyinList.slice(-6).reverse();
+            var html = '';
+            for (var i = 0; i < displayList.length; i++) {
+                var item = displayList[i];
+                html += '<div class="essay-card">';
+                html += '<div class="essay-text">' + (item.content || '') + '</div>';
+                html += '<div class="essay-date">' + (item.date || '') + '</div>';
+                html += '</div>';
             }
+            if (displayList.length === 0) {
+                html = '<p style="text-align:center;color:#7a6a5a;padding:40px 0;">暂无随笔</p>';
+            }
+            essayContainer.innerHTML = html;
         }
 
-        // ③ 十年灯（最新一条）
+        // ② 杂记（十年灯）—— 最新3条
         var shinian = await DB.getAll('shinian', { orderBy: 'id' });
-        var latestShinian = shinian.length > 0 ? shinian[shinian.length - 1] : null;
-        var homeShinian = document.getElementById('homeShinian');
-        if (homeShinian) {
-            if (latestShinian) {
-                var summary = latestShinian.content ? latestShinian.content.substring(0, 100) : '';
-                var displaySummary = summary + (latestShinian.content && latestShinian.content.length > 100 ? '...' : '');
-                var dateDisplay = latestShinian.date || '';
-
-                homeShinian.innerHTML =
-                    '<div class="shinian-item">' +
-                    '<h3 class="item-title" data-sub="shinian-detail" data-id="' + latestShinian.id + '">' + latestShinian.title + '</h3>' +
-                    '<p class="item-desc">' + displaySummary + '</p>' +
-                    '<div class="item-footer">' +
-                    '<span class="tag">#' + (latestShinian.category || '未分类') + '</span>' +
-                    '<span class="item-time">' + dateDisplay + '</span>' +
-                    '</div>' +
-                    '</div>';
-            } else {
-                homeShinian.innerHTML = '<p style="text-align:center;color:#999;padding:20px 0;">暂无文章</p>';
+        var noteContainer = document.getElementById('homeShinian');
+        if (noteContainer) {
+            var latestThree = shinian.slice(-3).reverse();
+            var html2 = '';
+            for (var j = 0; j < latestThree.length; j++) {
+                var s = latestThree[j];
+                html2 += '<div class="note-item" data-sub="shinian-detail" data-id="' + s.id + '">';
+                html2 += '<div class="note-title">' + (s.title || '无标题') + '</div>';
+                html2 += '<div class="note-meta">';
+                html2 += '<span class="note-tag">#' + (s.category || '未分类') + '</span>';
+                html2 += '<span>' + (s.date || '') + '</span>';
+                html2 += '</div>';
+                html2 += '</div>';
             }
+            if (latestThree.length === 0) {
+                html2 = '<p style="text-align:center;color:#7a6a5a;padding:40px 0;">暂无杂记</p>';
+            }
+            noteContainer.innerHTML = html2;
+        }
+
+        // 启动打字机（只执行一次）
+        if (!typewriterDone) {
+            startTypewriter();
         }
     }
 
     // ============================================================
-    // 7. 更新记录（月份倒序）
+    // 8. 随笔（行吟册）列表
     // ============================================================
-    async function renderUpdateRecord() {
-        var container = document.getElementById('updateRecordGrid');
+    async function renderXingyinList() {
+        var list = await DB.getAll('xingyin', { orderBy: 'id' });
+        var container = document.getElementById('xingyinList');
         if (!container) return;
 
-        var records = await DB.getAll('update_records', { orderBy: 'date' });
-        var recordMap = {};
-        for (var i = 0; i < records.length; i++) {
-            recordMap[records[i].date] = records[i].word_count || 0;
-        }
+        var leftHtml = '';
+        var rightHtml = '';
 
-        var now = new Date();
-        var months = [];
-        // 从当前月往前推 5 个月（9月 → 4月）
-        for (var m = 0; m <= 5; m++) {
-            var d = new Date(now.getFullYear(), now.getMonth() - m, 1);
-            months.push({
-                year: d.getFullYear(),
-                month: d.getMonth() + 1,
-                days: new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate()
-            });
-        }
+        for (var i = 0; i < list.length; i++) {
+            var item = list[i];
+            var colIndex = Math.floor(i / 2);
+            var z = list.length - colIndex;
 
-        var html = '';
-        for (var k = 0; k < months.length; k++) {
-            var mo = months[k];
-            html += '<div class="update-row">';
-            html += '<span class="update-month">' + mo.month + '月</span>';
-            html += '<div class="update-days">';
+            var card = '<div class="article-item" style="z-index:' + z + ';">';
+            card += '  <div class="article-date">' + (item.date || '') + '</div>';
+            card += '  <div class="article-text">' + (item.content || '') + '</div>';
+            card += '</div>';
 
-            for (var day = 1; day <= mo.days; day++) {
-                var dateStr = mo.year + '-' +
-                    String(mo.month).padStart(2, '0') + '-' +
-                    String(day).padStart(2, '0');
-
-                var count = recordMap[dateStr] || 0;
-                var level = 0;
-                if (count > 0 && count <= 200) level = 1;
-                else if (count > 200 && count <= 500) level = 2;
-                else if (count > 500 && count <= 1000) level = 3;
-                else if (count > 1000) level = 4;
-
-                html += '<div class="update-day level-' + level + '" title="' + dateStr + '（' + count + '字）"></div>';
+            if (i % 2 === 0) {
+                leftHtml += card;
+            } else {
+                rightHtml += card;
             }
-
-            html += '</div>';
-            html += '</div>';
         }
 
-        container.innerHTML = html;
+        container.innerHTML =
+            '<div class="xingyin-col">' + leftHtml + '</div>' +
+            '<div class="xingyin-col">' + rightHtml + '</div>';
     }
 
     // ============================================================
-    // 8. 行吟册列表（两列卡片）
-    // ============================================================
-async function renderXingyinList() {
-    var list = await DB.getAll('xingyin', { orderBy: 'id' });
-    var container = document.getElementById('xingyinList');
-    if (!container) return;
-
-    var leftHtml = '';
-    var rightHtml = '';
-
-    for (var i = 0; i < list.length; i++) {
-        var item = list[i];
-        // 左列放偶数索引（0,2,4...），右列放奇数索引（1,3,5...）
-        var colIndex = Math.floor(i / 2);          // 该卡片在本列的序号
-        var z = list.length - colIndex;            // 越靠上 z 越大
-
-        var card = '<div class="article-item" style="z-index:' + z + ';">';
-        card += '  <div class="article-date">' + (item.date || '') + '</div>';
-        card += '  <div class="article-text">' + (item.content || '') + '</div>';
-        card += '</div>';
-
-        if (i % 2 === 0) {
-            leftHtml += card;
-        } else {
-            rightHtml += card;
-        }
-    }
-
-    container.innerHTML =
-        '<div class="xingyin-col">' + leftHtml + '</div>' +
-        '<div class="xingyin-col">' + rightHtml + '</div>';
-}
-    // ============================================================
-    // 9. 十年灯页面（文章列表 + 系列导航）
+    // 9. 杂记（十年灯）页面
     // ============================================================
     var _currentShinianCategory = null;
 
@@ -248,7 +228,6 @@ async function renderXingyinList() {
         var list = await DB.getAll('shinian', { orderBy: 'id' });
         var categories = await DB.getAll('shinian_categories', { orderBy: 'id' });
 
-        // 如果分类表为空，从文章中提取
         if (categories.length === 0) {
             var catSet = {};
             for (var i = 0; i < list.length; i++) {
@@ -261,7 +240,6 @@ async function renderXingyinList() {
             });
         }
 
-        // 渲染右侧系列导航
         var seriesContainer = document.getElementById('shinianSeriesList');
         if (seriesContainer) {
             var seriesHtml = '';
@@ -273,7 +251,6 @@ async function renderXingyinList() {
             seriesContainer.innerHTML = seriesHtml;
         }
 
-        // 渲染左侧文章列表
         renderShinianArticleList(list);
     }
 
@@ -291,7 +268,7 @@ async function renderXingyinList() {
         var sorted = filtered.slice().reverse();
 
         if (sorted.length === 0) {
-            container.innerHTML = '<p style="text-align:center;color:#999;padding:40px 0;">暂无文章</p>';
+            container.innerHTML = '<p style="text-align:center;color:#7a6a5a;padding:40px 0;">暂无文章</p>';
             return;
         }
 
@@ -307,7 +284,6 @@ async function renderXingyinList() {
         container.innerHTML = html;
     }
 
-    // 系列点击事件
     document.addEventListener('click', function(e) {
         var seriesItem = e.target.closest('.shinian-series-item');
         if (seriesItem) {
@@ -333,7 +309,7 @@ async function renderXingyinList() {
     });
 
     // ============================================================
-    // 10. 十年灯 文章详情
+    // 10. 杂记 文章详情
     // ============================================================
     async function loadShinianDetail(id) {
         var item = await DB.getById('shinian', id);
@@ -349,7 +325,7 @@ async function renderXingyinList() {
     }
 
     // ============================================================
-    // 11. 山野渔夫
+    // 11. 闲话（山野渔夫）
     // ============================================================
     async function renderAbout() {
         var list = await DB.getAll('about');
