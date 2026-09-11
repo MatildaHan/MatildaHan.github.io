@@ -298,28 +298,38 @@ body {
     background: #FEFEFB;
     border-radius: 0;
     padding: 20px 24px;
-    margin-top: -14px;                       /* 向上叠 */
-    position: relative;                      /* 让 z-index 生效 */
+    margin-top: -14px;
+    position: relative;
     box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.06);
     transition: 0.3s ease;
 }
 
-/* 第一行两张不叠 */
 #xingyinList .article-item:nth-child(1),
 #xingyinList .article-item:nth-child(2) {
     margin-top: 0;
 }
 
-/* 悬停抬起，盖住全部 */
 #xingyinList .article-item:hover {
     transform: translateY(-4px);
     box-shadow: 0 -6px 20px rgba(0, 0, 0, 0.12);
     z-index: 9999 !important;
 }
 
+/* ===== 日期（带下边框作为分割线） ===== */
+#xingyinList .article-date {
+    font-size: 12px;
+    color: #999;
+    font-family: "Noto Serif SC", "Songti SC", "SimSun", serif;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #EAEAE5;   /* 分割线 */
+    margin-bottom: 14px;
+    letter-spacing: 0.5px;
+}
+
+/* ===== 内容 ===== */
 #xingyinList .article-text {
-    font-size: 15px;
-    line-height: 2.4;
+    font-size: 16px;
+    line-height: 1.7;
     color: #2A2A28;
     font-family: "Noto Serif SC", "Songti SC", "SimSun", serif;
     word-wrap: break-word;
