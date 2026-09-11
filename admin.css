@@ -25,7 +25,7 @@ a {
     margin: 120px auto;
     padding: 50px 40px 40px;
     background: #141110;
-    border: 1px solid #1f1a18;
+    border: 1px solid #999999;
     text-align: center;
 }
 .login-container .login-logo {
@@ -36,7 +36,7 @@ a {
 }
 .login-container .login-sub {
     font-size: 14px;
-    color: #7a6a5a;
+    color: #999999;
     margin-bottom: 32px;
 }
 .login-container .form-group {
@@ -46,13 +46,13 @@ a {
 .login-container .form-group label {
     display: block;
     font-size: 13px;
-    color: #a89888;
+    color: #999999;
     margin-bottom: 4px;
 }
 .login-container .form-group input {
     width: 100%;
     padding: 10px 14px;
-    border: 1px solid #1f1a18;
+    border: 1px solid #999999;
     font-size: 14px;
     font-family: inherit;
     background: #0C0A09;
@@ -110,26 +110,27 @@ a {
     top: 0;
     height: 100vh;
     overflow-y: auto;
-    border-right: 1px solid #1f1a18;
+    border-right: 1px solid #999999;
 }
 .admin-sidebar .logo {
     font-size: 22px;
     color: #ffffff;
     padding: 0 24px 30px;
-    border-bottom: 1px solid #1f1a18;
+    border-bottom: 1px solid #999999;
     letter-spacing: 2px;
 }
 .admin-sidebar .logo span {
     display: block;
     font-size: 13px;
-    color: #7a6a5a;
+    color: #999999;
     letter-spacing: 0;
     margin-top: 4px;
 }
+/* 侧边栏未选中项 */
 .admin-sidebar nav a {
     display: block;
     padding: 12px 24px;
-    color: #a89888;
+    color: #999999;
     transition: 0.2s;
     border-left: 3px solid transparent;
     font-size: 14px;
@@ -147,8 +148,8 @@ a {
 .admin-sidebar .footer {
     padding: 30px 24px 0;
     font-size: 12px;
-    color: #5a4a3a;
-    border-top: 1px solid #1f1a18;
+    color: #999999;
+    border-top: 1px solid #999999;
     margin-top: 30px;
 }
 
@@ -166,7 +167,7 @@ a {
     justify-content: space-between;
     align-items: center;
     padding-bottom: 20px;
-    border-bottom: 1px solid #1f1a18;
+    border-bottom: 1px solid #999999;
     margin-bottom: 30px;
 }
 .admin-header h2 {
@@ -176,7 +177,7 @@ a {
     letter-spacing: 1px;
 }
 .admin-header .user {
-    color: #a89888;
+    color: #999999;
     font-size: 13px;
 }
 .admin-header .logout-btn {
@@ -246,7 +247,7 @@ a {
     background: #141110;
     padding: 20px;
     overflow-x: auto;
-    border: 1px solid #1f1a18;
+    border: 1px solid #999999;
 }
 table {
     width: 100%;
@@ -259,12 +260,12 @@ th {
     background: #0C0A09;
     color: #ffffff;
     font-weight: normal;
-    border-bottom: 2px solid #1f1a18;
+    border-bottom: 2px solid #999999;
     letter-spacing: 0.5px;
 }
 td {
     padding: 10px 12px;
-    border-bottom: 1px solid #1f1a18;
+    border-bottom: 1px solid #999999;
     vertical-align: top;
     color: #ffffff;
 }
@@ -287,7 +288,7 @@ tr:hover td {
 .form-group label {
     display: block;
     font-size: 13px;
-    color: #a89888;
+    color: #999999;
     margin-bottom: 4px;
 }
 .form-group input,
@@ -295,7 +296,7 @@ tr:hover td {
 .form-group select {
     width: 100%;
     padding: 8px 12px;
-    border: 1px solid #1f1a18;
+    border: 1px solid #999999;
     font-family: inherit;
     font-size: 13px;
     background: #0C0A09;
@@ -316,7 +317,7 @@ tr:hover td {
     background: #141110;
     padding: 24px;
     margin-bottom: 30px;
-    border: 1px solid #1f1a18;
+    border: 1px solid #999999;
 }
 .form-card h3 {
     font-weight: normal;
@@ -324,7 +325,7 @@ tr:hover td {
     color: #ffffff;
     margin-bottom: 20px;
     padding-bottom: 10px;
-    border-bottom: 1px solid #1f1a18;
+    border-bottom: 1px solid #999999;
     letter-spacing: 1px;
 }
 
@@ -332,8 +333,9 @@ tr:hover td {
     display: flex;
     gap: 0;
     margin-bottom: 24px;
-    border-bottom: 2px solid #1f1a18;
+    border-bottom: 2px solid #999999;
 }
+/* 未选中 tab */
 .tab-btn {
     padding: 10px 24px;
     background: none;
@@ -342,7 +344,7 @@ tr:hover td {
     cursor: pointer;
     font-size: 14px;
     font-family: inherit;
-    color: #7a6a5a;
+    color: #999999;
     transition: 0.2s;
     margin-bottom: -2px;
 }
@@ -384,7 +386,7 @@ tr:hover td {
     width: 90%;
     max-height: 80vh;
     overflow-y: auto;
-    border: 1px solid #1f1a18;
+    border: 1px solid #999999;
     animation: modalIn 0.25s ease;
 }
 @keyframes modalIn {
@@ -397,7 +399,7 @@ tr:hover td {
     color: #ffffff;
     margin-bottom: 20px;
     padding-bottom: 10px;
-    border-bottom: 1px solid #1f1a18;
+    border-bottom: 1px solid #999999;
     letter-spacing: 1px;
 }
 .modal-close {
@@ -406,7 +408,7 @@ tr:hover td {
     border: none;
     font-size: 24px;
     cursor: pointer;
-    color: #7a6a5a;
+    color: #999999;
     line-height: 1;
 }
 .modal-close:hover {
@@ -418,7 +420,7 @@ tr:hover td {
 .modal-box .form-group label {
     display: block;
     font-size: 13px;
-    color: #a89888;
+    color: #999999;
     margin-bottom: 4px;
 }
 .modal-box .form-group input,
@@ -426,7 +428,7 @@ tr:hover td {
 .modal-box .form-group select {
     width: 100%;
     padding: 8px 12px;
-    border: 1px solid #1f1a18;
+    border: 1px solid #999999;
     font-family: inherit;
     font-size: 13px;
     background: #0C0A09;
@@ -467,7 +469,7 @@ tr:hover td {
 .admin-sidebar::-webkit-scrollbar-thumb,
 .modal-box::-webkit-scrollbar-thumb,
 .table-wrap::-webkit-scrollbar-thumb {
-    background: #1f1a18;
+    background: #999999;
     border-radius: 3px;
 }
 .admin-sidebar::-webkit-scrollbar-thumb:hover,
@@ -489,7 +491,7 @@ tr:hover td {
         position: relative;
         padding: 16px 0;
         border-right: none;
-        border-bottom: 1px solid #1f1a18;
+        border-bottom: 1px solid #999999;
     }
     .admin-sidebar .logo { padding: 0 20px 16px; }
     .admin-sidebar nav a { padding: 10px 20px; }
