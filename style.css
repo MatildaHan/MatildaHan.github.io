@@ -21,11 +21,11 @@ a {
 
 /* ============================================================
    顶部区域（标题 + 导航）
+   标题下方分割线横跨整个页面
    ============================================================ */
 .site-header {
     background: #0C0A09;
     padding: 28px 0 0 0;
-    /* 标题下方的分割线：横跨整个页面宽度 */
     border-bottom: 1px solid rgba(153, 153, 153, 0.5);
 }
 .header-wrap {
@@ -49,15 +49,11 @@ a {
     font-weight: 700;
     letter-spacing: 2px;
     line-height: 1.2;
-    margin: 0;
-    padding: 0;
 }
 .logo-slogan {
     font-size: 12px;
     color: #999999;
     font-weight: 400;
-    margin: 0;
-    padding: 0;
 }
 
 /* ============================================================
@@ -113,7 +109,7 @@ a {
 }
 
 /* ============================================================
-   Banner 区域（无版心左右分割线）
+   Banner（无版心左右分割线）
    ============================================================ */
 .banner {
     width: calc(100% + 120px);
@@ -125,8 +121,6 @@ a {
     justify-content: center;
     align-items: center;
     position: relative;
-    /* 无上边框（由 .site-header 的 border-bottom 提供）
-       无下边框（由下面的间隔条提供） */
 }
 .banner-text {
     font-size: 36px;
@@ -190,7 +184,8 @@ a {
 }
 
 /* ============================================================
-   间隔条：上下两条分割线 + 中间 50px 空白
+   间隔条：上下两条通栏分割线 + 中间 50px 空白
+   内部有版心左右分割线
    ============================================================ */
 .gap-divider {
     width: 100vw;
@@ -201,7 +196,6 @@ a {
     background: transparent;
     position: relative;
 }
-/* 间隔条内部的版心左右分割线 */
 .gap-divider::before,
 .gap-divider::after {
     content: '';
@@ -215,18 +209,16 @@ a {
 .gap-divider::after  { right: calc(50% - 720px); }
 
 /* ============================================================
-   随笔区（三列卡片）—— 从这里开始有版心左右分割线
+   随笔区（4 列布局，交替空白）
    ============================================================ */
 .essay-section {
     width: calc(100% + 120px);
     margin-left: -60px;
     margin-right: -60px;
-    padding: 0 60px;
-    /* 顶部无边框（由上方间隔条提供）
-       底部无边框（由下方间隔条提供） */
+    padding: 0;
     position: relative;
 }
-/* 随笔区的版心左右分割线 */
+/* 版心左右分割线 */
 .essay-section::before,
 .essay-section::after {
     content: '';
@@ -235,32 +227,36 @@ a {
     bottom: 0;
     width: 1px;
     background: rgba(153, 153, 153, 0.5);
+    z-index: 2;
 }
 .essay-section::before { left: calc(50% - 720px); }
 .essay-section::after  { right: calc(50% - 720px); }
 
+/* 4 列网格 */
 .essay-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     gap: 0;
 }
-.essay-card {
-    padding: 36px 40px;
-    border-right: 1px solid rgba(153, 153, 153, 0.5);
+
+/* 每一格的基础样式 */
+.essay-cell {
+    min-height: 200px;
+    position: relative;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    min-height: 200px;
-    position: relative;
+    padding: 36px 40px;
+    border-right: 1px solid rgba(153, 153, 153, 0.5);
+    box-sizing: border-box;
     transition: background 0.3s ease;
 }
-.essay-card:last-child,
-.essay-card:nth-child(3n) {
+/* 每行最后一格去掉右边框 */
+.essay-cell:nth-child(4n) {
     border-right: none;
 }
-.essay-card:hover {
-    background: #141110;
-}
+
+/* 内容卡片文字 */
 .essay-card .essay-text {
     font-size: 13px;
     line-height: 2;
@@ -274,9 +270,47 @@ a {
     margin-top: 16px;
     letter-spacing: 1px;
 }
+/* 空卡片显示 “...” */
+.essay-card .essay-empty {
+    color: #999999;
+    text-align: left;
+    font-size: 14px;
+    letter-spacing: 2px;
+}
+
+/* 空白格 */
+.essay-blank {
+    padding: 0;
+    display: block;
+}
+
+/* 白色小矩形 8×60px */
+.essay-mark {
+    display: block;
+    width: 8px;
+    height: 60px;
+    background: #ffffff;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 3;
+}
+/* 第一行空白在最左列 → 标记贴左侧版心线 */
+.essay-blank-left .essay-mark {
+    left: 0;
+}
+/* 第二行空白在最右列 → 标记贴右侧版心线 */
+.essay-blank-right .essay-mark {
+    right: 0;
+}
+
+/* 内容卡片悬停 */
+.essay-card:hover {
+    background: #141110;
+}
 
 /* ============================================================
-   杂记区（左文右卡）—— 有版心左右分割线
+   杂记区（左文右卡）
    ============================================================ */
 .note-section {
     width: calc(100% + 120px);
@@ -288,7 +322,6 @@ a {
     gap: 80px;
     position: relative;
 }
-/* 杂记区的版心左右分割线 */
 .note-section::before,
 .note-section::after {
     content: '';
@@ -297,6 +330,7 @@ a {
     bottom: 0;
     width: 1px;
     background: rgba(153, 153, 153, 0.5);
+    z-index: 2;
 }
 .note-section::before { left: calc(50% - 720px); }
 .note-section::after  { right: calc(50% - 720px); }
@@ -366,7 +400,7 @@ a {
 }
 
 /* ============================================================
-   随笔列表（层叠卡片）—— 有版心左右分割线
+   随笔列表（层叠卡片）
    ============================================================ */
 #suibiList {
     display: flex;
@@ -598,15 +632,19 @@ a {
         width: calc(100% + 80px);
         margin-left: -40px;
         margin-right: -40px;
-        padding-left: 40px;
-        padding-right: 40px;
+    }
+    .essay-section {
+        padding: 0;
+    }
+    .note-section {
+        padding: 80px 40px;
     }
     .about-divider {
         margin-left: -40px;
         margin-right: -40px;
         width: calc(100% + 80px);
     }
-    /* 版心左右分割线在小屏时隐藏 */
+    /* 小屏隐藏版心左右分割线 */
     .gap-divider::before,
     .gap-divider::after,
     .essay-section::before,
@@ -618,12 +656,21 @@ a {
 }
 @media (max-width: 1024px) {
     .banner-text { font-size: 28px; }
-    .essay-grid { grid-template-columns: 1fr; }
-    .essay-card {
-        border-right: none;
-        border-bottom: 1px solid rgba(153, 153, 153, 0.5);
+    .essay-grid {
+        grid-template-columns: repeat(2, 1fr);
     }
-    .essay-card:last-child { border-bottom: none; }
+    .essay-cell:nth-child(4n) {
+        border-right: 1px solid rgba(153, 153, 153, 0.5);
+    }
+    .essay-cell:nth-child(2n) {
+        border-right: none;
+    }
+    .essay-blank {
+        display: none;
+    }
+    .essay-mark {
+        display: none;
+    }
     .note-section {
         grid-template-columns: 1fr;
         gap: 40px;
@@ -655,10 +702,19 @@ a {
         width: calc(100% + 40px);
         margin-left: -20px;
         margin-right: -20px;
-        padding-left: 20px;
-        padding-right: 20px;
     }
     .note-section { padding: 40px 20px; }
+    .essay-grid {
+        grid-template-columns: 1fr;
+    }
+    .essay-cell {
+        border-right: none;
+        border-bottom: 1px solid rgba(153, 153, 153, 0.5);
+        padding: 28px 24px;
+    }
+    .essay-cell:last-child {
+        border-bottom: none;
+    }
     .about-divider {
         margin-left: -20px;
         margin-right: -20px;
@@ -666,7 +722,6 @@ a {
     }
     .banner-text { font-size: 20px; padding: 0 20px; }
     .banner-btn { padding: 10px 24px; font-size: 12px; }
-    .essay-card { padding: 28px 24px; }
     .note-item { grid-template-columns: 80px 1fr; gap: 16px; }
     .note-item .note-thumb { width: 80px; height: 80px; }
     #suibiList { flex-direction: column; }
