@@ -282,48 +282,50 @@ body {
     color: #999999;
 }
 
-/* ===== 行吟册列表（两列卡片，无圆角，内边距20px） ===== */
-.article-list {
+/* ===== 行吟册：两列网格 + 层叠卡片 ===== */
+#xingyinList {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 16px;
+    gap: 0 16px;                             /* 列间距 16px，行间距 0（靠负 margin 叠） */
     width: 100%;
+    padding: 24px;
+    background: #f5f5f5;
+    box-sizing: border-box;
     align-items: start;
 }
 
-.article-item {
-    display: block !important;
-    padding: 20px !important;
-    background: rgba(248, 245, 241, 0.4);   /* ← 40% 透明度 */
-    border: 1px solid rgba(240, 235, 230, 0.6);
-    border-radius: 0 !important;
-    width: 100%;
-    height: auto;
-    box-sizing: border-box;
+/* 每张卡片 */
+#xingyinList .article-item {
+    background: #fff;
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin-top: -14px;                       /* 向上叠 14px */
+    position: relative;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.06);
+    transition: 0.3s ease;
 }
 
-.article-text {
-    font-size: 15px;
+/* 第一行的两张卡片不叠 */
+#xingyinList .article-item:nth-child(1),
+#xingyinList .article-item:nth-child(2) {
+    margin-top: 0;
+}
+
+/* 悬停抬起 */
+#xingyinList .article-item:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 -6px 20px rgba(0, 0, 0, 0.12);
+    z-index: 99;
+}
+
+/* 卡片内文字 */
+#xingyinList .article-text {
+    font-size: 16px;
+    line-height: 1.7;
     color: #2A2A28;
     font-family: "Noto Serif SC", "Songti SC", "SimSun", serif;
-    line-height: 1.8;
     word-wrap: break-word;
     overflow-wrap: break-word;
-    padding: 0 !important;
-    margin: 0 !important;
-}
-
-.article-text a {
-    text-decoration: none;
-    cursor: pointer;
-    color: #2A2A28;
-}
-.article-text a:hover {
-    text-decoration: underline;
-}
-
-.article-date {
-    display: none !important;
 }
 
 /* ===== 十年灯页面布局 ===== */
