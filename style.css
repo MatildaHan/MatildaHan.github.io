@@ -121,6 +121,14 @@ a {
     justify-content: center;
     align-items: center;
     position: relative;
+
+    /* 100×100px 网格背景 */
+    background-color: #0C0A09;
+    background-image:
+        linear-gradient(rgba(153, 153, 153, 0.12) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(153, 153, 153, 0.12) 1px, transparent 1px);
+    background-size: 100px 100px;
+    background-position: 0 0;
 }
 .banner-text {
     font-size: 36px;
