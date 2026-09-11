@@ -109,7 +109,7 @@ a {
 }
 
 /* ============================================================
-   Banner（无版心左右分割线）
+   Banner（无版心左右分割线，带 100×100 网格背景）
    ============================================================ */
 .banner {
     width: calc(100% + 120px);
@@ -122,7 +122,6 @@ a {
     align-items: center;
     position: relative;
 
-    /* 100×100px 网格背景 */
     background-color: #0C0A09;
     background-image:
         linear-gradient(rgba(153, 153, 153, 0.12) 1px, transparent 1px),
@@ -216,10 +215,113 @@ a {
 .gap-divider::before { left: calc(50% - 720px); }
 .gap-divider::after  { right: calc(50% - 720px); }
 
-/* 随笔区第一行（前 4 个格子）加底边框，形成行间分割线 */
+/* ============================================================
+   随笔区（4 列布局，交替空白）
+   ============================================================ */
+.essay-section {
+    width: calc(100% + 120px);
+    margin-left: -60px;
+    margin-right: -60px;
+    padding: 0;
+    position: relative;
+}
+/* 版心左右分割线 */
+.essay-section::before,
+.essay-section::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: rgba(153, 153, 153, 0.5);
+    z-index: 2;
+}
+.essay-section::before { left: calc(50% - 720px); }
+.essay-section::after  { right: calc(50% - 720px); }
+
+/* 4 列网格 */
+.essay-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+}
+
+/* 每一格的基础样式 */
+.essay-cell {
+    min-height: 200px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 36px 40px;
+    border-right: 1px solid rgba(153, 153, 153, 0.5);
+    box-sizing: border-box;
+    transition: background 0.3s ease;
+}
+
+/* 每行最后一格去掉右边框 */
+.essay-cell:nth-child(4n) {
+    border-right: none;
+}
+
+/* 第一行（前 4 个格子）加底边框，形成行间分割线 */
 .essay-cell:nth-child(-n+4) {
     border-bottom: 1px solid rgba(153, 153, 153, 0.5);
 }
+
+/* 内容卡片文字 */
+.essay-card .essay-text {
+    font-size: 13px;
+    line-height: 2;
+    color: #ffffff;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+.essay-card .essay-date {
+    font-size: 11px;
+    color: #999999;
+    margin-top: 16px;
+    letter-spacing: 1px;
+}
+/* 空卡片显示 “...” */
+.essay-card .essay-empty {
+    color: #999999;
+    text-align: left;
+    font-size: 14px;
+    letter-spacing: 2px;
+}
+
+/* 空白格 */
+.essay-blank {
+    padding: 0;
+    display: block;
+}
+
+/* 白色小矩形 8×60px */
+.essay-mark {
+    display: block;
+    width: 8px;
+    height: 60px;
+    background: #ffffff;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 3;
+}
+/* 第一行空白在最左列 → 标记贴左侧版心线 */
+.essay-blank-left .essay-mark {
+    left: 0;
+}
+/* 第二行空白在最右列 → 标记贴右侧版心线 */
+.essay-blank-right .essay-mark {
+    right: 0;
+}
+
+/* 内容卡片悬停 */
+.essay-card:hover {
+    background: #141110;
+}
+
 /* ============================================================
    杂记区（左文右卡）
    ============================================================ */
@@ -544,12 +646,8 @@ a {
         margin-left: -40px;
         margin-right: -40px;
     }
-    .essay-section {
-        padding: 0;
-    }
-    .note-section {
-        padding: 80px 40px;
-    }
+    .essay-section { padding: 0; }
+    .note-section { padding: 80px 40px; }
     .about-divider {
         margin-left: -40px;
         margin-right: -40px;
@@ -576,12 +674,14 @@ a {
     .essay-cell:nth-child(2n) {
         border-right: none;
     }
-    .essay-blank {
-        display: none;
+    .essay-cell:nth-child(-n+4) {
+        border-bottom: none;
     }
-    .essay-mark {
-        display: none;
+    .essay-cell:nth-child(-n+2) {
+        border-bottom: 1px solid rgba(153, 153, 153, 0.5);
     }
+    .essay-blank { display: none; }
+    .essay-mark { display: none; }
     .note-section {
         grid-template-columns: 1fr;
         gap: 40px;
