@@ -119,7 +119,33 @@
             }
         }, 120);
     }
+    // ============================================================
+    // Banner 鼠标高亮
+    // ============================================================
+    function initBannerHighlight() {
+        var banner = document.getElementById('banner');
+        var highlight = document.getElementById('bannerHighlight');
+        if (!banner || !highlight) return;
 
+        var GRID = 50;
+
+        banner.addEventListener('mousemove', function(e) {
+            var rect = banner.getBoundingClientRect();
+            var x = e.clientX - rect.left;
+            var y = e.clientY - rect.top;
+
+            var col = Math.floor(x / GRID);
+            var row = Math.floor(y / GRID);
+
+            highlight.style.left = (col * GRID) + 'px';
+            highlight.style.top  = (row * GRID) + 'px';
+            highlight.classList.add('show');
+        });
+
+        banner.addEventListener('mouseleave', function() {
+            highlight.classList.remove('show');
+        });
+    }
     // ============================================================
     // 随笔卡片生成器（4 列布局）
     // ============================================================
@@ -342,7 +368,8 @@
     // ============================================================
     // 初始化
     // ============================================================
-    document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function() {
         showPage('page-home');
+        initBannerHighlight();
     });
 })();
