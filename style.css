@@ -19,7 +19,9 @@ a {
     color: inherit;
 }
 
-/* ===== 版心 1440px ===== */
+/* ============================================================
+   版心 1440px
+   ============================================================ */
 .site-header .header-wrap,
 .container {
     width: 1440px;
@@ -30,7 +32,9 @@ a {
     position: relative;
 }
 
-/* 版心左右固定分割线 */
+/* ============================================================
+   版心左右固定分割线（50% 透明）
+   ============================================================ */
 .container::before,
 .container::after {
     content: '';
@@ -38,14 +42,16 @@ a {
     top: 0;
     bottom: 0;
     width: 1px;
-    background: #999999;
+    background: rgba(153, 153, 153, 0.5);
     z-index: 10;
     pointer-events: none;
 }
 .container::before { left: calc(50% - 720px); }
 .container::after  { right: calc(50% - 720px); }
 
-/* ===== 顶部区域 ===== */
+/* ============================================================
+   顶部区域
+   ============================================================ */
 .site-header {
     background: #0C0A09;
     padding: 28px 0 0 0;
@@ -54,7 +60,11 @@ a {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding-bottom: 20px;
+    /* 顶部导航栏底部横线延伸到版心边缘 */
+    margin: 0 -60px;
+    padding: 0 60px 20px;
+    border-bottom: 1px solid rgba(153, 153, 153, 0.5);
+    /* 网站名称与分割线的间距：20px 由 padding-bottom 提供 */
 }
 
 .logo-area {
@@ -76,13 +86,14 @@ a {
     font-weight: 400;
 }
 
-/* ===== 导航 ===== */
+/* ============================================================
+   导航
+   ============================================================ */
 .nav-list {
     display: flex;
     gap: 8px;
     flex-wrap: wrap;
 }
-/* 未选中页签 */
 .nav-list a {
     font-size: 13px;
     color: #999999;
@@ -100,7 +111,9 @@ a {
     font-weight: 500;
 }
 
-/* ===== 页面切换 ===== */
+/* ============================================================
+   页面切换
+   ============================================================ */
 .page-section {
     display: none;
     animation: fade 0.3s ease;
@@ -113,17 +126,21 @@ a {
     100% { opacity: 1; transform: translateY(0); }
 }
 
-/* ===== Banner ===== */
+/* ============================================================
+   Banner（横线延伸到版心边缘）
+   ============================================================ */
 .banner {
-    width: 100%;
+    width: calc(100% + 120px);
     height: 520px;
+    margin-left: -60px;
+    margin-right: -60px;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     position: relative;
-    border-bottom: 1px solid #999999;
-    border-top: 1px solid #999999;
+    border-bottom: 1px solid rgba(153, 153, 153, 0.5);
+    border-top: 1px solid rgba(153, 153, 153, 0.5);
 }
 .banner-text {
     font-size: 36px;
@@ -186,9 +203,17 @@ a {
     border-color: #d8cec4;
 }
 
-/* ===== 随笔区（三列卡片） ===== */
+/* ============================================================
+   随笔区（三列卡片）
+   ============================================================ */
 .essay-section {
-    border-bottom: 1px solid #999999;
+    /* 横线延伸到版心边缘 */
+    width: calc(100% + 120px);
+    margin-left: -60px;
+    margin-right: -60px;
+    border-bottom: 1px solid rgba(153, 153, 153, 0.5);
+    /* 内容左右补回内边距 */
+    padding: 0 60px;
 }
 .essay-grid {
     display: grid;
@@ -197,7 +222,7 @@ a {
 }
 .essay-card {
     padding: 36px 40px;
-    border-right: 1px solid #999999;
+    border-right: 1px solid rgba(153, 153, 153, 0.5);
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -219,7 +244,6 @@ a {
     word-wrap: break-word;
     overflow-wrap: break-word;
 }
-/* 随笔日期 */
 .essay-card .essay-date {
     font-size: 11px;
     color: #999999;
@@ -227,13 +251,19 @@ a {
     letter-spacing: 1px;
 }
 
-/* ===== 杂记区（左文右卡） ===== */
+/* ============================================================
+   杂记区（左文右卡）
+   ============================================================ */
 .note-section {
+    /* 横线延伸到版心边缘 */
+    width: calc(100% + 120px);
+    margin-left: -60px;
+    margin-right: -60px;
+    padding: 80px 60px;
     display: grid;
     grid-template-columns: 320px 1fr;
     gap: 80px;
-    padding: 80px 0;
-    border-bottom: 1px solid #999999;
+    border-bottom: 1px solid rgba(153, 153, 153, 0.5);
 }
 .note-left {
     padding-top: 8px;
@@ -245,7 +275,6 @@ a {
     letter-spacing: 4px;
     margin-bottom: 24px;
 }
-/* 杂记的描述 */
 .note-desc {
     font-size: 13px;
     line-height: 2.2;
@@ -289,7 +318,6 @@ a {
 .note-item:hover .note-title {
     color: #d8cec4;
 }
-/* 杂记内容摘要 */
 .note-item .note-summary {
     font-size: 12px;
     line-height: 1.9;
@@ -301,7 +329,9 @@ a {
     -webkit-box-orient: vertical;
 }
 
-/* ===== 随笔列表（层叠卡片） ===== */
+/* ============================================================
+   随笔列表（层叠卡片）
+   ============================================================ */
 #suibiList {
     display: flex;
     gap: 16px;
@@ -322,7 +352,7 @@ a {
     position: relative;
     box-shadow: 0 -3px 14px rgba(0, 0, 0, 0.4);
     transition: 0.3s ease;
-    border: 1px solid #999999;
+    border: 1px solid rgba(153, 153, 153, 0.5);
 }
 #suibiList .suibi-col .article-item:first-child {
     margin-top: 0;
@@ -332,7 +362,6 @@ a {
     box-shadow: 0 -6px 22px rgba(0, 0, 0, 0.6);
     z-index: 9999 !important;
 }
-/* 随笔日期（列表） */
 #suibiList .article-date {
     font-size: 12px;
     color: #999999;
@@ -340,7 +369,7 @@ a {
     margin-left: -24px;
     margin-right: -24px;
     padding: 0 24px 10px;
-    border-bottom: 1px solid #999999;
+    border-bottom: 1px solid rgba(153, 153, 153, 0.5);
     margin-bottom: 14px;
 }
 #suibiList .article-text {
@@ -351,7 +380,9 @@ a {
     overflow-wrap: break-word;
 }
 
-/* ===== 杂记页面 ===== */
+/* ============================================================
+   杂记页面
+   ============================================================ */
 .zaji-layout {
     display: grid;
     grid-template-columns: 1fr 180px;
@@ -381,14 +412,12 @@ a {
     display: block;
 }
 .zaji-article-title:hover { color: #d8cec4; }
-/* 杂记系列标签 */
 .zaji-article-tag {
     font-size: 12px;
     color: #999999;
     display: inline-block;
     margin-top: 2px;
 }
-/* 杂记日期 */
 .zaji-article-date {
     font-size: 12px;
     color: #999999;
@@ -415,7 +444,7 @@ a {
     color: #999999;
     cursor: pointer;
     padding-bottom: 2px;
-    border-bottom: 1px solid #999999;
+    border-bottom: 1px solid rgba(153, 153, 153, 0.5);
     transition: 0.2s;
 }
 .zaji-series-item:hover {
@@ -428,7 +457,9 @@ a {
     border-bottom-color: #ffffff;
 }
 
-/* ===== 详情 ===== */
+/* ============================================================
+   详情
+   ============================================================ */
 .book-main { width: 100%; padding: 40px 0; }
 .book-main .title {
     font-size: 22px;
@@ -463,7 +494,9 @@ a {
     color: #0C0A09;
 }
 
-/* ===== 闲话 ===== */
+/* ============================================================
+   闲话
+   ============================================================ */
 .about-text { padding: 40px 0; }
 .about-text p {
     font-size: 15px;
@@ -471,10 +504,12 @@ a {
     margin-bottom: 8px;
     color: #ffffff;
 }
+/* 分隔线延伸到版心边缘 */
 .about-divider {
     border: none;
-    border-top: 1px solid #999999;
-    margin: 40px 0 32px 0;
+    border-top: 1px solid rgba(153, 153, 153, 0.5);
+    margin: 40px -60px 32px -60px;
+    width: calc(100% + 120px);
 }
 .links-title {
     font-size: 14px;
@@ -485,13 +520,13 @@ a {
 .site-info {
     display: flex;
     flex-direction: column;
-    border: 1px solid #999999;
+    border: 1px solid rgba(153, 153, 153, 0.5);
     background: #0C0A09;
 }
 .site-info-item {
     display: flex;
     align-items: stretch;
-    border-bottom: 1px solid #999999;
+    border-bottom: 1px solid rgba(153, 153, 153, 0.5);
 }
 .site-info-item:last-child { border-bottom: none; }
 .site-info-label {
@@ -502,7 +537,7 @@ a {
     color: #999999;
     font-size: 13px;
     background: #141110;
-    border-right: 1px solid #999999;
+    border-right: 1px solid rgba(153, 153, 153, 0.5);
     flex-shrink: 0;
 }
 .site-info-value {
@@ -515,25 +550,45 @@ a {
     word-break: break-all;
 }
 
-/* ===== 响应式 ===== */
+/* ============================================================
+   响应式
+   ============================================================ */
 @media (max-width: 1500px) {
     .container::before { left: 0; }
     .container::after { right: 0; }
     .site-header .header-wrap,
     .container { width: 100%; padding: 0 40px; }
+    .header-wrap {
+        margin: 0 -40px;
+        padding: 0 40px 20px;
+    }
+    .banner,
+    .essay-section,
+    .note-section {
+        width: calc(100% + 80px);
+        margin-left: -40px;
+        margin-right: -40px;
+        padding-left: 40px;
+        padding-right: 40px;
+    }
+    .about-divider {
+        margin-left: -40px;
+        margin-right: -40px;
+        width: calc(100% + 80px);
+    }
 }
 @media (max-width: 1024px) {
     .banner-text { font-size: 28px; }
     .essay-grid { grid-template-columns: 1fr; }
     .essay-card {
         border-right: none;
-        border-bottom: 1px solid #999999;
+        border-bottom: 1px solid rgba(153, 153, 153, 0.5);
     }
     .essay-card:last-child { border-bottom: none; }
     .note-section {
         grid-template-columns: 1fr;
         gap: 40px;
-        padding: 60px 0;
+        padding: 60px 40px;
     }
     .container::before,
     .container::after { display: none; }
@@ -546,8 +601,33 @@ a {
 @media (max-width: 768px) {
     .site-header .header-wrap,
     .container { padding: 0 20px; }
-    .header-wrap { flex-direction: column; align-items: flex-start; gap: 16px; }
-    .banner { height: 380px; }
+    .header-wrap {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+        margin: 0 -20px;
+        padding: 0 20px 20px;
+    }
+    .banner {
+        height: 380px;
+        width: calc(100% + 40px);
+        margin-left: -20px;
+        margin-right: -20px;
+    }
+    .essay-section,
+    .note-section {
+        width: calc(100% + 40px);
+        margin-left: -20px;
+        margin-right: -20px;
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+    .note-section { padding: 40px 20px; }
+    .about-divider {
+        margin-left: -20px;
+        margin-right: -20px;
+        width: calc(100% + 40px);
+    }
     .banner-text { font-size: 20px; padding: 0 20px; }
     .banner-btn { padding: 10px 24px; font-size: 12px; }
     .essay-card { padding: 28px 24px; }
