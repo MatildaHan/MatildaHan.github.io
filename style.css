@@ -56,15 +56,20 @@ a {
     background: #0C0A09;
     padding: 28px 0 0 0;
 }
+/* ============================================================
+   顶部区域
+   ============================================================ */
+.site-header {
+    background: #0C0A09;
+    padding: 28px 0 0 0;
+}
 .header-wrap {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    /* 顶部导航栏底部横线延伸到版心边缘 */
     margin: 0 -60px;
-    padding: 0 60px 20px;
+    padding: 0 60px 30px;
     border-bottom: 1px solid rgba(153, 153, 153, 0.5);
-    /* 网站名称与分割线的间距：20px 由 padding-bottom 提供 */
 }
 
 .logo-area {
@@ -79,13 +84,11 @@ a {
     letter-spacing: 2px;
     line-height: 1.2;
 }
-/* 网页描述 */
 .logo-slogan {
     font-size: 12px;
     color: #999999;
     font-weight: 400;
 }
-
 /* ============================================================
    导航
    ============================================================ */
