@@ -1,740 +1,348 @@
-/* style.css —— 须臾之间 */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+// script.js —— 须臾之间 前端逻辑
+(function() {
+    var DB = window.DB;
 
-body {
-    background: #0C0A09;
-    color: #ffffff;
-    font-family: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
-    font-size: 14px;
-    line-height: 1.8;
-    -webkit-font-smoothing: antialiased;
-}
+    // ============================================================
+    // 站点信息
+    // ============================================================
+    var _siteCache = null;
 
-a {
-    text-decoration: none;
-    color: inherit;
-}
-
-/* ============================================================
-   顶部区域（标题 + 导航）
-   标题下方分割线横跨整个页面
-   ============================================================ */
-.site-header {
-    background: #0C0A09;
-    padding: 28px 0 0 0;
-    border-bottom: 1px solid rgba(153, 153, 153, 0.5);
-}
-.header-wrap {
-    width: 1440px;
-    max-width: 100%;
-    margin: 0 auto;
-    padding: 0 60px 30px;
-    box-sizing: border-box;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-.logo-area {
-    display: flex;
-    align-items: baseline;
-    gap: 16px;
-}
-.logo-name {
-    font-size: 22px;
-    color: #ffffff;
-    font-weight: 700;
-    letter-spacing: 2px;
-    line-height: 1.2;
-}
-.logo-slogan {
-    font-size: 12px;
-    color: #999999;
-    font-weight: 400;
-}
-
-/* ============================================================
-   导航
-   ============================================================ */
-.nav-list {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-}
-.nav-list a {
-    font-size: 13px;
-    color: #999999;
-    padding: 6px 18px;
-    transition: 0.25s ease;
-    cursor: pointer;
-    position: relative;
-}
-.nav-list a:hover {
-    color: #ffffff;
-}
-.nav-list a.active {
-    color: #ffffff;
-    background: #1f1a18;
-    font-weight: 500;
-}
-
-/* ============================================================
-   页面切换
-   ============================================================ */
-.page-section {
-    display: none;
-    animation: fade 0.3s ease;
-}
-.page-section.active {
-    display: block;
-}
-@keyframes fade {
-    0% { opacity: 0.6; transform: translateY(6px); }
-    100% { opacity: 1; transform: translateY(0); }
-}
-
-/* ============================================================
-   主内容区容器
-   ============================================================ */
-.container {
-    width: 1440px;
-    max-width: 100%;
-    margin: 0 auto;
-    padding: 0 60px;
-    box-sizing: border-box;
-    position: relative;
-}
-
-/* ============================================================
-   Banner（无版心左右分割线，带 100×100 网格背景）
-   ============================================================ */
-.banner {
-    width: calc(100% + 120px);
-    margin-left: -60px;
-    margin-right: -60px;
-    height: 520px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    position: relative;
-
-    background-color: #0C0A09;
-    background-image:
-        linear-gradient(rgba(153, 153, 153, 0.12) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(153, 153, 153, 0.12) 1px, transparent 1px);
-    background-size: 100px 100px;
-    background-position: 0 0;
-}
-.banner-text {
-    font-size: 36px;
-    font-weight: 700;
-    color: #ffffff;
-    letter-spacing: 2px;
-    line-height: 1.6;
-    text-align: center;
-    min-height: 60px;
-    max-width: 1200px;
-    padding: 0 40px;
-}
-.banner-text .cursor {
-    display: inline-block;
-    width: 2px;
-    height: 1em;
-    background: #ffffff;
-    margin-left: 4px;
-    animation: blink 0.8s step-end infinite;
-    vertical-align: text-bottom;
-}
-@keyframes blink {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0; }
-}
-.banner-btn {
-    margin-top: 40px;
-    padding: 10px 28px;
-    background: #ffffff;
-    border: 1px solid #ffffff;
-    color: #0C0A09;
-    font-size: 13px;
-    font-family: inherit;
-    letter-spacing: 1px;
-    cursor: pointer;
-    transition: 0.25s ease;
-    opacity: 0;
-    transform: translateY(10px);
-    pointer-events: none;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-}
-.banner-btn .btn-arrow {
-    font-size: 16px;
-    line-height: 1;
-}
-.banner-btn.show {
-    opacity: 1;
-    transform: translateY(0);
-    pointer-events: auto;
-    animation: btnFadeIn 0.6s ease forwards;
-}
-@keyframes btnFadeIn {
-    0% { opacity: 0; transform: translateY(10px); }
-    100% { opacity: 1; transform: translateY(0); }
-}
-.banner-btn:hover {
-    background: #d8cec4;
-    border-color: #d8cec4;
-}
-
-/* ============================================================
-   间隔条：上下两条通栏分割线 + 中间 50px 空白
-   内部有版心左右分割线
-   ============================================================ */
-.gap-divider {
-    width: 100vw;
-    margin-left: calc(50% - 50vw);
-    height: 50px;
-    border-top: 1px solid rgba(153, 153, 153, 0.5);
-    border-bottom: 1px solid rgba(153, 153, 153, 0.5);
-    background: transparent;
-    position: relative;
-}
-.gap-divider::before,
-.gap-divider::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    width: 1px;
-    background: rgba(153, 153, 153, 0.5);
-}
-.gap-divider::before { left: calc(50% - 720px); }
-.gap-divider::after  { right: calc(50% - 720px); }
-
-/* ============================================================
-   随笔区（4 列布局，交替空白）
-   ============================================================ */
-.essay-section {
-    width: calc(100% + 120px);
-    margin-left: -60px;
-    margin-right: -60px;
-    padding: 0;
-    position: relative;
-}
-/* 版心左右分割线 */
-.essay-section::before,
-.essay-section::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    width: 1px;
-    background: rgba(153, 153, 153, 0.5);
-    z-index: 2;
-}
-.essay-section::before { left: calc(50% - 720px); }
-.essay-section::after  { right: calc(50% - 720px); }
-
-/* 4 列网格 */
-.essay-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 0;
-}
-
-/* 每一格的基础样式 */
-.essay-cell {
-    min-height: 200px;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding: 36px 40px;
-    border-right: 1px solid rgba(153, 153, 153, 0.5);
-    box-sizing: border-box;
-    transition: background 0.3s ease;
-}
-
-/* 每行最后一格去掉右边框 */
-.essay-cell:nth-child(4n) {
-    border-right: none;
-}
-
-/* 第一行（前 4 个格子）加底边框，形成行间分割线 */
-.essay-cell:nth-child(-n+4) {
-    border-bottom: 1px solid rgba(153, 153, 153, 0.5);
-}
-
-/* 内容卡片文字 */
-.essay-card .essay-text {
-    font-size: 13px;
-    line-height: 2;
-    color: #ffffff;
-    word-wrap: break-word;
-    overflow-wrap: break-word;
-}
-.essay-card .essay-date {
-    font-size: 11px;
-    color: #999999;
-    margin-top: 16px;
-    letter-spacing: 1px;
-}
-/* 空卡片显示 “...” */
-.essay-card .essay-empty {
-    color: #999999;
-    text-align: left;
-    font-size: 14px;
-    letter-spacing: 2px;
-}
-
-/* 空白格 */
-.essay-blank {
-    padding: 0;
-    display: block;
-}
-
-/* 白色小矩形 8×60px */
-.essay-mark {
-    display: block;
-    width: 8px;
-    height: 60px;
-    background: #ffffff;
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 3;
-}
-/* 第一行空白在最左列 → 标记贴左侧版心线 */
-.essay-blank-left .essay-mark {
-    left: 0;
-}
-/* 第二行空白在最右列 → 标记贴右侧版心线 */
-.essay-blank-right .essay-mark {
-    right: 0;
-}
-
-/* 内容卡片悬停 */
-.essay-card:hover {
-    background: #141110;
-}
-
-/* ============================================================
-   杂记区（左文右卡）
-   ============================================================ */
-.note-section {
-    width: calc(100% + 120px);
-    margin-left: -60px;
-    margin-right: -60px;
-    padding: 80px 60px;
-    display: grid;
-    grid-template-columns: 320px 1fr;
-    gap: 80px;
-    position: relative;
-}
-.note-section::before,
-.note-section::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    width: 1px;
-    background: rgba(153, 153, 153, 0.5);
-    z-index: 2;
-}
-.note-section::before { left: calc(50% - 720px); }
-.note-section::after  { right: calc(50% - 720px); }
-
-.note-left {
-    padding-top: 8px;
-}
-.note-heading {
-    font-size: 32px;
-    font-weight: 700;
-    color: #ffffff;
-    letter-spacing: 4px;
-    margin-bottom: 24px;
-}
-.note-desc {
-    font-size: 13px;
-    line-height: 2.2;
-    color: #999999;
-    letter-spacing: 1px;
-}
-.note-right {
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
-}
-.note-item {
-    display: grid;
-    grid-template-columns: 100px 1fr;
-    gap: 24px;
-    cursor: pointer;
-    transition: 0.25s ease;
-}
-.note-item:hover {
-    opacity: 0.85;
-}
-.note-item .note-thumb {
-    width: 100px;
-    height: 100px;
-    background: #2a2422;
-    flex-shrink: 0;
-}
-.note-item .note-body {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    min-width: 0;
-}
-.note-item .note-title {
-    font-size: 15px;
-    font-weight: 700;
-    color: #ffffff;
-    line-height: 1.5;
-    transition: color 0.2s;
-}
-.note-item:hover .note-title {
-    color: #d8cec4;
-}
-.note-item .note-summary {
-    font-size: 12px;
-    line-height: 1.9;
-    color: #999999;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-}
-
-/* ============================================================
-   随笔列表（层叠卡片）
-   ============================================================ */
-#suibiList {
-    display: flex;
-    gap: 16px;
-    width: 100%;
-    padding: 40px 0;
-    align-items: flex-start;
-    position: relative;
-}
-#suibiList .suibi-col {
-    flex: 1 1 0;
-    display: flex;
-    flex-direction: column;
-    min-width: 0;
-}
-#suibiList .article-item {
-    background: #141110;
-    padding: 20px 24px;
-    margin-top: -14px;
-    position: relative;
-    box-shadow: 0 -3px 14px rgba(0, 0, 0, 0.4);
-    transition: 0.3s ease;
-    border: 1px solid rgba(153, 153, 153, 0.5);
-}
-#suibiList .suibi-col .article-item:first-child {
-    margin-top: 0;
-}
-#suibiList .article-item:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 -6px 22px rgba(0, 0, 0, 0.6);
-    z-index: 9999 !important;
-}
-#suibiList .article-date {
-    font-size: 12px;
-    color: #999999;
-    letter-spacing: 0.5px;
-    margin-left: -24px;
-    margin-right: -24px;
-    padding: 0 24px 10px;
-    border-bottom: 1px solid rgba(153, 153, 153, 0.5);
-    margin-bottom: 14px;
-}
-#suibiList .article-text {
-    font-size: 14px;
-    line-height: 2;
-    color: #ffffff;
-    word-wrap: break-word;
-    overflow-wrap: break-word;
-}
-
-/* ============================================================
-   杂记页面
-   ============================================================ */
-.zaji-layout {
-    display: grid;
-    grid-template-columns: 1fr 180px;
-    gap: 60px;
-    align-items: start;
-    padding: 40px 0;
-}
-.zaji-main { min-width: 0; }
-.zaji-article-list {
-    display: flex;
-    flex-direction: column;
-    gap: 32px;
-}
-.zaji-article-item {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    padding-bottom: 20px;
-}
-.zaji-article-title {
-    font-size: 16px;
-    font-weight: 700;
-    color: #ffffff;
-    line-height: 1.4;
-    cursor: pointer;
-    transition: color 0.2s;
-    display: block;
-}
-.zaji-article-title:hover { color: #d8cec4; }
-.zaji-article-tag {
-    font-size: 12px;
-    color: #999999;
-    display: inline-block;
-    margin-top: 2px;
-}
-.zaji-article-date {
-    font-size: 12px;
-    color: #999999;
-    margin-top: 2px;
-}
-.zaji-sidebar {
-    position: sticky;
-    top: 20px;
-}
-.zaji-sidebar-title {
-    font-size: 16px;
-    font-weight: 700;
-    color: #ffffff;
-    margin-bottom: 16px;
-    padding-bottom: 10px;
-}
-.zaji-series-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px 20px;
-}
-.zaji-series-item {
-    font-size: 13px;
-    color: #999999;
-    cursor: pointer;
-    padding-bottom: 2px;
-    border-bottom: 1px solid rgba(153, 153, 153, 0.5);
-    transition: 0.2s;
-}
-.zaji-series-item:hover {
-    color: #ffffff;
-    border-bottom-color: #ffffff;
-}
-.zaji-series-item.active {
-    font-weight: 700;
-    color: #ffffff;
-    border-bottom-color: #ffffff;
-}
-
-/* ============================================================
-   详情
-   ============================================================ */
-.book-main { width: 100%; padding: 40px 0; }
-.book-main .title {
-    font-size: 22px;
-    font-weight: 700;
-    margin-bottom: 6px;
-    color: #ffffff;
-}
-.book-main .date {
-    font-size: 13px;
-    color: #999999;
-    margin-bottom: 24px;
-}
-.book-content p {
-    margin-bottom: 14px;
-    font-size: 14px;
-    color: #ffffff;
-    line-height: 2;
-}
-.back-btn {
-    border: 1px solid #ffffff;
-    color: #ffffff;
-    background: transparent;
-    padding: 6px 20px;
-    font-size: 13px;
-    font-family: inherit;
-    cursor: pointer;
-    margin-top: 40px;
-    transition: 0.2s;
-}
-.back-btn:hover {
-    background: #ffffff;
-    color: #0C0A09;
-}
-
-/* ============================================================
-   闲话
-   ============================================================ */
-.about-text { padding: 40px 0; }
-.about-text p {
-    font-size: 15px;
-    font-weight: 500;
-    margin-bottom: 8px;
-    color: #ffffff;
-}
-.about-divider {
-    border: none;
-    border-top: 1px solid rgba(153, 153, 153, 0.5);
-    margin: 40px -60px 32px -60px;
-    width: calc(100% + 120px);
-}
-.links-title {
-    font-size: 14px;
-    color: #999999;
-    margin-bottom: 16px;
-    font-weight: 400;
-}
-.site-info {
-    display: flex;
-    flex-direction: column;
-    border: 1px solid rgba(153, 153, 153, 0.5);
-    background: #0C0A09;
-}
-.site-info-item {
-    display: flex;
-    align-items: stretch;
-    border-bottom: 1px solid rgba(153, 153, 153, 0.5);
-}
-.site-info-item:last-child { border-bottom: none; }
-.site-info-label {
-    display: flex;
-    align-items: center;
-    min-width: 80px;
-    padding: 10px 16px;
-    color: #999999;
-    font-size: 13px;
-    background: #141110;
-    border-right: 1px solid rgba(153, 153, 153, 0.5);
-    flex-shrink: 0;
-}
-.site-info-value {
-    display: flex;
-    align-items: center;
-    padding: 10px 16px;
-    color: #ffffff;
-    font-size: 13px;
-    flex: 1;
-    word-break: break-all;
-}
-
-/* ============================================================
-   响应式
-   ============================================================ */
-@media (max-width: 1500px) {
-    .header-wrap,
-    .container { width: 100%; padding: 0 40px; }
-    .banner,
-    .essay-section,
-    .note-section {
-        width: calc(100% + 80px);
-        margin-left: -40px;
-        margin-right: -40px;
+    async function getSite() {
+        if (_siteCache) return _siteCache;
+        var list = await DB.getAll('site_settings');
+        _siteCache = list && list.length > 0 ? list[0] : {};
+        return _siteCache;
     }
-    .essay-section { padding: 0; }
-    .note-section { padding: 80px 40px; }
-    .about-divider {
-        margin-left: -40px;
-        margin-right: -40px;
-        width: calc(100% + 80px);
+
+    // ============================================================
+    // 页面导航
+    // ============================================================
+    var sections = document.querySelectorAll('.page-section');
+    var navLinks = document.querySelectorAll('#globalNav a');
+
+    function showPage(pageId) {
+        for (var i = 0; i < sections.length; i++) {
+            sections[i].classList.remove('active');
+        }
+        var target = document.getElementById(pageId);
+        if (target) target.classList.add('active');
+
+        for (var j = 0; j < navLinks.length; j++) {
+            navLinks[j].classList.remove('active');
+            if (navLinks[j].dataset.page === pageId) {
+                navLinks[j].classList.add('active');
+            }
+        }
+
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+
+        if (pageId === 'page-home') renderHome();
+        if (pageId === 'page-suibi') renderSuibiList();
+        if (pageId === 'page-zaji') renderZajiPage();
+        if (pageId === 'page-xianhua') renderXianhua();
     }
-    /* 小屏隐藏版心左右分割线 */
-    .gap-divider::before,
-    .gap-divider::after,
-    .essay-section::before,
-    .essay-section::after,
-    .note-section::before,
-    .note-section::after {
-        display: none;
+
+    for (var i = 0; i < navLinks.length; i++) {
+        navLinks[i].addEventListener('click', function(e) {
+            e.preventDefault();
+            var page = this.dataset.page;
+            if (page) showPage(page);
+        });
     }
-}
-@media (max-width: 1024px) {
-    .banner-text { font-size: 28px; }
-    .essay-grid {
-        grid-template-columns: repeat(2, 1fr);
+
+    // ============================================================
+    // 内部跳转（data-sub / data-back）
+    // ============================================================
+    document.addEventListener('click', function(e) {
+        var target = e.target.closest('[data-sub]');
+        if (target) {
+            e.preventDefault();
+            var sub = target.dataset.sub;
+            if (sub) {
+                var section = document.getElementById(sub);
+                if (section) {
+                    for (var i = 0; i < sections.length; i++) {
+                        sections[i].classList.remove('active');
+                    }
+                    section.classList.add('active');
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                    if (sub === 'zaji-detail') loadZajiDetail(target.dataset.id);
+                }
+            }
+            return;
+        }
+
+        var backBtn = e.target.closest('[data-back]');
+        if (backBtn) {
+            e.preventDefault();
+            var backId = backBtn.dataset.back;
+            if (backId) showPage(backId);
+        }
+    });
+
+    // ============================================================
+    // Logo
+    // ============================================================
+    function updateLogo(site) {
+        var siteNameEl = document.getElementById('siteName');
+        var siteDescEl = document.getElementById('siteDesc');
+        if (siteNameEl) siteNameEl.textContent = site.site_name || '须臾之间';
+        if (siteDescEl) siteDescEl.textContent = site.site_desc || '寄蜉蝣于天地，渺沧海之一粟';
     }
-    .essay-cell:nth-child(4n) {
-        border-right: 1px solid rgba(153, 153, 153, 0.5);
+
+    // ============================================================
+    // 打字机（保留，不消失）
+    // ============================================================
+    var bannerFullText = '写信告诉我，今夜你想要梦什么';
+    var bannerTextEl = document.getElementById('bannerText');
+    var bannerBtnEl = document.getElementById('bannerBtn');
+    var typewriterTimer = null;
+    var typewriterDone = false;
+
+    function startTypewriter() {
+        if (typewriterDone) return;
+        var index = 0;
+        bannerTextEl.innerHTML = '<span class="cursor"></span>';
+        typewriterTimer = setInterval(function() {
+            if (index < bannerFullText.length) {
+                var current = bannerFullText.substring(0, index + 1);
+                bannerTextEl.innerHTML = current + '<span class="cursor"></span>';
+                index++;
+            } else {
+                clearInterval(typewriterTimer);
+                typewriterTimer = null;
+                typewriterDone = true;
+                setTimeout(function() {
+                    bannerTextEl.innerHTML = bannerFullText;
+                    bannerBtnEl.classList.add('show');
+                }, 400);
+            }
+        }, 120);
     }
-    .essay-cell:nth-child(2n) {
-        border-right: none;
+
+    // ============================================================
+    // 随笔卡片生成器（4 列布局）
+    // ============================================================
+    function buildEssayCard(data) {
+        if (!data) {
+            return '<div class="essay-cell essay-card">' +
+                '<div class="essay-text essay-empty">...</div>' +
+                '</div>';
+        }
+        return '<div class="essay-cell essay-card">' +
+            '<div class="essay-text">' + (data.content || '') + '</div>' +
+            '<div class="essay-date">' + (data.date || '') + '</div>' +
+            '</div>';
     }
-    .essay-cell:nth-child(-n+4) {
-        border-bottom: none;
+
+    // ============================================================
+    // 序章首页
+    // ============================================================
+    async function renderHome() {
+        var site = await getSite();
+        updateLogo(site);
+
+        // ① 随笔：4 列交替空白布局
+        var suibiList = await DB.getAll('suibi', { orderBy: 'id' });
+        var essayContainer = document.getElementById('homeSuibi');
+        if (essayContainer) {
+            var displayList = suibiList.slice(-6);
+            while (displayList.length < 6) displayList.push(null);
+
+            var html = '';
+            // 第一行：空白 + 卡1 + 卡2 + 卡3
+            html += '<div class="essay-cell essay-blank essay-blank-left"><span class="essay-mark"></span></div>';
+            html += buildEssayCard(displayList[0]);
+            html += buildEssayCard(displayList[1]);
+            html += buildEssayCard(displayList[2]);
+            // 第二行：卡4 + 卡5 + 卡6 + 空白
+            html += buildEssayCard(displayList[3]);
+            html += buildEssayCard(displayList[4]);
+            html += buildEssayCard(displayList[5]);
+            html += '<div class="essay-cell essay-blank essay-blank-right"><span class="essay-mark"></span></div>';
+
+            essayContainer.innerHTML = html;
+        }
+
+        // ② 杂记：最新 3 条
+        var zajiList = await DB.getAll('zaji', { orderBy: 'id' });
+        var noteContainer = document.getElementById('homeZaji');
+        if (noteContainer) {
+            var latestThree = zajiList.slice(-3).reverse();
+            var html2 = '';
+            for (var j = 0; j < latestThree.length; j++) {
+                var z = latestThree[j];
+                var summary = z.content ? z.content.substring(0, 60) : '';
+                if (z.content && z.content.length > 60) summary += '...';
+                html2 += '<div class="note-item" data-sub="zaji-detail" data-id="' + z.id + '">';
+                html2 += '  <div class="note-thumb"></div>';
+                html2 += '  <div class="note-body">';
+                html2 += '    <div class="note-title">' + (z.title || '无标题') + '</div>';
+                html2 += '    <div class="note-summary">' + summary + '</div>';
+                html2 += '  </div>';
+                html2 += '</div>';
+            }
+            if (latestThree.length === 0) {
+                html2 = '<p style="color:#999999;padding:20px 0;">暂无杂记</p>';
+            }
+            noteContainer.innerHTML = html2;
+        }
+
+        if (!typewriterDone) startTypewriter();
     }
-    .essay-cell:nth-child(-n+2) {
-        border-bottom: 1px solid rgba(153, 153, 153, 0.5);
+
+    // ============================================================
+    // 随笔列表
+    // ============================================================
+    async function renderSuibiList() {
+        var list = await DB.getAll('suibi', { orderBy: 'id' });
+        var container = document.getElementById('suibiList');
+        if (!container) return;
+
+        var leftHtml = '';
+        var rightHtml = '';
+
+        for (var i = 0; i < list.length; i++) {
+            var item = list[i];
+            var colIndex = Math.floor(i / 2);
+            var z = list.length - colIndex;
+
+            var card = '<div class="article-item" style="z-index:' + z + ';">';
+            card += '  <div class="article-date">' + (item.date || '') + '</div>';
+            card += '  <div class="article-text">' + (item.content || '') + '</div>';
+            card += '</div>';
+
+            if (i % 2 === 0) leftHtml += card;
+            else rightHtml += card;
+        }
+
+        container.innerHTML =
+            '<div class="suibi-col">' + leftHtml + '</div>' +
+            '<div class="suibi-col">' + rightHtml + '</div>';
     }
-    .essay-blank { display: none; }
-    .essay-mark { display: none; }
-    .note-section {
-        grid-template-columns: 1fr;
-        gap: 40px;
-        padding: 60px 40px;
+
+    // ============================================================
+    // 杂记页面
+    // ============================================================
+    var _currentZajiCategory = null;
+
+    async function renderZajiPage() {
+        var list = await DB.getAll('zaji', { orderBy: 'id' });
+        var categories = await DB.getAll('zaji_categories', { orderBy: 'id' });
+
+        if (categories.length === 0) {
+            var catSet = {};
+            for (var i = 0; i < list.length; i++) {
+                if (list[i].category) catSet[list[i].category] = true;
+            }
+            categories = Object.keys(catSet).map(function(name) {
+                return { name: name };
+            });
+        }
+
+        var seriesContainer = document.getElementById('zajiSeriesList');
+        if (seriesContainer) {
+            var seriesHtml = '';
+            for (var j = 0; j < categories.length; j++) {
+                var cat = categories[j];
+                var activeClass = (_currentZajiCategory === cat.name) ? ' active' : '';
+                seriesHtml += '<a class="zaji-series-item' + activeClass + '" data-series="' + cat.name + '">' + cat.name + '</a>';
+            }
+            seriesContainer.innerHTML = seriesHtml;
+        }
+
+        renderZajiArticleList(list);
     }
-    .zaji-layout {
-        grid-template-columns: 1fr;
-        gap: 30px;
+
+    function renderZajiArticleList(list) {
+        var container = document.getElementById('zajiArticleList');
+        if (!container) return;
+
+        var filtered = list;
+        if (_currentZajiCategory) {
+            filtered = list.filter(function(x) {
+                return x.category === _currentZajiCategory;
+            });
+        }
+
+        var sorted = filtered.slice().reverse();
+
+        if (sorted.length === 0) {
+            container.innerHTML = '<p style="text-align:center;color:#999999;padding:40px 0;">暂无文章</p>';
+            return;
+        }
+
+        var html = '';
+        for (var i = 0; i < sorted.length; i++) {
+            var item = sorted[i];
+            html += '<div class="zaji-article-item">';
+            html += '<a class="zaji-article-title" data-sub="zaji-detail" data-id="' + item.id + '">' + (item.title || '无标题') + '</a>';
+            html += '<span class="zaji-article-tag">#' + (item.category || '未分类') + '</span>';
+            html += '<span class="zaji-article-date">' + (item.date || '') + '</span>';
+            html += '</div>';
+        }
+        container.innerHTML = html;
     }
-    .zaji-sidebar { position: static; order: -1; }
-}
-@media (max-width: 768px) {
-    .header-wrap,
-    .container { padding: 0 20px; }
-    .header-wrap {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 16px;
-        padding: 0 20px 30px;
+
+    document.addEventListener('click', function(e) {
+        var seriesItem = e.target.closest('.zaji-series-item');
+        if (seriesItem) {
+            e.preventDefault();
+            var series = seriesItem.dataset.series;
+            if (_currentZajiCategory === series) _currentZajiCategory = null;
+            else _currentZajiCategory = series;
+
+            DB.getAll('zaji', { orderBy: 'id' }).then(function(list) {
+                renderZajiArticleList(list);
+                var items = document.querySelectorAll('.zaji-series-item');
+                for (var i = 0; i < items.length; i++) {
+                    items[i].classList.remove('active');
+                    if (items[i].dataset.series === _currentZajiCategory) {
+                        items[i].classList.add('active');
+                    }
+                }
+            });
+            return;
+        }
+    });
+
+    // ============================================================
+    // 杂记详情
+    // ============================================================
+    async function loadZajiDetail(id) {
+        var item = await DB.getById('zaji', id);
+        if (!item) return;
+
+        var titleEl = document.getElementById('zajiDetailTitle');
+        var dateEl = document.getElementById('zajiDetailDate');
+        var contentEl = document.getElementById('zajiDetailContent');
+
+        if (titleEl) titleEl.textContent = item.title;
+        if (dateEl) dateEl.textContent = item.date;
+        if (contentEl) contentEl.innerHTML = '<p>' + (item.content || '').replace(/\n/g, '</p><p>') + '</p>';
     }
-    .banner {
-        height: 380px;
-        width: calc(100% + 40px);
-        margin-left: -20px;
-        margin-right: -20px;
+
+    // ============================================================
+    // 闲话
+    // ============================================================
+    async function renderXianhua() {
+        var list = await DB.getAll('xianhua');
+        var content = list.length > 0 ? (list[0].content || '') : '';
+        var container = document.getElementById('xianhuaContent');
+        if (!container) return;
+        var lines = content.split('\n');
+        var html = '';
+        for (var i = 0; i < lines.length; i++) {
+            var line = lines[i].trim();
+            if (line) html += '<p>' + line + '</p>';
+        }
+        container.innerHTML = html;
     }
-    .essay-section,
-    .note-section {
-        width: calc(100% + 40px);
-        margin-left: -20px;
-        margin-right: -20px;
-    }
-    .note-section { padding: 40px 20px; }
-    .essay-grid {
-        grid-template-columns: 1fr;
-    }
-    .essay-cell {
-        border-right: none;
-        border-bottom: 1px solid rgba(153, 153, 153, 0.5);
-        padding: 28px 24px;
-    }
-    .essay-cell:last-child {
-        border-bottom: none;
-    }
-    .about-divider {
-        margin-left: -20px;
-        margin-right: -20px;
-        width: calc(100% + 40px);
-    }
-    .banner-text { font-size: 20px; padding: 0 20px; }
-    .banner-btn { padding: 10px 24px; font-size: 12px; }
-    .note-item { grid-template-columns: 80px 1fr; gap: 16px; }
-    .note-item .note-thumb { width: 80px; height: 80px; }
-    #suibiList { flex-direction: column; }
-    .zaji-layout { grid-template-columns: 1fr; }
-}
+
+    // ============================================================
+    // 初始化
+    // ============================================================
+    document.addEventListener('DOMContentLoaded', function() {
+        showPage('page-home');
+    });
+})();
