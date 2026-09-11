@@ -15,37 +15,26 @@
                 <span class="logo-slogan" id="siteDesc">寄蜉蝣于天地，渺沧海之一粟</span>
             </div>
             <nav class="nav-list" id="globalNav">
-                <a data-page="page-home" class="active">
-                    <span class="nav-text">序章</span>
-                </a>
-                <a data-page="page-xingyin">
-                    <span class="nav-text">随笔</span>
-                </a>
-                <a data-page="page-shinian">
-                    <span class="nav-text">杂记</span>
-                </a>
-                <a data-page="page-about">
-                    <span class="nav-text">闲话</span>
-                </a>
+                <a data-page="page-home" class="active"><span class="nav-text">序章</span></a>
+                <a data-page="page-suibi"><span class="nav-text">随笔</span></a>
+                <a data-page="page-zaji"><span class="nav-text">杂记</span></a>
+                <a data-page="page-xianhua"><span class="nav-text">闲话</span></a>
             </nav>
         </div>
     </header>
 
     <main class="container" id="app">
-        <!-- ===== 首页（序章） ===== -->
+        <!-- ===== 序章 ===== -->
         <section id="page-home" class="page-section active">
-            <!-- Banner -->
             <div class="banner">
                 <div class="banner-text" id="bannerText"></div>
                 <button class="banner-btn" id="bannerBtn">去告诉她 <span class="btn-arrow">›</span></button>
             </div>
 
-            <!-- 随笔区 -->
             <div class="essay-section">
-                <div class="essay-grid" id="homeXingyin"></div>
+                <div class="essay-grid" id="homeSuibi"></div>
             </div>
 
-            <!-- 杂记区 -->
             <div class="note-section">
                 <div class="note-left">
                     <h2 class="note-heading">杂记</h2>
@@ -57,41 +46,41 @@
                         我曾在此间停留
                     </div>
                 </div>
-                <div class="note-right" id="homeShinian"></div>
+                <div class="note-right" id="homeZaji"></div>
             </div>
         </section>
 
-        <!-- ===== 随笔（行吟册） ===== -->
-        <section id="page-xingyin" class="page-section">
-            <div class="article-list" id="xingyinList"></div>
+        <!-- ===== 随笔 ===== -->
+        <section id="page-suibi" class="page-section">
+            <div class="article-list" id="suibiList"></div>
         </section>
 
-        <!-- ===== 杂记（十年灯） ===== -->
-        <section id="page-shinian" class="page-section">
-            <div class="shinian-layout">
-                <div class="shinian-main">
-                    <div class="shinian-article-list" id="shinianArticleList"></div>
+        <!-- ===== 杂记 ===== -->
+        <section id="page-zaji" class="page-section">
+            <div class="zaji-layout">
+                <div class="zaji-main">
+                    <div class="zaji-article-list" id="zajiArticleList"></div>
                 </div>
-                <aside class="shinian-sidebar">
-                    <h3 class="shinian-sidebar-title">系列</h3>
-                    <div class="shinian-series-list" id="shinianSeriesList"></div>
+                <aside class="zaji-sidebar">
+                    <h3 class="zaji-sidebar-title">系列</h3>
+                    <div class="zaji-series-list" id="zajiSeriesList"></div>
                 </aside>
             </div>
         </section>
 
         <!-- ===== 杂记 详情 ===== -->
-        <section id="shinian-detail" class="page-section">
+        <section id="zaji-detail" class="page-section">
             <div class="book-main">
-                <h2 class="title" id="shinianDetailTitle"></h2>
-                <div class="date" id="shinianDetailDate"></div>
-                <div class="book-content" id="shinianDetailContent"></div>
-                <button class="back-btn" data-back="page-shinian">返回</button>
+                <h2 class="title" id="zajiDetailTitle"></h2>
+                <div class="date" id="zajiDetailDate"></div>
+                <div class="book-content" id="zajiDetailContent"></div>
+                <button class="back-btn" data-back="page-zaji">返回</button>
             </div>
         </section>
 
-        <!-- ===== 闲话（山野渔夫） ===== -->
-        <section id="page-about" class="page-section">
-            <div class="about-text" id="aboutContent"></div>
+        <!-- ===== 闲话 ===== -->
+        <section id="page-xianhua" class="page-section">
+            <div class="about-text" id="xianhuaContent"></div>
             <hr class="about-divider">
             <div class="about-links">
                 <p class="links-title">若能得您垂青，还望链接小站：</p>
