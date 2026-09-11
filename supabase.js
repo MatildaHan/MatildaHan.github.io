@@ -1,24 +1,21 @@
+// supabase.js —— Supabase 连接与数据访问
 // ============================================================
-// Supabase 连接配置
+// 连接配置
 // ============================================================
-
-// ★★★ 请替换为你的 Supabase 项目信息 ★★★
 const SUPABASE_URL = 'https://phvayjkoyphsyavkjcuk.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_eLqmBExr2Z2GFx9FFnOjww_i3B5t_tf';
 
-const SESSION_KEY = 'jns_session';
+const SESSION_KEY = 'xuyu_session';
 
 // ============================================================
-// 鉴权模块（AUTH）
+// 鉴权模块
 // ============================================================
 const AUTH = {
     getSession: function() {
         try {
             var raw = localStorage.getItem(SESSION_KEY);
             return raw ? JSON.parse(raw) : null;
-        } catch (e) {
-            return null;
-        }
+        } catch (e) { return null; }
     },
     setSession: function(session) {
         localStorage.setItem(SESSION_KEY, JSON.stringify(session));
@@ -88,9 +85,7 @@ const AUTH = {
                 expires_at: Date.now() + (data.expires_in || 3600) * 1000
             });
             return true;
-        } catch (e) {
-            return false;
-        }
+        } catch (e) { return false; }
     },
     isLoggedIn: async function() {
         var session = this.getSession();
@@ -113,9 +108,7 @@ const AUTH = {
             if (res.ok) return true;
             this.clearSession();
             return false;
-        } catch (e) {
-            return true;
-        }
+        } catch (e) { return true; }
     },
     getUserEmail: function() {
         var s = this.getSession();
@@ -133,27 +126,23 @@ function authHeaders(forWrite) {
 }
 
 // ============================================================
-// 数据库操作封装
+// 数据库操作
 // ============================================================
 const DB = {
     getAll: async function(table, options) {
         options = options || {};
         try {
             var url = SUPABASE_URL + '/rest/v1/' + table + '?select=*';
-            if (options.orderBy) {
-                url += '&order=' + options.orderBy + '.desc';
-            }
-            if (options.limit) {
-                url += '&limit=' + options.limit;
-            }
+            if (options.orderBy) url += '&order=' + options.orderBy + '.desc';
+            if (options.limit) url += '&limit=' + options.limit;
             var response = await fetch(url, { headers: authHeaders(false) });
             if (!response.ok) throw new Error('Network error');
             var data = await response.json();
-            localStorage.setItem('jiananshan_' + table, JSON.stringify(data));
+            localStorage.setItem('xuyu_' + table, JSON.stringify(data));
             return data;
         } catch (e) {
             console.warn('Supabase 请求失败，使用 localStorage:', e);
-            var data = localStorage.getItem('jiananshan_' + table);
+            var data = localStorage.getItem('xuyu_' + table);
             return data ? JSON.parse(data) : [];
         }
     },
@@ -180,14 +169,14 @@ const DB = {
             });
             if (!response.ok) throw new Error('insert failed: ' + response.status);
             var result = await response.json();
-            var cached = localStorage.getItem('jiananshan_' + table);
+            var cached = localStorage.getItem('xuyu_' + table);
             if (cached) {
                 var list = JSON.parse(cached);
                 if (result.length > 0) {
                     var exists = list.some(function(item) { return item.id === result[0].id; });
                     if (!exists) {
                         list.push(result[0]);
-                        localStorage.setItem('jiananshan_' + table, JSON.stringify(list));
+                        localStorage.setItem('xuyu_' + table, JSON.stringify(list));
                     }
                 }
             }
@@ -208,18 +197,16 @@ const DB = {
             });
             if (!response.ok) throw new Error('update failed: ' + response.status);
             var result = await response.json();
-            var cached = localStorage.getItem('jiananshan_' + table);
+            var cached = localStorage.getItem('xuyu_' + table);
             if (cached) {
                 var list = JSON.parse(cached);
                 for (var i = 0; i < list.length; i++) {
                     if (list[i].id === Number(id)) {
-                        for (var key in data) {
-                            list[i][key] = data[key];
-                        }
+                        for (var key in data) list[i][key] = data[key];
                         break;
                     }
                 }
-                localStorage.setItem('jiananshan_' + table, JSON.stringify(list));
+                localStorage.setItem('xuyu_' + table, JSON.stringify(list));
             }
             return result.length > 0 ? result[0] : null;
         } catch (e) {
@@ -234,16 +221,14 @@ const DB = {
                 headers: authHeaders(true)
             });
             if (!response.ok) throw new Error('delete failed: ' + response.status);
-            var cached = localStorage.getItem('jiananshan_' + table);
+            var cached = localStorage.getItem('xuyu_' + table);
             if (cached) {
                 var list = JSON.parse(cached);
                 var newList = [];
                 for (var i = 0; i < list.length; i++) {
-                    if (list[i].id !== Number(id)) {
-                        newList.push(list[i]);
-                    }
+                    if (list[i].id !== Number(id)) newList.push(list[i]);
                 }
-                localStorage.setItem('jiananshan_' + table, JSON.stringify(newList));
+                localStorage.setItem('xuyu_' + table, JSON.stringify(newList));
             }
             return { success: true };
         } catch (e) {
@@ -253,20 +238,15 @@ const DB = {
     },
     get: function(key, def) {
         try {
-            var data = localStorage.getItem('jiananshan_' + key);
+            var data = localStorage.getItem('xuyu_' + key);
             return data ? JSON.parse(data) : def;
-        } catch (e) {
-            return def;
-        }
+        } catch (e) { return def; }
     },
     set: function(key, val) {
-        localStorage.setItem('jiananshan_' + key, JSON.stringify(val));
+        localStorage.setItem('xuyu_' + key, JSON.stringify(val));
     }
 };
 
-// ============================================================
-// 暴露到全局
-// ============================================================
 window.DB = DB;
 window.AUTH = AUTH;
 window.SUPABASE_URL = SUPABASE_URL;
