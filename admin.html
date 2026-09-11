@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>見南山 · 后台管理</title>
+    <title>须臾之间 · 后台管理</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="admin.css">
 </head>
 <body>
@@ -12,7 +13,7 @@
      登录界面
      ============================================================ -->
 <div class="login-container" id="loginContainer">
-    <div class="login-logo">见南山</div>
+    <div class="login-logo">须臾之间</div>
     <div class="login-sub">后台管理登录</div>
     <div class="form-group">
         <label>管理员邮箱</label>
@@ -34,15 +35,14 @@
 
     <!-- 侧边栏 -->
     <aside class="admin-sidebar">
-        <div class="logo">见南山 <span>后台管理</span></div>
+        <div class="logo">须臾之间 <span>后台管理</span></div>
         <nav>
             <a href="#" data-panel="panel-dashboard" class="active">总览</a>
-            <a href="#" data-panel="panel-site">站点设置</a>
-            <a href="#" data-panel="panel-xingyin">行吟册</a>
-            <a href="#" data-panel="panel-shinian">十年灯</a>
-            <a href="#" data-panel="panel-about">山野渔夫</a>
+            <a href="#" data-panel="panel-xingyin">随笔</a>
+            <a href="#" data-panel="panel-shinian">杂记</a>
+            <a href="#" data-panel="panel-about">闲话</a>
         </nav>
-        <div class="footer">© 2026 见南山 · v1.0</div>
+        <div class="footer">© 2026 须臾之间 · v1.0</div>
     </aside>
 
     <!-- 主内容 -->
@@ -60,63 +60,18 @@
             <div class="form-card">
                 <h3>数据概览</h3>
                 <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:20px;">
-                    <div><strong>行吟册</strong><br><span id="count-xingyin">0</span> 条</div>
-                    <div><strong>十年灯</strong><br><span id="count-shinian">0</span> 篇</div>
+                    <div><strong>随笔</strong><br><span id="count-xingyin">0</span> 条</div>
+                    <div><strong>杂记</strong><br><span id="count-shinian">0</span> 篇</div>
                 </div>
             </div>
             <div class="form-card">
                 <h3>前端预览</h3>
-                <p style="color:#8a7a6a;">所有数据修改后，请刷新前端页面查看效果。</p>
-                <p style="margin-top:8px;"><a href="index.html" target="_blank" style="color:#8c7562;text-decoration:underline;">→ 打开前端首页</a></p>
+                <p style="color:#7a6a5a;">所有数据修改后，请刷新前端页面查看效果。</p>
+                <p style="margin-top:8px;"><a href="index.html" target="_blank" style="color:#ffffff;text-decoration:underline;">→ 打开前端首页</a></p>
             </div>
         </section>
 
-        <!-- ===== 面板：站点设置 ===== -->
-        <section id="panel-site" class="panel">
-            <div class="form-card">
-                <h3>站点基本设置</h3>
-                <div class="form-group">
-                    <label>Logo 图片上传</label>
-                    <input type="file" id="logo-upload" accept="image/*" style="padding:8px 0;">
-                    <div style="margin-top:10px;">
-                        <img id="logo-preview" src="" alt="Logo预览" style="max-width:120px;max-height:120px;border:1px solid #e0d6cc;display:none;">
-                    </div>
-                    <button class="btn" onclick="clearLogoImage()" style="margin-top:8px;">清除 Logo 图片</button>
-                </div>
-                <div class="form-group">
-                    <label>Logo 标识色 (当没有图片时使用)</label>
-                    <input type="text" id="site-logo-color" value="#b89c84" placeholder="#b89c84">
-                </div>
-                <div class="form-group">
-                    <label>网站名称</label>
-                    <input type="text" id="site-name" value="见南山" placeholder="见南山">
-                </div>
-                <div class="form-group">
-                    <label>网站描述 (副标题)</label>
-                    <input type="text" id="site-desc" value="春山如黛草如烟" placeholder="春山如黛草如烟">
-                </div>
-                <div class="form-group">
-                    <label>主题色</label>
-                    <div class="color-input-group">
-                        <input type="color" id="site-theme-color" value="#b89c84">
-                        <input type="text" id="site-theme-color-text" value="#b89c84" placeholder="#b89c84">
-                    </div>
-                    <p class="form-hint">用于标题、链接等主要颜色</p>
-                </div>
-                <div class="form-group">
-                    <label>标题字号 (px)</label>
-                    <div class="size-input-group">
-                        <input type="number" id="site-title-size" value="20" min="14" max="36">
-                        <span style="color:#999;font-size:13px;">px</span>
-                        <span class="size-preview" id="title-size-preview" style="font-size:20px;font-weight:bold;color:#b89c84;">预览</span>
-                    </div>
-                    <p class="form-hint">首页标题、文章标题等使用此字号</p>
-                </div>
-                <button class="btn btn-primary" onclick="saveSiteSettings()">保存站点设置</button>
-            </div>
-        </section>
-
-        <!-- ===== 面板：行吟册 ===== -->
+        <!-- ===== 面板：随笔 ===== -->
         <section id="panel-xingyin" class="panel">
             <div class="toolbar">
                 <button class="btn btn-primary" onclick="openXingyinForm()">+ 新增短句</button>
@@ -142,7 +97,7 @@
             </div>
         </section>
 
-        <!-- ===== 面板：十年灯 ===== -->
+        <!-- ===== 面板：杂记 ===== -->
         <section id="panel-shinian" class="panel">
             <div class="tab-container">
                 <button class="tab-btn active" data-tab="shinian-articles" onclick="switchShinianTab('shinian-articles')">文章列表</button>
@@ -204,7 +159,7 @@
             </div>
         </section>
 
-        <!-- ===== 面板：山野渔夫 ===== -->
+        <!-- ===== 面板：闲话 ===== -->
         <section id="panel-about" class="panel">
             <div class="form-card">
                 <h3>个人简介</h3>
@@ -222,579 +177,6 @@
      引入 Supabase 和脚本
      ============================================================ -->
 <script src="supabase.js"></script>
-<script>
-// ============================================================
-// 登录验证逻辑
-// ============================================================
-async function handleLogin() {
-    var email = document.getElementById('login-username').value.trim();
-    var password = document.getElementById('login-password').value.trim();
-    var errorEl = document.getElementById('loginError');
-    var btn = document.getElementById('btnLogin');
-
-    if (!email || !password) {
-        errorEl.textContent = '请输入邮箱和密码';
-        errorEl.className = 'error show';
-        return;
-    }
-
-    if (btn) { btn.disabled = true; btn.textContent = '登录中...'; }
-    try {
-        await AUTH.signIn(email, password);
-        document.getElementById('loginContainer').style.display = 'none';
-        document.getElementById('adminWrapper').className = 'admin-wrapper show';
-        errorEl.className = 'error';
-        await initAdmin();
-    } catch (err) {
-        errorEl.textContent = err.message || '邮箱或密码错误';
-        errorEl.className = 'error show';
-    } finally {
-        if (btn) { btn.disabled = false; btn.textContent = '登 录'; }
-    }
-}
-
-async function handleLogout() {
-    if (confirm('确定要退出登录吗？')) {
-        await AUTH.signOut();
-        document.getElementById('adminWrapper').className = 'admin-wrapper';
-        document.getElementById('loginContainer').style.display = 'block';
-        document.getElementById('login-password').value = '';
-        var errorEl = document.getElementById('loginError');
-        errorEl.className = 'error';
-    }
-}
-
-async function checkLogin() {
-    var ok = await AUTH.isLoggedIn();
-    if (ok) {
-        document.getElementById('loginContainer').style.display = 'none';
-        document.getElementById('adminWrapper').className = 'admin-wrapper show';
-        await initAdmin();
-    }
-}
-
-document.getElementById('login-password').addEventListener('keydown', function(e) {
-    if (e.key === 'Enter') handleLogin();
-});
-document.getElementById('login-username').addEventListener('keydown', function(e) {
-    if (e.key === 'Enter') handleLogin();
-});
-
-// ============================================================
-// 工具函数
-// ============================================================
-function genId() { return Date.now() + Math.random() * 1000; }
-
-function getThemeConfig() {
-    var site = DB.get('site', {});
-    return {
-        color: site.theme_color || site.logo_color || '#b89c84',
-        size: site.title_size || '20'
-    };
-}
-
-// ============================================================
-// 记录更新字数到 update_records 表
-// ============================================================
-async function recordUpdate(wordCount) {
-    if (!wordCount || wordCount <= 0) return;
-
-    var today = new Date().toISOString().slice(0, 10);  // YYYY-MM-DD
-    console.log('📝 记录更新:', today, '字数:', wordCount);
-
-    try {
-        var list = await DB.getAll('update_records');
-        var existing = null;
-        for (var i = 0; i < list.length; i++) {
-            if (list[i].date === today) {
-                existing = list[i];
-                break;
-            }
-        }
-
-        if (existing) {
-            // 今天已有记录，累加字数
-            var newCount = (existing.word_count || 0) + wordCount;
-            await DB.update('update_records', existing.id, {
-                word_count: newCount
-            });
-            console.log('✅ 更新记录累加:', newCount);
-        } else {
-            // 今天首次更新，新增记录
-            await DB.insert('update_records', {
-                date: today,
-                word_count: wordCount
-            });
-            console.log('✅ 新增更新记录:', today, wordCount);
-        }
-    } catch (e) {
-        console.error('❌ 记录更新失败:', e);
-    }
-}
-
-// ============================================================
-// 分类管理 - 十年灯
-// ============================================================
-var _shinianCategoriesCache = [];
-
-async function getShinianCategories() {
-    _shinianCategoriesCache = await DB.getAll('shinian_categories', { orderBy: 'id' });
-    return _shinianCategoriesCache;
-}
-
-async function renderShinianCategories() {
-    var list = await getShinianCategories();
-    var tbody = document.getElementById('shinian-category-list');
-    if (!tbody) return;
-    var html = '';
-    for (var i = 0; i < list.length; i++) {
-        var item = list[i];
-        html += '<tr>';
-        html += '<td><strong>' + item.name + '</strong></td>';
-        html += '<td>' + (item.description || '') + '</td>';
-        html += '<td class="actions">';
-        html += '<button class="btn" onclick="openShinianCategoryEdit(' + item.id + ')">编辑</button>';
-        html += '<button class="btn btn-danger" onclick="deleteShinianCategory(' + item.id + ')">删除</button>';
-        html += '</td>';
-        html += '</tr>';
-    }
-    tbody.innerHTML = html || '';
-    updateShinianCategorySelect();
-}
-
-function updateShinianCategorySelect() {
-    var list = _shinianCategoriesCache;
-    var select = document.getElementById('shinian-category-select');
-    if (!select) return;
-    var html = '';
-    for (var i = 0; i < list.length; i++) {
-        html += '<option value="' + list[i].name + '">' + list[i].name + '</option>';
-    }
-    select.innerHTML = html;
-}
-
-// ============================================================
-// Tab 切换
-// ============================================================
-function switchShinianTab(tabId) {
-    document.querySelectorAll('#panel-shinian .tab-btn').forEach(function(btn) {
-        btn.classList.remove('active');
-        if (btn.dataset.tab === tabId) btn.classList.add('active');
-    });
-    document.querySelectorAll('#panel-shinian .tab-content').forEach(function(content) {
-        content.classList.remove('active');
-        if (content.id === tabId) content.classList.add('active');
-    });
-}
-
-// ============================================================
-// 行吟册 (CRUD)
-// ============================================================
-async function renderXingyin() {
-    var list = await DB.getAll('xingyin', { orderBy: 'id' });
-    var tbody = document.getElementById('xingyin-list');
-    if (!tbody) return;
-    var html = '';
-    for (var i = 0; i < list.length; i++) {
-        var item = list[i];
-        html += '<tr>';
-        html += '<td>' + (i + 1) + '</td>';
-        html += '<td>' + item.content + '</td>';
-        html += '<td>' + item.date + '</td>';
-        html += '<td class="actions">';
-        html += '<button class="btn" onclick="openXingyinEdit(' + item.id + ')">编辑</button>';
-        html += '<button class="btn btn-danger" onclick="deleteXingyin(' + item.id + ')">删除</button>';
-        html += '</td>';
-        html += '</tr>';
-    }
-    tbody.innerHTML = html;
-}
-
-function openXingyinForm() {
-    document.getElementById('xingyinModal').classList.add('show');
-    document.getElementById('xingyinModalTitle').textContent = '新增短句';
-    document.getElementById('xingyin-edit-id').value = '';
-    document.getElementById('xingyin-content').value = '';
-    document.getElementById('xingyin-date').value = new Date().toISOString().slice(0, 10).replace(/-/g, '/');
-}
-
-function openXingyinEdit(id) {
-    DB.getById('xingyin', id).then(function(item) {
-        if (!item) return;
-        document.getElementById('xingyinModal').classList.add('show');
-        document.getElementById('xingyinModalTitle').textContent = '编辑短句';
-        document.getElementById('xingyin-edit-id').value = id;
-        document.getElementById('xingyin-content').value = item.content;
-        document.getElementById('xingyin-date').value = item.date;
-    });
-}
-
-function closeXingyinForm() {
-    document.getElementById('xingyinModal').classList.remove('show');
-}
-
-async function saveXingyin() {
-    var id = document.getElementById('xingyin-edit-id').value;
-    var content = document.getElementById('xingyin-content').value.trim();
-    var date = document.getElementById('xingyin-date').value.trim();
-    if (!content) { alert('请输入内容'); return; }
-    if (id) {
-        await DB.update('xingyin', id, { content: content, date: date });
-    } else {
-        await DB.insert('xingyin', { content: content, date: date });
-    }
-
-    // ★★★ 记录更新字数 ★★★
-    await recordUpdate(content.length);
-
-    closeXingyinForm();
-    await renderXingyin();
-    await refreshDashboard();
-}
-
-async function deleteXingyin(id) {
-    if (!confirm('确定删除？')) return;
-    await DB.delete('xingyin', id);
-    await renderXingyin();
-    await refreshDashboard();
-}
-
-// ============================================================
-// 十年灯 文章 (CRUD)
-// ============================================================
-async function renderShinian() {
-    var list = await DB.getAll('shinian', { orderBy: 'id' });
-    var tbody = document.getElementById('shinian-list');
-    if (!tbody) return;
-    var html = '';
-    for (var i = 0; i < list.length; i++) {
-        var item = list[i];
-        html += '<tr>';
-        html += '<td>' + (i + 1) + '</td>';
-        html += '<td><strong>' + item.title + '</strong></td>';
-        html += '<td>' + item.category + '</td>';
-        html += '<td>' + item.date + '</td>';
-        html += '<td class="actions">';
-        html += '<button class="btn" onclick="openShinianArticleEdit(' + item.id + ')">编辑</button>';
-        html += '<button class="btn btn-danger" onclick="deleteShinianArticle(' + item.id + ')">删除</button>';
-        html += '</td>';
-        html += '</tr>';
-    }
-    tbody.innerHTML = html;
-}
-
-function openShinianArticleForm() {
-    document.getElementById('shinianArticleModal').classList.add('show');
-    document.getElementById('shinianArticleModalTitle').textContent = '新增文章';
-    document.getElementById('shinian-edit-id').value = '';
-    document.getElementById('shinian-title').value = '';
-    document.getElementById('shinian-category-select').value = '';
-    document.getElementById('shinian-content').value = '';
-    document.getElementById('shinian-date').value = new Date().toISOString().slice(0, 10).replace(/-/g, '/');
-    updateShinianCategorySelect();
-}
-
-function openShinianArticleEdit(id) {
-    DB.getById('shinian', id).then(function(item) {
-        if (!item) return;
-        document.getElementById('shinianArticleModal').classList.add('show');
-        document.getElementById('shinianArticleModalTitle').textContent = '编辑文章';
-        document.getElementById('shinian-edit-id').value = id;
-        document.getElementById('shinian-title').value = item.title;
-        updateShinianCategorySelect();
-        document.getElementById('shinian-category-select').value = item.category || '';
-        document.getElementById('shinian-content').value = item.content || '';
-        document.getElementById('shinian-date').value = item.date;
-    });
-}
-
-function closeShinianArticleForm() {
-    document.getElementById('shinianArticleModal').classList.remove('show');
-}
-
-async function saveShinianArticle() {
-    var id = document.getElementById('shinian-edit-id').value;
-    var title = document.getElementById('shinian-title').value.trim();
-    var category = document.getElementById('shinian-category-select').value;
-    var content = document.getElementById('shinian-content').value.trim();
-    var date = document.getElementById('shinian-date').value.trim();
-    if (!title) { alert('请输入标题'); return; }
-    if (!category) { alert('请选择分类'); return; }
-
-    var data = { title: title, category: category, content: content, date: date };
-
-    if (id) {
-        await DB.update('shinian', id, data);
-    } else {
-        await DB.insert('shinian', data);
-    }
-
-    // ★★★ 记录更新字数 ★★★
-    await recordUpdate(content.length);
-
-    closeShinianArticleForm();
-    await renderShinian();
-    await refreshDashboard();
-}
-
-async function deleteShinianArticle(id) {
-    if (!confirm('确定删除？')) return;
-    await DB.delete('shinian', id);
-    await renderShinian();
-    await refreshDashboard();
-}
-
-// ============================================================
-// 十年灯 分类管理
-// ============================================================
-function openShinianCategoryForm() {
-    document.getElementById('shinianCategoryModal').classList.add('show');
-    document.getElementById('shinianCategoryModalTitle').textContent = '添加分类';
-    document.getElementById('shinian-category-edit-id').value = '';
-    document.getElementById('shinian-category-name').value = '';
-    document.getElementById('shinian-category-desc-input').value = '';
-}
-
-function openShinianCategoryEdit(id) {
-    var item = _shinianCategoriesCache.find(c => c.id === id);
-    if (!item) return;
-    document.getElementById('shinianCategoryModal').classList.add('show');
-    document.getElementById('shinianCategoryModalTitle').textContent = '编辑分类';
-    document.getElementById('shinian-category-edit-id').value = id;
-    document.getElementById('shinian-category-name').value = item.name;
-    document.getElementById('shinian-category-desc-input').value = item.description || '';
-}
-
-function closeShinianCategoryForm() {
-    document.getElementById('shinianCategoryModal').classList.remove('show');
-}
-
-async function saveShinianCategory() {
-    var id = document.getElementById('shinian-category-edit-id').value;
-    var name = document.getElementById('shinian-category-name').value.trim();
-    var desc = document.getElementById('shinian-category-desc-input').value.trim();
-    if (!name) { alert('请输入分类名称'); return; }
-
-    if (!id) {
-        if (_shinianCategoriesCache.find(c => c.name === name)) { alert('分类已存在'); return; }
-        await DB.insert('shinian_categories', { name: name, description: desc });
-    } else {
-        await DB.update('shinian_categories', id, { name: name, description: desc });
-    }
-    closeShinianCategoryForm();
-    await renderShinianCategories();
-    await renderShinian();
-}
-
-async function deleteShinianCategory(id) {
-    if (!confirm('确定删除该分类吗？')) return;
-    await DB.delete('shinian_categories', id);
-    await renderShinianCategories();
-    await renderShinian();
-}
-
-// ============================================================
-// 山野渔夫 (About)
-// ============================================================
-async function loadAbout() {
-    var list = await DB.getAll('about');
-    var content = list.length > 0 ? list[0].content : '';
-    document.getElementById('about-content').value = content;
-}
-
-async function saveAbout() {
-    var content = document.getElementById('about-content').value;
-    var list = await DB.getAll('about');
-    if (list.length > 0) {
-        await DB.update('about', list[0].id, { content: content });
-    } else {
-        await DB.insert('about', { content: content });
-    }
-    // ★★★ 记录更新字数 ★★★
-    await recordUpdate(content.length);
-    alert('简介已保存！');
-}
-
-// ============================================================
-// 站点设置
-// ============================================================
-async function loadSiteSettings() {
-    var list = await DB.getAll('site_settings');
-    var s = list.length > 0 ? list[0] : {};
-
-    document.getElementById('site-logo-color').value = s.logo_color || '#b89c84';
-    document.getElementById('site-name').value = s.site_name || '见南山';
-    document.getElementById('site-desc').value = s.site_desc || '春山如黛草如烟';
-
-    var themeColor = s.theme_color || s.logo_color || '#b89c84';
-    var titleSize = s.title_size || '20';
-
-    document.getElementById('site-theme-color').value = themeColor;
-    document.getElementById('site-theme-color-text').value = themeColor;
-    document.getElementById('site-title-size').value = titleSize;
-
-    updateTitleSizePreview(titleSize, themeColor);
-
-    var logoImage = s.logo_image || '';
-    var preview = document.getElementById('logo-preview');
-    if (preview) {
-        if (logoImage && logoImage.trim() !== '') {
-            preview.src = logoImage;
-            preview.style.display = 'block';
-        } else {
-            preview.style.display = 'none';
-        }
-    }
-}
-
-function updateTitleSizePreview(size, color) {
-    var preview = document.getElementById('title-size-preview');
-    if (preview) {
-        preview.style.fontSize = size + 'px';
-        preview.style.color = color || '#b89c84';
-    }
-}
-
-document.addEventListener('DOMContentLoaded', function() {
-    var colorInput = document.getElementById('site-theme-color');
-    var colorText = document.getElementById('site-theme-color-text');
-    var sizeInput = document.getElementById('site-title-size');
-    var preview = document.getElementById('title-size-preview');
-
-    if (colorInput && colorText) {
-        colorInput.addEventListener('input', function() {
-            colorText.value = this.value;
-            if (preview) preview.style.color = this.value;
-        });
-        colorText.addEventListener('input', function() {
-            if (this.value.match(/^#[0-9a-fA-F]{6}$/)) {
-                colorInput.value = this.value;
-                if (preview) preview.style.color = this.value;
-            }
-        });
-    }
-
-    if (sizeInput && preview) {
-        sizeInput.addEventListener('input', function() {
-            var size = parseInt(this.value) || 20;
-            if (size < 14) size = 14;
-            if (size > 36) size = 36;
-            preview.style.fontSize = size + 'px';
-        });
-    }
-});
-
-var uploadInput = document.getElementById('logo-upload');
-if (uploadInput) {
-    uploadInput.addEventListener('change', function(e) {
-        var file = e.target.files[0];
-        if (!file) return;
-        var reader = new FileReader();
-        reader.onload = function(event) {
-            var base64 = event.target.result;
-            var preview = document.getElementById('logo-preview');
-            if (preview) {
-                preview.src = base64;
-                preview.style.display = 'block';
-            }
-            window._tempLogoImage = base64;
-        };
-        reader.readAsDataURL(file);
-    });
-}
-
-function clearLogoImage() {
-    var preview = document.getElementById('logo-preview');
-    if (preview) {
-        preview.style.display = 'none';
-        preview.src = '';
-    }
-    var upload = document.getElementById('logo-upload');
-    if (upload) upload.value = '';
-    window._tempLogoImage = '';
-}
-
-async function saveSiteSettings() {
-    var logoColor = document.getElementById('site-logo-color').value || '#b89c84';
-    var siteName = document.getElementById('site-name').value || '见南山';
-    var siteDesc = document.getElementById('site-desc').value || '春山如黛草如烟';
-
-    var themeColor = document.getElementById('site-theme-color').value || '#b89c84';
-    var titleSize = document.getElementById('site-title-size').value || '20';
-
-    var logoImage = window._tempLogoImage || '';
-    if (!logoImage || logoImage.trim() === '') {
-        var list = await DB.getAll('site_settings');
-        if (list.length > 0) {
-            logoImage = list[0].logo_image || '';
-        }
-    }
-
-    var data = {
-        logo_color: logoColor,
-        logo_image: logoImage,
-        site_name: siteName,
-        site_desc: siteDesc,
-        theme_color: themeColor,
-        title_size: titleSize
-    };
-
-    var list = await DB.getAll('site_settings');
-    if (list.length > 0) {
-        await DB.update('site_settings', list[0].id, data);
-    } else {
-        await DB.insert('site_settings', data);
-    }
-    window._tempLogoImage = '';
-    alert('站点设置已保存！');
-}
-
-// ============================================================
-// 总览数据刷新
-// ============================================================
-async function refreshDashboard() {
-    var xingyin = await DB.getAll('xingyin');
-    var shinian = await DB.getAll('shinian');
-    document.getElementById('count-xingyin').textContent = xingyin.length;
-    document.getElementById('count-shinian').textContent = shinian.length;
-}
-
-// ============================================================
-// 面板切换
-// ============================================================
-document.querySelectorAll('.admin-sidebar nav a').forEach(function(link) {
-    link.addEventListener('click', async function(e) {
-        e.preventDefault();
-        document.querySelectorAll('.admin-sidebar nav a').forEach(function(a) { a.classList.remove('active'); });
-        this.classList.add('active');
-        var panelId = this.dataset.panel;
-        document.querySelectorAll('.panel').forEach(function(p) { p.classList.remove('active'); });
-        var target = document.getElementById(panelId);
-        if (target) target.classList.add('active');
-        document.getElementById('panelTitle').textContent = this.textContent.trim();
-        if (panelId === 'panel-dashboard') await refreshDashboard();
-        if (panelId === 'panel-xingyin') await renderXingyin();
-        if (panelId === 'panel-shinian') { await renderShinian(); await renderShinianCategories(); }
-        if (panelId === 'panel-about') await loadAbout();
-        if (panelId === 'panel-site') await loadSiteSettings();
-    });
-});
-
-// ============================================================
-// 初始化
-// ============================================================
-async function initAdmin() {
-    var emailEl = document.getElementById('currentUserEmail');
-    if (emailEl) emailEl.textContent = AUTH.getUserEmail() || '管理员';
-    await refreshDashboard();
-    await renderXingyin();
-    await renderShinian();
-    await renderShinianCategories();
-    await loadAbout();
-    await loadSiteSettings();
-}
-
-checkLogin();
-</script>
+<script src="admin.js"></script>
 </body>
 </html>
