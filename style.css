@@ -30,7 +30,7 @@ a {
     position: relative;
 }
 
-/* 版心左右分割线 */
+/* 版心左右固定分割线 */
 .container::before,
 .container::after {
     content: '';
@@ -38,14 +38,14 @@ a {
     top: 0;
     bottom: 0;
     width: 1px;
-    background: #1f1a18;
+    background: #999999;
     z-index: 10;
     pointer-events: none;
 }
 .container::before { left: calc(50% - 720px); }
 .container::after  { right: calc(50% - 720px); }
 
-/* ===== 顶部 ===== */
+/* ===== 顶部区域 ===== */
 .site-header {
     background: #0C0A09;
     padding: 28px 0 0 0;
@@ -69,9 +69,10 @@ a {
     letter-spacing: 2px;
     line-height: 1.2;
 }
+/* 网页描述 */
 .logo-slogan {
     font-size: 12px;
-    color: #7a6a5a;
+    color: #999999;
     font-weight: 400;
 }
 
@@ -81,9 +82,10 @@ a {
     gap: 8px;
     flex-wrap: wrap;
 }
+/* 未选中页签 */
 .nav-list a {
     font-size: 13px;
-    color: #a89888;
+    color: #999999;
     padding: 6px 18px;
     transition: 0.25s ease;
     cursor: pointer;
@@ -120,8 +122,8 @@ a {
     justify-content: center;
     align-items: center;
     position: relative;
-    border-bottom: 1px solid #1f1a18;
-    border-top: 1px solid #1f1a18;
+    border-bottom: 1px solid #999999;
+    border-top: 1px solid #999999;
 }
 .banner-text {
     font-size: 36px;
@@ -186,7 +188,7 @@ a {
 
 /* ===== 随笔区（三列卡片） ===== */
 .essay-section {
-    border-bottom: 1px solid #1f1a18;
+    border-bottom: 1px solid #999999;
 }
 .essay-grid {
     display: grid;
@@ -195,7 +197,7 @@ a {
 }
 .essay-card {
     padding: 36px 40px;
-    border-right: 1px solid #1f1a18;
+    border-right: 1px solid #999999;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -217,9 +219,10 @@ a {
     word-wrap: break-word;
     overflow-wrap: break-word;
 }
+/* 随笔日期 */
 .essay-card .essay-date {
     font-size: 11px;
-    color: #7a6a5a;
+    color: #999999;
     margin-top: 16px;
     letter-spacing: 1px;
 }
@@ -230,7 +233,7 @@ a {
     grid-template-columns: 320px 1fr;
     gap: 80px;
     padding: 80px 0;
-    border-bottom: 1px solid #1f1a18;
+    border-bottom: 1px solid #999999;
 }
 .note-left {
     padding-top: 8px;
@@ -242,10 +245,11 @@ a {
     letter-spacing: 4px;
     margin-bottom: 24px;
 }
+/* 杂记的描述 */
 .note-desc {
     font-size: 13px;
     line-height: 2.2;
-    color: #a89888;
+    color: #999999;
     letter-spacing: 1px;
 }
 .note-right {
@@ -285,10 +289,11 @@ a {
 .note-item:hover .note-title {
     color: #d8cec4;
 }
+/* 杂记内容摘要 */
 .note-item .note-summary {
     font-size: 12px;
     line-height: 1.9;
-    color: #a89888;
+    color: #999999;
     overflow: hidden;
     text-overflow: ellipsis;
     display: -webkit-box;
@@ -317,7 +322,7 @@ a {
     position: relative;
     box-shadow: 0 -3px 14px rgba(0, 0, 0, 0.4);
     transition: 0.3s ease;
-    border: 1px solid #1f1a18;
+    border: 1px solid #999999;
 }
 #suibiList .suibi-col .article-item:first-child {
     margin-top: 0;
@@ -327,14 +332,15 @@ a {
     box-shadow: 0 -6px 22px rgba(0, 0, 0, 0.6);
     z-index: 9999 !important;
 }
+/* 随笔日期（列表） */
 #suibiList .article-date {
     font-size: 12px;
-    color: #7a6a5a;
+    color: #999999;
     letter-spacing: 0.5px;
     margin-left: -24px;
     margin-right: -24px;
     padding: 0 24px 10px;
-    border-bottom: 1px solid #1f1a18;
+    border-bottom: 1px solid #999999;
     margin-bottom: 14px;
 }
 #suibiList .article-text {
@@ -375,15 +381,17 @@ a {
     display: block;
 }
 .zaji-article-title:hover { color: #d8cec4; }
+/* 杂记系列标签 */
 .zaji-article-tag {
     font-size: 12px;
-    color: #7a6a5a;
+    color: #999999;
     display: inline-block;
     margin-top: 2px;
 }
+/* 杂记日期 */
 .zaji-article-date {
     font-size: 12px;
-    color: #7a6a5a;
+    color: #999999;
     margin-top: 2px;
 }
 .zaji-sidebar {
@@ -404,10 +412,10 @@ a {
 }
 .zaji-series-item {
     font-size: 13px;
-    color: #a89888;
+    color: #999999;
     cursor: pointer;
     padding-bottom: 2px;
-    border-bottom: 1px solid #1f1a18;
+    border-bottom: 1px solid #999999;
     transition: 0.2s;
 }
 .zaji-series-item:hover {
@@ -430,7 +438,7 @@ a {
 }
 .book-main .date {
     font-size: 13px;
-    color: #7a6a5a;
+    color: #999999;
     margin-bottom: 24px;
 }
 .book-content p {
@@ -465,25 +473,25 @@ a {
 }
 .about-divider {
     border: none;
-    border-top: 1px solid #1f1a18;
+    border-top: 1px solid #999999;
     margin: 40px 0 32px 0;
 }
 .links-title {
     font-size: 14px;
-    color: #a89888;
+    color: #999999;
     margin-bottom: 16px;
     font-weight: 400;
 }
 .site-info {
     display: flex;
     flex-direction: column;
-    border: 1px solid #1f1a18;
+    border: 1px solid #999999;
     background: #0C0A09;
 }
 .site-info-item {
     display: flex;
     align-items: stretch;
-    border-bottom: 1px solid #1f1a18;
+    border-bottom: 1px solid #999999;
 }
 .site-info-item:last-child { border-bottom: none; }
 .site-info-label {
@@ -491,10 +499,10 @@ a {
     align-items: center;
     min-width: 80px;
     padding: 10px 16px;
-    color: #7a6a5a;
+    color: #999999;
     font-size: 13px;
     background: #141110;
-    border-right: 1px solid #1f1a18;
+    border-right: 1px solid #999999;
     flex-shrink: 0;
 }
 .site-info-value {
@@ -519,7 +527,7 @@ a {
     .essay-grid { grid-template-columns: 1fr; }
     .essay-card {
         border-right: none;
-        border-bottom: 1px solid #1f1a18;
+        border-bottom: 1px solid #999999;
     }
     .essay-card:last-child { border-bottom: none; }
     .note-section {
