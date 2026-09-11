@@ -190,7 +190,24 @@ a {
     background: #d8cec4;
     border-color: #d8cec4;
 }
-
+/* ============================================================
+   Banner 鼠标高亮块（跟随鼠标所在 50×50 格子）
+   ============================================================ */
+.banner-highlight {
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s ease, left 0.15s ease, top 0.15s ease;
+    z-index: 1;
+    box-sizing: border-box;
+}
+.banner-highlight.show {
+    opacity: 1;
+}
 /* ============================================================
    间隔条（50px 空白 + 上下两条通栏分割线 + 版心左右竖线）
    ============================================================ */
