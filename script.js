@@ -209,20 +209,26 @@
     // ============================================================
     // 8. 行吟册列表（两列卡片）
     // ============================================================
-    async function renderXingyinList() {
-        var list = await DB.getAll('xingyin', { orderBy: 'id' });
-        var container = document.getElementById('xingyinList');
-        if (!container) return;
-        var html = '';
-        for (var i = 0; i < list.length; i++) {
-            var item = list[i];
-            html += '<div class="article-item">';
-            html += '<div class="article-text">' + (item.content || '') + '</div>';
-            html += '</div>';
-        }
-        container.innerHTML = html || '<p style="text-align:center;color:#999;padding:40px 0;">暂无内容</p>';
-    }
+ async function renderXingyinList() {
+    var list = await DB.getAll('xingyin', { orderBy: 'id' });
+    var container = document.getElementById('xingyinList');
+    if (!container) return;
 
+    var html = '';
+    var cols = 2;                          // 两列
+    var totalRows = Math.ceil(list.length / cols);   // 总行数
+
+    for (var i = 0; i < list.length; i++) {
+        var item = list[i];
+        var row = Math.floor(i / cols);    // 当前卡片在第几行（从 0 开始）
+        var z = totalRows - row;           // 行号越小，z 越大 → 第一行在最上
+
+        html += '<div class="article-item" style="z-index:' + z + ';">';
+        html += '<div class="article-text">' + (item.content || '') + '</div>';
+        html += '</div>';
+    }
+    container.innerHTML = html || '<p style="text-align:center;color:#999;padding:40px 0;">暂无内容</p>';
+}
     // ============================================================
     // 9. 十年灯页面（文章列表 + 系列导航）
     // ============================================================
