@@ -6,15 +6,8 @@
     var DB = window.DB;
 
     // ============================================================
-    // 2. 主题配置
+    // 2. 站点信息
     // ============================================================
-    function getThemeConfig(site) {
-        return {
-            color: (site && (site.theme_color || site.logo_color)) || '#b89c84',
-            size: (site && site.title_size) || '20'
-        };
-    }
-
     var _siteCache = null;
 
     async function getSite() {
@@ -133,17 +126,17 @@
     }
 
     // ============================================================
-    // 7. 首页
+    // 7. 首页渲染
     // ============================================================
     async function renderHome() {
         var site = await getSite();
         updateLogo(site);
 
-        // ① 随笔（行吟册）—— 最多6条
+        // ① 随笔（行吟册）—— 最多展示 6 条（3列 × 2行）
         var xingyinList = await DB.getAll('xingyin', { orderBy: 'id' });
         var essayContainer = document.getElementById('homeXingyin');
         if (essayContainer) {
-            var displayList = xingyinList.slice(-6).reverse();
+            var displayList = xingyinList.slice(-6);
             var html = '';
             for (var i = 0; i < displayList.length; i++) {
                 var item = displayList[i];
@@ -153,12 +146,12 @@
                 html += '</div>';
             }
             if (displayList.length === 0) {
-                html = '<p style="text-align:center;color:#7a6a5a;padding:40px 0;">暂无随笔</p>';
+                html = '<div class="essay-card"><div class="essay-text" style="color:#5a4a3a;">暂无随笔</div></div>';
             }
             essayContainer.innerHTML = html;
         }
 
-        // ② 杂记（十年灯）—— 最新3条
+        // ② 杂记（十年灯）—— 最新 3 条
         var shinian = await DB.getAll('shinian', { orderBy: 'id' });
         var noteContainer = document.getElementById('homeShinian');
         if (noteContainer) {
@@ -166,16 +159,18 @@
             var html2 = '';
             for (var j = 0; j < latestThree.length; j++) {
                 var s = latestThree[j];
+                var summary = s.content ? s.content.substring(0, 60) : '';
+                if (s.content && s.content.length > 60) summary += '...';
                 html2 += '<div class="note-item" data-sub="shinian-detail" data-id="' + s.id + '">';
-                html2 += '<div class="note-title">' + (s.title || '无标题') + '</div>';
-                html2 += '<div class="note-meta">';
-                html2 += '<span class="note-tag">#' + (s.category || '未分类') + '</span>';
-                html2 += '<span>' + (s.date || '') + '</span>';
-                html2 += '</div>';
+                html2 += '  <div class="note-thumb"></div>';
+                html2 += '  <div class="note-body">';
+                html2 += '    <div class="note-title">' + (s.title || '无标题') + '</div>';
+                html2 += '    <div class="note-summary">' + summary + '</div>';
+                html2 += '  </div>';
                 html2 += '</div>';
             }
             if (latestThree.length === 0) {
-                html2 = '<p style="text-align:center;color:#7a6a5a;padding:40px 0;">暂无杂记</p>';
+                html2 = '<p style="color:#5a4a3a;padding:20px 0;">暂无杂记</p>';
             }
             noteContainer.innerHTML = html2;
         }
@@ -268,7 +263,7 @@
         var sorted = filtered.slice().reverse();
 
         if (sorted.length === 0) {
-            container.innerHTML = '<p style="text-align:center;color:#7a6a5a;padding:40px 0;">暂无文章</p>';
+            container.innerHTML = '<p style="text-align:center;color:#5a4a3a;padding:40px 0;">暂无文章</p>';
             return;
         }
 
