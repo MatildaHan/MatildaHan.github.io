@@ -1,33 +1,674 @@
-<section id="page-home" class="page-section active">
-    <!-- Banner -->
-    <div class="banner">
-        <div class="banner-text" id="bannerText"></div>
-        <button class="banner-btn" id="bannerBtn">去告诉她 <span class="btn-arrow">›</span></button>
-    </div>
+/* style.css —— 须臾之间 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
-    <!-- Banner 与随笔之间的间隔条（50px + 两条分割线） -->
-    <div class="gap-divider"></div>
+body {
+    background: #0C0A09;
+    color: #ffffff;
+    font-family: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+    font-size: 14px;
+    line-height: 1.8;
+    -webkit-font-smoothing: antialiased;
+}
 
-    <!-- 随笔区 -->
-    <div class="essay-section">
-        <div class="essay-grid" id="homeSuibi"></div>
-    </div>
+a {
+    text-decoration: none;
+    color: inherit;
+}
 
-    <!-- 随笔与杂记之间的间隔条（50px + 两条分割线） -->
-    <div class="gap-divider"></div>
+/* ============================================================
+   顶部区域（标题 + 导航）
+   ============================================================ */
+.site-header {
+    background: #0C0A09;
+    padding: 28px 0 0 0;
+    /* 标题下方的分割线：横跨整个页面宽度 */
+    border-bottom: 1px solid rgba(153, 153, 153, 0.5);
+}
+.header-wrap {
+    width: 1440px;
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 0 60px 30px;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.logo-area {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+}
+.logo-name {
+    font-size: 22px;
+    color: #ffffff;
+    font-weight: 700;
+    letter-spacing: 2px;
+    line-height: 1.2;
+    margin: 0;
+    padding: 0;
+}
+.logo-slogan {
+    font-size: 12px;
+    color: #999999;
+    font-weight: 400;
+    margin: 0;
+    padding: 0;
+}
 
-    <!-- 杂记区 -->
-    <div class="note-section">
-        <div class="note-left">
-            <h2 class="note-heading">杂记</h2>
-            <div class="note-desc" id="noteDesc">
-                没有宏大的主题<br>
-                也没有完整的叙事<br>
-                不足以称文章<br>
-                只用来证明<br>
-                我曾在此间停留
-            </div>
-        </div>
-        <div class="note-right" id="homeZaji"></div>
-    </div>
-</section>
+/* ============================================================
+   导航
+   ============================================================ */
+.nav-list {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+.nav-list a {
+    font-size: 13px;
+    color: #999999;
+    padding: 6px 18px;
+    transition: 0.25s ease;
+    cursor: pointer;
+    position: relative;
+}
+.nav-list a:hover {
+    color: #ffffff;
+}
+.nav-list a.active {
+    color: #ffffff;
+    background: #1f1a18;
+    font-weight: 500;
+}
+
+/* ============================================================
+   页面切换
+   ============================================================ */
+.page-section {
+    display: none;
+    animation: fade 0.3s ease;
+}
+.page-section.active {
+    display: block;
+}
+@keyframes fade {
+    0% { opacity: 0.6; transform: translateY(6px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+/* ============================================================
+   主内容区容器
+   ============================================================ */
+.container {
+    width: 1440px;
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 0 60px;
+    box-sizing: border-box;
+    position: relative;
+}
+
+/* ============================================================
+   Banner 区域（无版心左右分割线）
+   ============================================================ */
+.banner {
+    width: calc(100% + 120px);
+    margin-left: -60px;
+    margin-right: -60px;
+    height: 520px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    /* 无上边框（由 .site-header 的 border-bottom 提供）
+       无下边框（由下面的间隔条提供） */
+}
+.banner-text {
+    font-size: 36px;
+    font-weight: 700;
+    color: #ffffff;
+    letter-spacing: 2px;
+    line-height: 1.6;
+    text-align: center;
+    min-height: 60px;
+    max-width: 1200px;
+    padding: 0 40px;
+}
+.banner-text .cursor {
+    display: inline-block;
+    width: 2px;
+    height: 1em;
+    background: #ffffff;
+    margin-left: 4px;
+    animation: blink 0.8s step-end infinite;
+    vertical-align: text-bottom;
+}
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+}
+.banner-btn {
+    margin-top: 40px;
+    padding: 10px 28px;
+    background: #ffffff;
+    border: 1px solid #ffffff;
+    color: #0C0A09;
+    font-size: 13px;
+    font-family: inherit;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: 0.25s ease;
+    opacity: 0;
+    transform: translateY(10px);
+    pointer-events: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+.banner-btn .btn-arrow {
+    font-size: 16px;
+    line-height: 1;
+}
+.banner-btn.show {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+    animation: btnFadeIn 0.6s ease forwards;
+}
+@keyframes btnFadeIn {
+    0% { opacity: 0; transform: translateY(10px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+.banner-btn:hover {
+    background: #d8cec4;
+    border-color: #d8cec4;
+}
+
+/* ============================================================
+   间隔条：上下两条分割线 + 中间 50px 空白
+   ============================================================ */
+.gap-divider {
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+    height: 50px;
+    border-top: 1px solid rgba(153, 153, 153, 0.5);
+    border-bottom: 1px solid rgba(153, 153, 153, 0.5);
+    background: transparent;
+    position: relative;
+}
+/* 间隔条内部的版心左右分割线 */
+.gap-divider::before,
+.gap-divider::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: rgba(153, 153, 153, 0.5);
+}
+.gap-divider::before { left: calc(50% - 720px); }
+.gap-divider::after  { right: calc(50% - 720px); }
+
+/* ============================================================
+   随笔区（三列卡片）—— 从这里开始有版心左右分割线
+   ============================================================ */
+.essay-section {
+    width: calc(100% + 120px);
+    margin-left: -60px;
+    margin-right: -60px;
+    padding: 0 60px;
+    /* 顶部无边框（由上方间隔条提供）
+       底部无边框（由下方间隔条提供） */
+    position: relative;
+}
+/* 随笔区的版心左右分割线 */
+.essay-section::before,
+.essay-section::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: rgba(153, 153, 153, 0.5);
+}
+.essay-section::before { left: calc(50% - 720px); }
+.essay-section::after  { right: calc(50% - 720px); }
+
+.essay-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+}
+.essay-card {
+    padding: 36px 40px;
+    border-right: 1px solid rgba(153, 153, 153, 0.5);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 200px;
+    position: relative;
+    transition: background 0.3s ease;
+}
+.essay-card:last-child,
+.essay-card:nth-child(3n) {
+    border-right: none;
+}
+.essay-card:hover {
+    background: #141110;
+}
+.essay-card .essay-text {
+    font-size: 13px;
+    line-height: 2;
+    color: #ffffff;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+.essay-card .essay-date {
+    font-size: 11px;
+    color: #999999;
+    margin-top: 16px;
+    letter-spacing: 1px;
+}
+
+/* ============================================================
+   杂记区（左文右卡）—— 有版心左右分割线
+   ============================================================ */
+.note-section {
+    width: calc(100% + 120px);
+    margin-left: -60px;
+    margin-right: -60px;
+    padding: 80px 60px;
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    gap: 80px;
+    position: relative;
+}
+/* 杂记区的版心左右分割线 */
+.note-section::before,
+.note-section::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: rgba(153, 153, 153, 0.5);
+}
+.note-section::before { left: calc(50% - 720px); }
+.note-section::after  { right: calc(50% - 720px); }
+
+.note-left {
+    padding-top: 8px;
+}
+.note-heading {
+    font-size: 32px;
+    font-weight: 700;
+    color: #ffffff;
+    letter-spacing: 4px;
+    margin-bottom: 24px;
+}
+.note-desc {
+    font-size: 13px;
+    line-height: 2.2;
+    color: #999999;
+    letter-spacing: 1px;
+}
+.note-right {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+.note-item {
+    display: grid;
+    grid-template-columns: 100px 1fr;
+    gap: 24px;
+    cursor: pointer;
+    transition: 0.25s ease;
+}
+.note-item:hover {
+    opacity: 0.85;
+}
+.note-item .note-thumb {
+    width: 100px;
+    height: 100px;
+    background: #2a2422;
+    flex-shrink: 0;
+}
+.note-item .note-body {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+}
+.note-item .note-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #ffffff;
+    line-height: 1.5;
+    transition: color 0.2s;
+}
+.note-item:hover .note-title {
+    color: #d8cec4;
+}
+.note-item .note-summary {
+    font-size: 12px;
+    line-height: 1.9;
+    color: #999999;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+/* ============================================================
+   随笔列表（层叠卡片）—— 有版心左右分割线
+   ============================================================ */
+#suibiList {
+    display: flex;
+    gap: 16px;
+    width: 100%;
+    padding: 40px 0;
+    align-items: flex-start;
+    position: relative;
+}
+#suibiList .suibi-col {
+    flex: 1 1 0;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+#suibiList .article-item {
+    background: #141110;
+    padding: 20px 24px;
+    margin-top: -14px;
+    position: relative;
+    box-shadow: 0 -3px 14px rgba(0, 0, 0, 0.4);
+    transition: 0.3s ease;
+    border: 1px solid rgba(153, 153, 153, 0.5);
+}
+#suibiList .suibi-col .article-item:first-child {
+    margin-top: 0;
+}
+#suibiList .article-item:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 -6px 22px rgba(0, 0, 0, 0.6);
+    z-index: 9999 !important;
+}
+#suibiList .article-date {
+    font-size: 12px;
+    color: #999999;
+    letter-spacing: 0.5px;
+    margin-left: -24px;
+    margin-right: -24px;
+    padding: 0 24px 10px;
+    border-bottom: 1px solid rgba(153, 153, 153, 0.5);
+    margin-bottom: 14px;
+}
+#suibiList .article-text {
+    font-size: 14px;
+    line-height: 2;
+    color: #ffffff;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+/* ============================================================
+   杂记页面
+   ============================================================ */
+.zaji-layout {
+    display: grid;
+    grid-template-columns: 1fr 180px;
+    gap: 60px;
+    align-items: start;
+    padding: 40px 0;
+}
+.zaji-main { min-width: 0; }
+.zaji-article-list {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+.zaji-article-item {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding-bottom: 20px;
+}
+.zaji-article-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #ffffff;
+    line-height: 1.4;
+    cursor: pointer;
+    transition: color 0.2s;
+    display: block;
+}
+.zaji-article-title:hover { color: #d8cec4; }
+.zaji-article-tag {
+    font-size: 12px;
+    color: #999999;
+    display: inline-block;
+    margin-top: 2px;
+}
+.zaji-article-date {
+    font-size: 12px;
+    color: #999999;
+    margin-top: 2px;
+}
+.zaji-sidebar {
+    position: sticky;
+    top: 20px;
+}
+.zaji-sidebar-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 16px;
+    padding-bottom: 10px;
+}
+.zaji-series-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px 20px;
+}
+.zaji-series-item {
+    font-size: 13px;
+    color: #999999;
+    cursor: pointer;
+    padding-bottom: 2px;
+    border-bottom: 1px solid rgba(153, 153, 153, 0.5);
+    transition: 0.2s;
+}
+.zaji-series-item:hover {
+    color: #ffffff;
+    border-bottom-color: #ffffff;
+}
+.zaji-series-item.active {
+    font-weight: 700;
+    color: #ffffff;
+    border-bottom-color: #ffffff;
+}
+
+/* ============================================================
+   详情
+   ============================================================ */
+.book-main { width: 100%; padding: 40px 0; }
+.book-main .title {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 6px;
+    color: #ffffff;
+}
+.book-main .date {
+    font-size: 13px;
+    color: #999999;
+    margin-bottom: 24px;
+}
+.book-content p {
+    margin-bottom: 14px;
+    font-size: 14px;
+    color: #ffffff;
+    line-height: 2;
+}
+.back-btn {
+    border: 1px solid #ffffff;
+    color: #ffffff;
+    background: transparent;
+    padding: 6px 20px;
+    font-size: 13px;
+    font-family: inherit;
+    cursor: pointer;
+    margin-top: 40px;
+    transition: 0.2s;
+}
+.back-btn:hover {
+    background: #ffffff;
+    color: #0C0A09;
+}
+
+/* ============================================================
+   闲话
+   ============================================================ */
+.about-text { padding: 40px 0; }
+.about-text p {
+    font-size: 15px;
+    font-weight: 500;
+    margin-bottom: 8px;
+    color: #ffffff;
+}
+.about-divider {
+    border: none;
+    border-top: 1px solid rgba(153, 153, 153, 0.5);
+    margin: 40px -60px 32px -60px;
+    width: calc(100% + 120px);
+}
+.links-title {
+    font-size: 14px;
+    color: #999999;
+    margin-bottom: 16px;
+    font-weight: 400;
+}
+.site-info {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid rgba(153, 153, 153, 0.5);
+    background: #0C0A09;
+}
+.site-info-item {
+    display: flex;
+    align-items: stretch;
+    border-bottom: 1px solid rgba(153, 153, 153, 0.5);
+}
+.site-info-item:last-child { border-bottom: none; }
+.site-info-label {
+    display: flex;
+    align-items: center;
+    min-width: 80px;
+    padding: 10px 16px;
+    color: #999999;
+    font-size: 13px;
+    background: #141110;
+    border-right: 1px solid rgba(153, 153, 153, 0.5);
+    flex-shrink: 0;
+}
+.site-info-value {
+    display: flex;
+    align-items: center;
+    padding: 10px 16px;
+    color: #ffffff;
+    font-size: 13px;
+    flex: 1;
+    word-break: break-all;
+}
+
+/* ============================================================
+   响应式
+   ============================================================ */
+@media (max-width: 1500px) {
+    .header-wrap,
+    .container { width: 100%; padding: 0 40px; }
+    .banner,
+    .essay-section,
+    .note-section {
+        width: calc(100% + 80px);
+        margin-left: -40px;
+        margin-right: -40px;
+        padding-left: 40px;
+        padding-right: 40px;
+    }
+    .about-divider {
+        margin-left: -40px;
+        margin-right: -40px;
+        width: calc(100% + 80px);
+    }
+    /* 版心左右分割线在小屏时隐藏 */
+    .gap-divider::before,
+    .gap-divider::after,
+    .essay-section::before,
+    .essay-section::after,
+    .note-section::before,
+    .note-section::after {
+        display: none;
+    }
+}
+@media (max-width: 1024px) {
+    .banner-text { font-size: 28px; }
+    .essay-grid { grid-template-columns: 1fr; }
+    .essay-card {
+        border-right: none;
+        border-bottom: 1px solid rgba(153, 153, 153, 0.5);
+    }
+    .essay-card:last-child { border-bottom: none; }
+    .note-section {
+        grid-template-columns: 1fr;
+        gap: 40px;
+        padding: 60px 40px;
+    }
+    .zaji-layout {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+    .zaji-sidebar { position: static; order: -1; }
+}
+@media (max-width: 768px) {
+    .header-wrap,
+    .container { padding: 0 20px; }
+    .header-wrap {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+        padding: 0 20px 30px;
+    }
+    .banner {
+        height: 380px;
+        width: calc(100% + 40px);
+        margin-left: -20px;
+        margin-right: -20px;
+    }
+    .essay-section,
+    .note-section {
+        width: calc(100% + 40px);
+        margin-left: -20px;
+        margin-right: -20px;
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+    .note-section { padding: 40px 20px; }
+    .about-divider {
+        margin-left: -20px;
+        margin-right: -20px;
+        width: calc(100% + 40px);
+    }
+    .banner-text { font-size: 20px; padding: 0 20px; }
+    .banner-btn { padding: 10px 24px; font-size: 12px; }
+    .essay-card { padding: 28px 24px; }
+    .note-item { grid-template-columns: 80px 1fr; gap: 16px; }
+    .note-item .note-thumb { width: 80px; height: 80px; }
+    #suibiList { flex-direction: column; }
+    .zaji-layout { grid-template-columns: 1fr; }
+}
