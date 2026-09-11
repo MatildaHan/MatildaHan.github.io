@@ -123,56 +123,69 @@
     // ============================================================
     // 序章首页
     // ============================================================
-    async function renderHome() {
-        var site = await getSite();
-        updateLogo(site);
+  async function renderHome() {
+    var site = await getSite();
+    updateLogo(site);
 
-        // 随笔：取最新 6 条
-        var suibiList = await DB.getAll('suibi', { orderBy: 'id' });
-        var essayContainer = document.getElementById('homeSuibi');
-        if (essayContainer) {
-            var displayList = suibiList.slice(-6);
-            var html = '';
-            for (var i = 0; i < displayList.length; i++) {
-                var item = displayList[i];
-                html += '<div class="essay-card">';
-                html += '<div class="essay-text">' + (item.content || '') + '</div>';
-                html += '<div class="essay-date">' + (item.date || '') + '</div>';
-                html += '</div>';
-            }
-            if (displayList.length === 0) {
-                html = '<div class="essay-card"><div class="essay-text" style="color:#7a6a5a;">暂无随笔</div></div>';
-            }
-            essayContainer.innerHTML = html;
-        }
+    // 随笔：最多 6 条，4 列布局
+    var suibiList = await DB.getAll('suibi', { orderBy: 'id' });
+    var essayContainer = document.getElementById('homeSuibi');
+    if (essayContainer) {
+        var displayList = suibiList.slice(-6);
+        while (displayList.length < 6) displayList.push(null);
 
-        // 杂记：取最新 3 条
-        var zajiList = await DB.getAll('zaji', { orderBy: 'id' });
-        var noteContainer = document.getElementById('homeZaji');
-        if (noteContainer) {
-            var latestThree = zajiList.slice(-3).reverse();
-            var html2 = '';
-            for (var j = 0; j < latestThree.length; j++) {
-                var z = latestThree[j];
-                var summary = z.content ? z.content.substring(0, 60) : '';
-                if (z.content && z.content.length > 60) summary += '...';
-                html2 += '<div class="note-item" data-sub="zaji-detail" data-id="' + z.id + '">';
-                html2 += '  <div class="note-thumb"></div>';
-                html2 += '  <div class="note-body">';
-                html2 += '    <div class="note-title">' + (z.title || '无标题') + '</div>';
-                html2 += '    <div class="note-summary">' + summary + '</div>';
-                html2 += '  </div>';
-                html2 += '</div>';
-            }
-            if (latestThree.length === 0) {
-                html2 = '<p style="color:#7a6a5a;padding:20px 0;">暂无杂记</p>';
-            }
-            noteContainer.innerHTML = html2;
-        }
+        var html = '';
+        // 第一行
+        html += '<div class="essay-cell essay-blank essay-blank-left"><span class="essay-mark"></span></div>';
+        html += buildEssayCard(displayList[0]);
+        html += buildEssayCard(displayList[1]);
+        html += buildEssayCard(displayList[2]);
+        // 第二行
+        html += buildEssayCard(displayList[3]);
+        html += buildEssayCard(displayList[4]);
+        html += buildEssayCard(displayList[5]);
+        html += '<div class="essay-cell essay-blank essay-blank-right"><span class="essay-mark"></span></div>';
 
-        if (!typewriterDone) startTypewriter();
+        essayContainer.innerHTML = html;
     }
 
+    // 杂记区（保持原逻辑）
+    var zajiList = await DB.getAll('zaji', { orderBy: 'id' });
+    var noteContainer = document.getElementById('homeZaji');
+    if (noteContainer) {
+        var latestThree = zajiList.slice(-3).reverse();
+        var html2 = '';
+        for (var j = 0; j < latestThree.length; j++) {
+            var z = latestThree[j];
+            var summary = z.content ? z.content.substring(0, 60) : '';
+            if (z.content && z.content.length > 60) summary += '...';
+            html2 += '<div class="note-item" data-sub="zaji-detail" data-id="' + z.id + '">';
+            html2 += '  <div class="note-thumb"></div>';
+            html2 += '  <div class="note-body">';
+            html2 += '    <div class="note-title">' + (z.title || '无标题') + '</div>';
+            html2 += '    <div class="note-summary">' + summary + '</div>';
+            html2 += '  </div>';
+            html2 += '</div>';
+        }
+        if (latestThree.length === 0) {
+            html2 = '<p style="color:#999999;padding:20px 0;">暂无杂记</p>';
+        }
+        noteContainer.innerHTML = html2;
+    }
+
+    if (!typewriterDone) startTypewriter();
+}
+
+// 卡片生成（放在 renderHome 外）
+function buildEssayCard(data) {
+    if (!data) {
+        return '<div class="essay-cell essay-card"><div class="essay-text essay-empty">...</div></div>';
+    }
+    return '<div class="essay-cell essay-card">' +
+        '<div class="essay-text">' + (data.content || '') + '</div>' +
+        '<div class="essay-date">' + (data.date || '') + '</div>' +
+        '</div>';
+}
     // ============================================================
     // 随笔列表
     // ============================================================
