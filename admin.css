@@ -1,37 +1,44 @@
+/* admin.css */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
+
 body {
     font-family: "Songti SC", "SimSun", serif;
-    background: #f5f2ef;
-    color: #5a4a3a;
+    background: #141110;
+    color: #d8cec4;
     font-size: 14px;
     line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
 }
+
 a {
     text-decoration: none;
     color: inherit;
 }
 
+/* ============================================================
+   登录界面
+   ============================================================ */
 .login-container {
     max-width: 400px;
     margin: 120px auto;
     padding: 50px 40px 40px;
-    background: #ffffff;
-    border: 1px solid #e0d6cc;
+    background: #1a1614;
+    border: 1px solid #2a2422;
     text-align: center;
 }
 .login-container .login-logo {
     font-size: 28px;
-    color: #4a3a2a;
+    color: #f0e6dc;
     margin-bottom: 6px;
     letter-spacing: 4px;
 }
 .login-container .login-sub {
     font-size: 14px;
-    color: #9a8a7a;
+    color: #7a6a5a;
     margin-bottom: 32px;
 }
 .login-container .form-group {
@@ -41,39 +48,41 @@ a {
 .login-container .form-group label {
     display: block;
     font-size: 13px;
-    color: #6a5a4a;
+    color: #9a8a7a;
     margin-bottom: 4px;
 }
 .login-container .form-group input {
     width: 100%;
     padding: 10px 14px;
-    border: 1px solid #d5c8bc;
+    border: 1px solid #2a2422;
     font-size: 14px;
     font-family: inherit;
-    background: #fcfaf8;
+    background: #141110;
+    color: #d8cec4;
 }
 .login-container .form-group input:focus {
     outline: none;
     border-color: #b89c84;
-    background: #ffffff;
+    background: #1a1614;
 }
 .login-container .btn-login {
     width: 100%;
     padding: 12px;
-    background: #8c7562;
-    color: #fff;
+    background: #b89c84;
+    color: #0C0A09;
     border: none;
     font-size: 16px;
     cursor: pointer;
     font-family: inherit;
     transition: background 0.2s;
     margin-top: 8px;
+    letter-spacing: 2px;
 }
 .login-container .btn-login:hover {
-    background: #7a6451;
+    background: #9c836e;
 }
 .login-container .error {
-    color: #c0392b;
+    color: #e07a6a;
     font-size: 13px;
     margin-top: 12px;
     display: none;
@@ -82,6 +91,9 @@ a {
     display: block;
 }
 
+/* ============================================================
+   后台布局
+   ============================================================ */
 .admin-wrapper {
     display: none;
     max-width: 100% !important;
@@ -92,62 +104,71 @@ a {
     display: flex;
 }
 
+/* ============================================================
+   侧边栏
+   ============================================================ */
 .admin-sidebar {
     width: 220px;
-    background: #2c241e;
-    color: #d4c5b8;
+    background: #0C0A09;
+    color: #b8a898;
     padding: 30px 0;
     flex-shrink: 0;
     position: sticky;
     top: 0;
     height: 100vh;
     overflow-y: auto;
+    border-right: 1px solid #2a2422;
 }
 .admin-sidebar .logo {
     font-size: 22px;
-    color: #e8ddd0;
+    color: #f0e6dc;
     padding: 0 24px 30px;
-    border-bottom: 1px solid #3f332b;
+    border-bottom: 1px solid #2a2422;
     letter-spacing: 2px;
 }
 .admin-sidebar .logo span {
     display: block;
     font-size: 13px;
-    color: #9a8a7a;
+    color: #7a6a5a;
     letter-spacing: 0;
     margin-top: 4px;
 }
 .admin-sidebar nav a {
     display: block;
     padding: 12px 24px;
-    color: #c4b5a6;
+    color: #b8a898;
     transition: 0.2s;
     border-left: 3px solid transparent;
     font-size: 14px;
     text-decoration: none;
 }
 .admin-sidebar nav a:hover {
-    background: #3f332b;
+    background: #1a1614;
     color: #f0e6dc;
 }
 .admin-sidebar nav a.active {
-    background: #3f332b;
+    background: #1a1614;
     color: #f0e6dc;
     border-left-color: #b89c84;
 }
 .admin-sidebar .footer {
     padding: 30px 24px 0;
     font-size: 12px;
-    color: #6a5a4a;
-    border-top: 1px solid #3f332b;
+    color: #5a4a3a;
+    border-top: 1px solid #2a2422;
     margin-top: 30px;
 }
 
+/* ============================================================
+   主内容区
+   ============================================================ */
 .admin-main {
     flex: 1;
     padding: 30px 40px 60px;
     max-width: 100% !important;
     width: 100% !important;
+    background: #141110;
+    min-height: 100vh;
 }
 
 .admin-header {
@@ -155,29 +176,33 @@ a {
     justify-content: space-between;
     align-items: center;
     padding-bottom: 20px;
-    border-bottom: 1px solid #e0d6cc;
+    border-bottom: 1px solid #2a2422;
     margin-bottom: 30px;
 }
 .admin-header h2 {
     font-weight: normal;
     font-size: 24px;
-    color: #4a3a2a;
+    color: #f0e6dc;
+    letter-spacing: 1px;
 }
 .admin-header .user {
-    color: #8a7a6a;
+    color: #9a8a7a;
     font-size: 13px;
 }
 .admin-header .logout-btn {
-    color: #a8917e;
+    color: #b89c84;
     font-size: 13px;
     cursor: pointer;
     text-decoration: underline;
     margin-left: 16px;
 }
 .admin-header .logout-btn:hover {
-    color: #6a5a4a;
+    color: #f0e6dc;
 }
 
+/* ============================================================
+   面板
+   ============================================================ */
 .panel {
     display: none;
     animation: fade 0.25s ease;
@@ -190,6 +215,9 @@ a {
     100% { opacity: 1; transform: translateY(0); }
 }
 
+/* ============================================================
+   工具栏
+   ============================================================ */
 .toolbar {
     display: flex;
     gap: 12px;
@@ -197,41 +225,50 @@ a {
     margin-bottom: 24px;
 }
 
+/* ============================================================
+   按钮
+   ============================================================ */
 .btn {
     padding: 6px 18px;
-    border: 1px solid #c9b39f;
-    background: #fff;
-    color: #5a4a3a;
+    border: 1px solid #b89c84;
+    background: transparent;
+    color: #d8cec4;
     cursor: pointer;
     font-size: 13px;
     font-family: inherit;
     transition: 0.2s;
 }
 .btn:hover {
-    background: #f3efe9;
+    background: #2a2422;
+    color: #f0e6dc;
 }
 .btn-primary {
-    background: #8c7562;
-    color: #fff;
-    border-color: #8c7562;
+    background: #b89c84;
+    color: #0C0A09;
+    border-color: #b89c84;
 }
 .btn-primary:hover {
-    background: #7a6451;
-    border-color: #7a6451;
+    background: #9c836e;
+    border-color: #9c836e;
+    color: #0C0A09;
 }
 .btn-danger {
     border-color: #c0392b;
-    color: #c0392b;
+    color: #e07a6a;
 }
 .btn-danger:hover {
     background: #c0392b;
-    color: #fff;
+    color: #ffffff;
 }
 
+/* ============================================================
+   表格
+   ============================================================ */
 .table-wrap {
-    background: #fff;
+    background: #1a1614;
     padding: 20px;
     overflow-x: auto;
+    border: 1px solid #2a2422;
 }
 table {
     width: 100%;
@@ -241,15 +278,20 @@ table {
 th {
     text-align: left;
     padding: 10px 12px;
-    background: #f8f5f1;
-    color: #5a4a3a;
+    background: #141110;
+    color: #b8a898;
     font-weight: normal;
-    border-bottom: 2px solid #e0d6cc;
+    border-bottom: 2px solid #2a2422;
+    letter-spacing: 0.5px;
 }
 td {
     padding: 10px 12px;
-    border-bottom: 1px solid #f0ebe6;
+    border-bottom: 1px solid #2a2422;
     vertical-align: top;
+    color: #d8cec4;
+}
+tr:hover td {
+    background: #1f1a18;
 }
 .actions {
     display: flex;
@@ -261,13 +303,16 @@ td {
     font-size: 12px;
 }
 
+/* ============================================================
+   表单
+   ============================================================ */
 .form-group {
     margin-bottom: 16px;
 }
 .form-group label {
     display: block;
     font-size: 13px;
-    color: #6a5a4a;
+    color: #9a8a7a;
     margin-bottom: 4px;
 }
 .form-group input,
@@ -275,30 +320,42 @@ td {
 .form-group select {
     width: 100%;
     padding: 8px 12px;
-    border: 1px solid #d5c8bc;
+    border: 1px solid #2a2422;
     font-family: inherit;
     font-size: 13px;
-    background: #fff;
-    color: #3a2a1a;
+    background: #141110;
+    color: #d8cec4;
+}
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: #b89c84;
+    background: #1a1614;
 }
 .form-group textarea {
     min-height: 80px;
     resize: vertical;
 }
 .form-card {
-    background: #fff;
+    background: #1a1614;
     padding: 24px;
     margin-bottom: 30px;
+    border: 1px solid #2a2422;
 }
 .form-card h3 {
     font-weight: normal;
     font-size: 18px;
-    color: #4a3a2a;
+    color: #f0e6dc;
     margin-bottom: 20px;
     padding-bottom: 10px;
-    border-bottom: 1px solid #f0ebe6;
+    border-bottom: 1px solid #2a2422;
+    letter-spacing: 1px;
 }
 
+/* ============================================================
+   图片预览
+   ============================================================ */
 .img-preview {
     width: 80px;
     height: 60px;
@@ -306,11 +363,14 @@ td {
     display: inline-block;
 }
 
+/* ============================================================
+   Tab 切换
+   ============================================================ */
 .tab-container {
     display: flex;
     gap: 0;
     margin-bottom: 24px;
-    border-bottom: 2px solid #e0d6cc;
+    border-bottom: 2px solid #2a2422;
 }
 .tab-btn {
     padding: 10px 24px;
@@ -320,16 +380,16 @@ td {
     cursor: pointer;
     font-size: 14px;
     font-family: inherit;
-    color: #8a7a6a;
+    color: #7a6a5a;
     transition: 0.2s;
     margin-bottom: -2px;
 }
 .tab-btn:hover {
-    color: #5a4a3a;
+    color: #d8cec4;
 }
 .tab-btn.active {
-    color: #5a4a3a;
-    border-bottom-color: #8c7562;
+    color: #f0e6dc;
+    border-bottom-color: #b89c84;
     font-weight: bold;
 }
 .tab-content {
@@ -339,6 +399,9 @@ td {
     display: block;
 }
 
+/* ============================================================
+   模态框
+   ============================================================ */
 .modal-overlay {
     display: none;
     position: fixed;
@@ -346,22 +409,23 @@ td {
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0,0,0,0.4);
+    background: rgba(0, 0, 0, 0.7);
     z-index: 1000;
     justify-content: center;
     align-items: center;
+    backdrop-filter: blur(2px);
 }
 .modal-overlay.show {
     display: flex;
 }
 .modal-box {
-    background: #fff;
+    background: #1a1614;
     padding: 30px;
     max-width: 500px;
     width: 90%;
     max-height: 80vh;
     overflow-y: auto;
-    border: 1px solid #e0d6cc;
+    border: 1px solid #2a2422;
     animation: modalIn 0.25s ease;
 }
 @keyframes modalIn {
@@ -371,10 +435,11 @@ td {
 .modal-box h3 {
     font-weight: normal;
     font-size: 20px;
-    color: #4a3a2a;
+    color: #f0e6dc;
     margin-bottom: 20px;
     padding-bottom: 10px;
-    border-bottom: 1px solid #f0ebe6;
+    border-bottom: 1px solid #2a2422;
+    letter-spacing: 1px;
 }
 .modal-close {
     float: right;
@@ -382,10 +447,11 @@ td {
     border: none;
     font-size: 24px;
     cursor: pointer;
-    color: #a8917e;
+    color: #7a6a5a;
+    line-height: 1;
 }
 .modal-close:hover {
-    color: #5a4a3a;
+    color: #f0e6dc;
 }
 .modal-box .form-group {
     margin-bottom: 16px;
@@ -393,7 +459,7 @@ td {
 .modal-box .form-group label {
     display: block;
     font-size: 13px;
-    color: #6a5a4a;
+    color: #9a8a7a;
     margin-bottom: 4px;
 }
 .modal-box .form-group input,
@@ -401,11 +467,18 @@ td {
 .modal-box .form-group select {
     width: 100%;
     padding: 8px 12px;
-    border: 1px solid #d5c8bc;
+    border: 1px solid #2a2422;
     font-family: inherit;
     font-size: 13px;
-    background: #fff;
-    color: #3a2a1a;
+    background: #141110;
+    color: #d8cec4;
+}
+.modal-box .form-group input:focus,
+.modal-box .form-group textarea:focus,
+.modal-box .form-group select:focus {
+    outline: none;
+    border-color: #b89c84;
+    background: #1a1614;
 }
 .modal-box .form-group textarea {
     min-height: 80px;
@@ -421,6 +494,9 @@ td {
     padding: 8px 24px;
 }
 
+/* ============================================================
+   颜色 / 字号输入组
+   ============================================================ */
 .color-input-group {
     display: flex;
     align-items: center;
@@ -431,14 +507,21 @@ td {
     height: 40px;
     padding: 2px;
     cursor: pointer;
-    border: 1px solid #d5c8bc;
+    border: 1px solid #2a2422;
+    background: #141110;
 }
 .color-input-group input[type="text"] {
     flex: 1;
     padding: 8px 12px;
-    border: 1px solid #d5c8bc;
+    border: 1px solid #2a2422;
     font-family: inherit;
     font-size: 13px;
+    background: #141110;
+    color: #d8cec4;
+}
+.color-input-group input[type="text"]:focus {
+    outline: none;
+    border-color: #b89c84;
 }
 .size-input-group {
     display: flex;
@@ -448,20 +531,56 @@ td {
 .size-input-group input[type="number"] {
     width: 100px;
     padding: 8px 12px;
-    border: 1px solid #d5c8bc;
+    border: 1px solid #2a2422;
     font-family: inherit;
     font-size: 13px;
+    background: #141110;
+    color: #d8cec4;
+}
+.size-input-group input[type="number"]:focus {
+    outline: none;
+    border-color: #b89c84;
 }
 .size-input-group .size-preview {
     font-weight: bold;
     transition: all 0.2s;
+    color: #b89c84;
 }
 .form-hint {
     font-size: 12px;
-    color: #999999;
+    color: #5a4a3a;
     margin-top: 4px;
 }
 
+/* ============================================================
+   滚动条美化
+   ============================================================ */
+.admin-sidebar::-webkit-scrollbar,
+.modal-box::-webkit-scrollbar,
+.table-wrap::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+.admin-sidebar::-webkit-scrollbar-track,
+.modal-box::-webkit-scrollbar-track,
+.table-wrap::-webkit-scrollbar-track {
+    background: #141110;
+}
+.admin-sidebar::-webkit-scrollbar-thumb,
+.modal-box::-webkit-scrollbar-thumb,
+.table-wrap::-webkit-scrollbar-thumb {
+    background: #2a2422;
+    border-radius: 3px;
+}
+.admin-sidebar::-webkit-scrollbar-thumb:hover,
+.modal-box::-webkit-scrollbar-thumb:hover,
+.table-wrap::-webkit-scrollbar-thumb:hover {
+    background: #3f332b;
+}
+
+/* ============================================================
+   响应式
+   ============================================================ */
 @media (max-width: 1024px) {
     .admin-sidebar { width: 180px; }
     .admin-main { padding: 20px 24px; max-width: 100% !important; }
@@ -469,7 +588,14 @@ td {
 }
 @media (max-width: 768px) {
     .admin-wrapper { flex-direction: column; max-width: 100% !important; }
-    .admin-sidebar { width: 100%; height: auto; position: relative; padding: 16px 0; }
+    .admin-sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+        padding: 16px 0;
+        border-right: none;
+        border-bottom: 1px solid #2a2422;
+    }
     .admin-sidebar .logo { padding: 0 20px 16px; }
     .admin-sidebar nav a { padding: 10px 20px; }
     .admin-main { max-width: 100% !important; padding: 16px; }
