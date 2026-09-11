@@ -1,4 +1,4 @@
-/* admin.css —— 须臾之间 后台管理 */
+/* admin.css —— 须臾之间 后台管理（无分割线版） */
 * {
     margin: 0;
     padding: 0;
@@ -19,13 +19,15 @@ a {
     color: inherit;
 }
 
-/* ===== 登录 ===== */
+/* ============================================================
+   登录
+   ============================================================ */
 .login-container {
     max-width: 400px;
     margin: 120px auto;
     padding: 50px 40px 40px;
     background: #141110;
-    border: 1px solid #999999;
+    /* 无边框 */
     text-align: center;
 }
 .login-container .login-logo {
@@ -52,16 +54,16 @@ a {
 .login-container .form-group input {
     width: 100%;
     padding: 10px 14px;
-    border: 1px solid #999999;
+    border: 1px solid transparent;
     font-size: 14px;
     font-family: inherit;
     background: #0C0A09;
     color: #ffffff;
+    transition: background 0.2s;
 }
 .login-container .form-group input:focus {
     outline: none;
-    border-color: #ffffff;
-    background: #141110;
+    background: #1a1614;
 }
 .login-container .btn-login {
     width: 100%;
@@ -89,7 +91,9 @@ a {
     display: block;
 }
 
-/* ===== 后台布局 ===== */
+/* ============================================================
+   后台布局
+   ============================================================ */
 .admin-wrapper {
     display: none;
     max-width: 100% !important;
@@ -100,6 +104,9 @@ a {
     display: flex;
 }
 
+/* ============================================================
+   侧边栏（无右边框）
+   ============================================================ */
 .admin-sidebar {
     width: 220px;
     background: #0C0A09;
@@ -110,13 +117,11 @@ a {
     top: 0;
     height: 100vh;
     overflow-y: auto;
-    border-right: 1px solid #999999;
 }
 .admin-sidebar .logo {
     font-size: 22px;
     color: #ffffff;
     padding: 0 24px 30px;
-    border-bottom: 1px solid #999999;
     letter-spacing: 2px;
 }
 .admin-sidebar .logo span {
@@ -126,7 +131,6 @@ a {
     letter-spacing: 0;
     margin-top: 4px;
 }
-/* 侧边栏未选中项 */
 .admin-sidebar nav a {
     display: block;
     padding: 12px 24px;
@@ -149,10 +153,12 @@ a {
     padding: 30px 24px 0;
     font-size: 12px;
     color: #999999;
-    border-top: 1px solid #999999;
     margin-top: 30px;
 }
 
+/* ============================================================
+   主内容区（无 header 底边）
+   ============================================================ */
 .admin-main {
     flex: 1;
     padding: 30px 40px 60px;
@@ -166,8 +172,6 @@ a {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding-bottom: 20px;
-    border-bottom: 1px solid #999999;
     margin-bottom: 30px;
 }
 .admin-header h2 {
@@ -210,6 +214,9 @@ a {
     margin-bottom: 24px;
 }
 
+/* ============================================================
+   按钮（保留边框，否则失去可点击性）
+   ============================================================ */
 .btn {
     padding: 6px 18px;
     border: 1px solid #ffffff;
@@ -243,11 +250,13 @@ a {
     color: #ffffff;
 }
 
+/* ============================================================
+   表格（无边框，用 hover 区分行）
+   ============================================================ */
 .table-wrap {
     background: #141110;
     padding: 20px;
     overflow-x: auto;
-    border: 1px solid #999999;
 }
 table {
     width: 100%;
@@ -257,15 +266,13 @@ table {
 th {
     text-align: left;
     padding: 10px 12px;
-    background: #0C0A09;
-    color: #ffffff;
+    background: transparent;
+    color: #999999;
     font-weight: normal;
-    border-bottom: 2px solid #999999;
     letter-spacing: 0.5px;
 }
 td {
     padding: 10px 12px;
-    border-bottom: 1px solid #999999;
     vertical-align: top;
     color: #ffffff;
 }
@@ -282,6 +289,9 @@ tr:hover td {
     font-size: 12px;
 }
 
+/* ============================================================
+   表单（无边框，focus 变底色）
+   ============================================================ */
 .form-group {
     margin-bottom: 16px;
 }
@@ -296,18 +306,18 @@ tr:hover td {
 .form-group select {
     width: 100%;
     padding: 8px 12px;
-    border: 1px solid #999999;
+    border: 1px solid transparent;
     font-family: inherit;
     font-size: 13px;
     background: #0C0A09;
     color: #ffffff;
+    transition: background 0.2s;
 }
 .form-group input:focus,
 .form-group textarea:focus,
 .form-group select:focus {
     outline: none;
-    border-color: #ffffff;
-    background: #141110;
+    background: #1a1614;
 }
 .form-group textarea {
     min-height: 80px;
@@ -317,25 +327,23 @@ tr:hover td {
     background: #141110;
     padding: 24px;
     margin-bottom: 30px;
-    border: 1px solid #999999;
 }
 .form-card h3 {
     font-weight: normal;
     font-size: 18px;
     color: #ffffff;
     margin-bottom: 20px;
-    padding-bottom: 10px;
-    border-bottom: 1px solid #999999;
     letter-spacing: 1px;
 }
 
+/* ============================================================
+   Tab（无底边，用下划线表示选中）
+   ============================================================ */
 .tab-container {
     display: flex;
     gap: 0;
     margin-bottom: 24px;
-    border-bottom: 2px solid #999999;
 }
-/* 未选中 tab */
 .tab-btn {
     padding: 10px 24px;
     background: none;
@@ -346,7 +354,7 @@ tr:hover td {
     font-family: inherit;
     color: #999999;
     transition: 0.2s;
-    margin-bottom: -2px;
+    margin-bottom: 0;
 }
 .tab-btn:hover {
     color: #ffffff;
@@ -363,6 +371,9 @@ tr:hover td {
     display: block;
 }
 
+/* ============================================================
+   模态框（无边框）
+   ============================================================ */
 .modal-overlay {
     display: none;
     position: fixed;
@@ -386,7 +397,6 @@ tr:hover td {
     width: 90%;
     max-height: 80vh;
     overflow-y: auto;
-    border: 1px solid #999999;
     animation: modalIn 0.25s ease;
 }
 @keyframes modalIn {
@@ -398,8 +408,6 @@ tr:hover td {
     font-size: 20px;
     color: #ffffff;
     margin-bottom: 20px;
-    padding-bottom: 10px;
-    border-bottom: 1px solid #999999;
     letter-spacing: 1px;
 }
 .modal-close {
@@ -428,18 +436,18 @@ tr:hover td {
 .modal-box .form-group select {
     width: 100%;
     padding: 8px 12px;
-    border: 1px solid #999999;
+    border: 1px solid transparent;
     font-family: inherit;
     font-size: 13px;
     background: #0C0A09;
     color: #ffffff;
+    transition: background 0.2s;
 }
 .modal-box .form-group input:focus,
 .modal-box .form-group textarea:focus,
 .modal-box .form-group select:focus {
     outline: none;
-    border-color: #ffffff;
-    background: #141110;
+    background: #1a1614;
 }
 .modal-box .form-group textarea {
     min-height: 80px;
@@ -455,6 +463,9 @@ tr:hover td {
     padding: 8px 24px;
 }
 
+/* ============================================================
+   滚动条
+   ============================================================ */
 .admin-sidebar::-webkit-scrollbar,
 .modal-box::-webkit-scrollbar,
 .table-wrap::-webkit-scrollbar {
@@ -469,7 +480,7 @@ tr:hover td {
 .admin-sidebar::-webkit-scrollbar-thumb,
 .modal-box::-webkit-scrollbar-thumb,
 .table-wrap::-webkit-scrollbar-thumb {
-    background: #999999;
+    background: #2a2422;
     border-radius: 3px;
 }
 .admin-sidebar::-webkit-scrollbar-thumb:hover,
@@ -478,6 +489,9 @@ tr:hover td {
     background: #3f332b;
 }
 
+/* ============================================================
+   响应式
+   ============================================================ */
 @media (max-width: 1024px) {
     .admin-sidebar { width: 180px; }
     .admin-main { padding: 20px 24px; max-width: 100% !important; }
@@ -490,8 +504,6 @@ tr:hover td {
         height: auto;
         position: relative;
         padding: 16px 0;
-        border-right: none;
-        border-bottom: 1px solid #999999;
     }
     .admin-sidebar .logo { padding: 0 20px 16px; }
     .admin-sidebar nav a { padding: 10px 20px; }
